@@ -37,7 +37,8 @@ public class JDBCExample3 {
 			System.out.print("이름 입력 : ");
 			String input = sc.nextLine();
 			
-			String sql = "SELECT EMP_ID, EMP_NAME, DEPT_TITLE FROM EMPLOYEE JOIN DEPARTMENT ON (DEPT_CODE=DEPT_ID) WHERE DEPT_TITLE = \'" + input + "\'";
+			
+//			String sql = "SELECT EMP_ID, EMP_NAME, DEPT_TITLE FROM EMPLOYEE JOIN DEPARTMENT ON (DEPT_CODE=DEPT_ID) WHERE DEPT_TITLE = \'" + input + "\'";
 			
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sql);
