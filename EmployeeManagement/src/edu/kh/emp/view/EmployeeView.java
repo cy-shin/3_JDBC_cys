@@ -87,7 +87,7 @@ public class EmployeeView {
 			System.out.println("사번  |   이름  |   주민 등록 번호   |         이메일         |   전화 번호   |    부서    |  직책  |  급여" );
 			System.out.println("------------------------------------------------------------------------------------------------");
 			for(Employee emp : empList) { 
-				System.out.printf(" %2d  | %4s | %s | %20s | %11s | %7s | %4s | %d\n",
+				System.out.printf(" %2d  | %4s | %s | %20s | %-11s | %7s | %4s | %d\n",
 						emp.getEmpId(), emp.getEmpName(), emp.getEmpNo(), emp.getEmail(), 
 						emp.getPhone(), emp.getDepartmentTitle(), emp.getJobName(), emp.getSalary());
 			}
