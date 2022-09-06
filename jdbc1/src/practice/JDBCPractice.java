@@ -1,4 +1,4 @@
-package edu.kh.jdbc1;
+package practice;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,10 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class JDBCExample3 {
+public class JDBCPractice {
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
+		Practice2Service e3 = new Practice2Service();
 		
 		// 1단계 Connection, Statement, ResultSet을 설정
 		Connection conn = null;
@@ -38,7 +39,11 @@ public class JDBCExample3 {
 			String input = sc.nextLine();
 			
 			
-//			String sql = "SELECT EMP_ID, EMP_NAME, DEPT_TITLE FROM EMPLOYEE JOIN DEPARTMENT ON (DEPT_CODE=DEPT_ID) WHERE DEPT_TITLE = \'" + input + "\'";
+			String sql = "SELECT EMP_ID, EMP_NAME, DEPT_TITLE "
+					+ "FROM EMPLOYEE JOIN DEPARTMENT ON (DEPT_CODE=DEPT_ID) "
+					+ "WHERE EMP_NAME = \'" + input + "\'";
+			
+//			String sql = e3.selectDeptTitle(input);
 			
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sql);
@@ -52,6 +57,7 @@ public class JDBCExample3 {
 			
 		} catch (ClassNotFoundException e) {
 			System.out.println("잘못된 경로입니다.");
+			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
