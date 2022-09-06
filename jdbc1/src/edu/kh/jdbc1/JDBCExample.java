@@ -118,7 +118,7 @@ public class JDBCExample {
 				 
 				 // java.sql.Date를 사용할 것
 				 Date hireDate = rs.getDate("HIRE_DATE");
-				 // java.util.Date를 사용해도 되기는 함(jave.util이 jave.sql보다 
+				 // java.util.Date를 사용해도 되기는 함(jave.util이 jave.sql보다 큼)
 				 
 				 // Retrieves the value of the designated column in the current rowof this ResultSet object 
 				 // asa java.sql.Date object in the Java programming language
