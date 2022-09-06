@@ -7,6 +7,9 @@ public class Employee {
 	private int salary;
 	private int annualIncome; // 연봉
 	
+	private String hireDate; // 조회되는 입사일의 데이터 타입이 문자열이므로, 필드도 String으로 선언 (원래는 Date타입)
+	private char gender; // DB에는 문자 하나를 나타내는 자료형(자바의 char 같은 자료형)이 없으므로 어떻게 처리해야할지 논의 필요
+	
 	public Employee() {}
 	
 	public Employee(String empName, String jobName, int salary, int annualIncome) {
@@ -15,6 +18,7 @@ public class Employee {
 		this.salary = salary;
 		this.annualIncome = annualIncome;
 	}
+	
 
 	public String getEmpName() {
 		return empName;
@@ -47,6 +51,21 @@ public class Employee {
 	public void setAnnualIncome(int annualIncome) {
 		this.annualIncome = annualIncome;
 	}
+	
+	public String getHireDate() {
+		return hireDate;
+	}
+	public void setHireDate(String hireDate) {
+		this.hireDate = hireDate;
+	}
+
+	public char getGender() {
+		return gender;
+	}
+	public void setGender(char gender) {
+		this.gender = gender;
+	}
+	
 	
 	@Override
 	public String toString() {
