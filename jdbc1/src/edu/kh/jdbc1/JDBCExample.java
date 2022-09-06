@@ -75,6 +75,7 @@ public class JDBCExample {
 			 								 // type + ip + port + sid = url
 			 conn = DriverManager.getConnection(type + ip + port + sid, user, pw);
 			 // SQLException : DB 관련 최상위 예외
+			 // new 연산자를 사용하지 않는 이유? conn 객체를 직접 만들수가 없어서?
 			 
 			 // 중간 확인
 			 // System.out.println(conn);
@@ -88,7 +89,7 @@ public class JDBCExample {
 			 // 2-4). Statement 객체를 생성
 			 // -> Connection 객체를 통해서 생성
 			 
-			 stmt = conn.createStatement();
+			 stmt = conn.createStatement(); //자바와 DB 사이를 이동하며 정보를 전달
 			 
 			 // 2-5). 생성된 Statement 객체에 SQL을 적재해서 실행한 후
 			 // 결과를 반환받아와서 rs변수에 저장
@@ -98,11 +99,12 @@ public class JDBCExample {
 			 // 3단계 : SQL을 수행해서 반환받은 결과(ResultSet)를 
 			 //			한 행씩 접근해서 컬럼값을 얻어오기
 			 
+			 
 			 while(rs.next()) {
 				 // re.next() : rs가 참조하는 ResultSet 객체의
 				 //			    첫 번째 컬럼부터 순서대로 한 행씩 이동하며
 				 //				다음 행이 있을 경우 true를 반환
-				 //						  없을 경우 false를 반환
+				 //						  없을 경우 false를 반환 -> while문 종료조건 충족
 				 
 				 // rs.get자료형("컬럼명")
 				 String empId = rs.getString("EMP_ID");
