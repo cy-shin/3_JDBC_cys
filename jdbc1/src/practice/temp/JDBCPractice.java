@@ -1,4 +1,4 @@
-package practice;
+package practice.temp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -41,7 +41,7 @@ public class JDBCPractice {
 			
 			String sql = "SELECT EMP_ID, EMP_NAME, DEPT_TITLE "
 					+ "FROM EMPLOYEE JOIN DEPARTMENT ON (DEPT_CODE=DEPT_ID) "
-					+ "WHERE EMP_NAME = \'" + input + "\'";
+					+ "WHERE EMP_NAME = '" + input + "'";
 			
 //			String sql = e3.selectDeptTitle(input);
 			
