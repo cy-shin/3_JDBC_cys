@@ -42,11 +42,11 @@ public class EmployeeView {
 				System.out.println();
 				
 				switch(input) {
-				case 1: insertEmployee() break;
+				case 1: insertEmployee(); break;
 				case 2: selectAll(); break;
 				case 3: selectEmpId(); break;
-				case 4: break;
-				case 5: break;
+				case 4: updateEmployee(); break;
+				case 5: deleteEmployee(); break;
 				case 6: break;
 				case 7: break;
 				case 8: break;
@@ -74,39 +74,43 @@ public class EmployeeView {
 	public void insertEmployee() {
 		System.out.println("[사원 정보 추가]");
 		
-		int empId = inputEmpID();
 		
-		// 이름
-		System.out.println("주민등록번호 : ");
+		System.out.print("사번 입력 : ");
+		int empId = sc.nextInt();
+
+		System.out.print("사원 이름 : ");
+		String empName = sc.next();
+		
+		System.out.print("주민등록번호 : ");
 		String empNo = sc.next();
 
-		System.out.println("이메일 : ");
+		System.out.print("이메일 : ");
 		String empEmail = sc.next();
 		
-		System.out.println("전화번호(-제외) : ");
+		System.out.print("전화번호(-제외) : ");
 		String phone = sc.next();
 		
-		System.out.println("부서코드(D1~D9) : ");
+		System.out.print("부서코드(D1 ~ D9) : ");
 		String deptCode = sc.next();
 		
-		System.out.println("직급코드(J1~J7 : ");
+		System.out.print("직급코드(J1 ~ J7) : ");
 		String jobCode = sc.next();
 		
-		System.out.println("급여등급(S1 ~ S6) : ");
+		System.out.print("급여등급(S1 ~ S6) : ");
 		String salLevel = sc.next();
 		
-		System.out.println("급여 : ");
+		System.out.print("급여 : ");
 		int salalry = sc.nextInt();
 		
-		System.out.println("보너스 : ");
+		System.out.print("보너스 : ");
 		double bonus = sc.nextDouble();
 		
-		System.out.println("사수번호 : ");
+		System.out.print("사수번호 : ");
 		int managerId = sc.nextInt();
 		
 		// 입력받은 값을 Employee 객체에 담아서 DAO로 전달
 		
-		Employee emp = new Employee(empId, empNo, empNo, empEmail, phone,
+		Employee emp = new Employee(empId, empName, empNo, empEmail, phone,
 				salalry, deptCode, jobCode, salLevel, bonus, managerId);
 		
 		int result = dao.insertEmployee(emp);
@@ -152,6 +156,58 @@ public class EmployeeView {
 		printOne(emp);
 	}
 	
+	/**
+	 *  4. 사번이 일치하는 사원 정보 수정(이메일, 전화번호, 급여)
+	 */
+	public void updateEmployee() {
+		System.out.println("[4. 사번이 일치하는 사원 정보 수정]");
+		
+		// 사번 입력 받기
+		int empId = inputEmpId();
+		
+		System.out.print("이메일 : ");
+		String email = sc.next();
+
+		System.out.print("전화번호(-제외) : ");
+		String phone = sc.next();
+		
+		System.out.print("급여 : ");
+		int salary = sc.nextInt();
+		
+		// 기본생성자로 객체 생성 후 setter를 이용해서 초기화
+		Employee emp = new Employee();
+		emp.setEmpId(empId);
+		emp.setEmail(email);
+		emp.setPhone(phone);
+		emp.setSalary(salary);
+		
+		int result = dao.updateEmployee(emp); // UPDATE(DML) -> 행의 개수를 반환함(int형)
+		
+		if(result>0) {
+			System.out.println("사원 정보가 수정되었습니다.");
+		} else {
+			System.out.println("사번이 일치하는 사원이 존재하지 않습니다.");
+		}
+	}
+	
+	/**
+	 *  5. 사번이 일치하는 사원 정보 삭제
+	 */
+	public void deleteEmployee() {
+		System.out.println("[5. 사번이 일치하는 사원 정보 삭제]");
+		int empId = inputEmpId();
+		
+		System.out.println("정말 삭제 하시겠습니까?(Y/N)");
+		char input = sc.next().toUpperCase().charAt(0); // 대소문자 구별 없이 입력받을수있음~~
+		if(input == 'Y') {
+			int result = dao.deleteEmployee(empId);
+			if(result == 1) System.out.println("삭제되었습니다.");
+			else            System.out.println("사번을 확인해주세요.");
+		} else {
+			System.out.println("작업이 취소되었습니다.");
+		}
+		
+	}
 	
 	/**
 	 *  9. 주민등록번호가 일치하는 사원 정보 조회
@@ -167,7 +223,9 @@ public class EmployeeView {
 	}
 	
 	/** (공용)전달받은 사원 List 모두 출력하기
-	 *  @param empList
+	 *  공유중인 메서드 : 2. 전체 사원 정보 조회
+	 *  				  
+	 *  @param empList 
 	 */
 	public void printAll(List<Employee> empList) {
 		if(empList.isEmpty()) {
@@ -185,7 +243,7 @@ public class EmployeeView {
 	}
 	
 	/** (공용)사번을 입력받아서 반환하는 메서드
-	 * 공유중인 메서드 : 3, 4, 5
+	 * 공유중인 메서드 : 3. 사번이 일치하는 사원 정보 조회
 	 * @return
 	 */
 	public int inputEmpId() {
@@ -197,7 +255,8 @@ public class EmployeeView {
 	}
 	
 	/** (공용) 사원 1명의 정보만 출력
-	 * 공유중인 메서드 : 3, 9
+	 * 공유중인 메서드 : 3. 사번이 일치하는 사원 정보 조회
+	 * 					 9. 주민등록번호가 일치하는 사원 정보 조회
 	 * @param emp
 	 */
 	public void printOne(Employee emp) {

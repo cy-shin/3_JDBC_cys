@@ -56,7 +56,8 @@ public class EmployeeDAO {
 			String sql = "SELECT EMP_ID, EMP_NAME, EMP_NO, EMAIL, NVL(PHONE, '     -     ') AS PHONE , NVL(DEPT_TITLE, '부서없음') AS DEPT_TITLE, JOB_NAME, SALARY"
 					+ " FROM EMPLOYEE"
 					+ " LEFT JOIN DEPARTMENT ON (DEPT_ID = DEPT_CODE)"
-					+ " JOIN JOB USING(JOB_CODE)";
+					+ " JOIN JOB USING(JOB_CODE)"
+					+ " ORDER BY EMP_ID";
 			
 			// conn을 이용해서 stmt객체를 생성
 			stmt = conn.createStatement();
@@ -163,7 +164,7 @@ public class EmployeeDAO {
 		return emp;
 	}
 
-	/** 9. 주민등록번호가 일치하는 사원 정보 조회
+	/** 주민등록번호가 일치하는 사원 정보 조회 - DAO
 	 * @param empNo
 	 * @return
 	 */
@@ -232,7 +233,7 @@ public class EmployeeDAO {
 		return emp;
 	}
 
-	/** 1. 새로운 사원 정보 추가
+	/** 새로운 사원 정보 추가 - DAO
 	 * @param emp
 	 * @return result(INSERT 성공한 행의 개수를 반환)
 	 */
@@ -243,7 +244,7 @@ public class EmployeeDAO {
 		try {
 			// 커넥션 생성
 			Class.forName(driver);
-			conn = DriverManager.getConnection(url, user, driver);
+			conn = DriverManager.getConnection(url, user, pw);
 			
 			// ** DML 수행 예정 **
 			// - 트랜잭션에 DML 구문이 임시 저장된 후 COMMIT했을 때 DB에 저장됨
@@ -260,21 +261,128 @@ public class EmployeeDAO {
 			// AutoCommit을 비활성화해도, conn.close() 구문이 수행되면 자동으로 Commit이 수행됨
 			// --> close() 수행 전에 트랜잭션 제어 코드를 작성해야 함
 			
-			// SQL 작성
-			String sql = "INSERT INTO EMPLOYEE VALUES()";
+			// SQL 작성																						해당 컬럼에서 DEFAULT로 지정된 값이 추가됨(퇴사여부 컬럼의 DEFAULT = 'N')
+			String sql = "INSERT INTO EMPLOYEE VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, NULL, DEFAULT)";
 			
+			// PreparedStatement 객체 생성(매개변수에 SQL 추가)
+			pstmt = conn.prepareStatement(sql);
 			
+			// ?(placeholder)에 알맞은 값을 대입하자
+			pstmt.setInt(1, emp.getEmpId());
+			pstmt.setString(2, emp.getEmpName());
+			pstmt.setString(3, emp.getEmpNo());
+			pstmt.setString(4, emp.getEmail());
+			pstmt.setString(5, emp.getPhone());
+			pstmt.setString(6, emp.getDeptCode());
+			pstmt.setString(7, emp.getJobCode());
+			pstmt.setString(8, emp.getSalLevel());
+			pstmt.setInt(9, emp.getSalary());
+			pstmt.setDouble(10, emp.getBonus());
+			pstmt.setInt(11, emp.getManagerId());
 			
+			// pstmt를 이용해서 SQL 수행 후 결과를 반환받음
+			result = pstmt.executeUpdate();
+			
+			// executeUpdate() : DML(INSERT, UPDATE, DELETE) 수행 후 결과 행 개수를 반환
+			// exectueQuery() : SELECT문 수행 후 ResultSet을 반환함
+			
+			// *** 트랜잭션 제어 처리 ***
+			// -> DML 성공 여부에 따라서 commit, rollback을 제어
+			if(result>0) conn.commit(); // DML 성공 시(result>0) commit 수행
+			else		 conn.rollback(); // DML 실패 시(result==0) rollback 수행
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		return result;
+	}
+
+	/** 사번이 일치하는 사원 정보 수정(이메일, 전화번호, 급여) - DAO
+	 * @param emp
+	 * @return 0 수정 실패 / 1 수정 성공
+	 */
+	public int updateEmployee(Employee emp) {
+		int result = 0;
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user, pw);
+			
+			conn.setAutoCommit(false); // AutoCommit 비활성화
+			
+			String sql = "UPDATE EMPLOYEE SET "
+					+ "EMAIL = ?, PHONE = ?, SALARY = ? "
+					+ "WHERE EMP_ID = ?";
+			
+			// PreparedStatement 생성
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, emp.getEmail());
+			pstmt.setString(2, emp.getPhone());
+			pstmt.setInt(3, emp.getSalary());
+			pstmt.setInt(4, emp.getEmpId());
+			
+			result = pstmt.executeUpdate(); // 반영된 행의 개수 반환
+			
+			if(result==0) conn.rollback();
+			else 		 conn.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+
+	/** 사번이 일치하는 사원 정보 삭제 - DAO
+	 * @param empId
+	 * @return 0 삭제 안됨 / 1 삭제됨
+	 */
+	public int deleteEmployee(int empId) {
+		int result = 0;
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user, pw);
+			
+			conn.setAutoCommit(false);
+			
+			String sql = "DELETE FROM EMPLOYEE "
+				    	+ "WHERE EMP_ID = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, empId);
+			
+			result = pstmt.executeUpdate();
+			
+			if(result!=0) conn.commit();
+			else          conn.rollback();
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 		
 		return result;
 	}
