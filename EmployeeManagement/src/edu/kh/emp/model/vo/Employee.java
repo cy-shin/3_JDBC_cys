@@ -12,6 +12,14 @@ public class Employee {
 	private String jobName; // 직급명
 	private int salary; // 급여
 	
+	private String deptCode; // 부서코드
+	private String jobCode; // 직업코드
+	private String salLevel; // 급여등급
+	private double bonus; // 보너스
+	private int managerId; // 사수번호
+	
+	
+
 	public Employee() {}
 	
 	public Employee(int empId, String empName, String empNo, String email, String phone, String departmentTitle, String jobName, int salary) {
@@ -24,7 +32,26 @@ public class Employee {
 		this.jobName = jobName;
 		this.salary = salary;
 	}
+	
+	
+	// 매개변수 11개
+	public Employee(int empId, String empName, String empNo, String email, String phone, int salary, String deptCode,
+			String jobCode, String salLevel, double bonus, int managerId) {
+		super();
+		this.empId = empId;
+		this.empName = empName;
+		this.empNo = empNo;
+		this.email = email;
+		this.phone = phone;
+		this.salary = salary;
+		this.deptCode = deptCode;
+		this.jobCode = jobCode;
+		this.salLevel = salLevel;
+		this.bonus = bonus;
+		this.managerId = managerId;
+	}
 
+	// getter & seter
 	public int getEmpId() {
 		return empId;
 	}
@@ -89,12 +116,62 @@ public class Employee {
 		this.salary = salary;
 	}
 
+	public String getDeptCode() {
+		return deptCode;
+	}
+
+	public void setDeptCode(String deptCode) {
+		this.deptCode = deptCode;
+	}
+
+	public String getJobCode() {
+		return jobCode;
+	}
+
+	public void setJobCode(String jobCode) {
+		this.jobCode = jobCode;
+	}
+
+	public String getSalLevel() {
+		return salLevel;
+	}
+
+	public void setSalLevel(String salLevel) {
+		this.salLevel = salLevel;
+	}
+
+	public double getBonus() {
+		return bonus;
+	}
+
+	public void setBonus(double bonus) {
+		this.bonus = bonus;
+	}
+
+	public int getManagerId() {
+		return managerId;
+	}
+
+	public void setManagerId(int managerId) {
+		this.managerId = managerId;
+	}
+
 	@Override
 	public String toString() {
 		return "Employee [empId=" + empId + ", empName=" + empName + ", empNo=" + empNo + ", email=" + email
 				+ ", phone=" + phone + ", departmentTitle=" + departmentTitle + ", jobName=" + jobName + ", salary="
-				+ salary + "]";
+				+ salary + ", deptCode=" + deptCode + ", jobCode=" + jobCode + ", salLevel=" + salLevel + ", bonus="
+				+ bonus + ", managerId=" + managerId + "]";
 	}
+	
+	
+//	@Override
+//	public String toString() {
+//		return "Employee [empId=" + empId + ", empName=" + empName + ", empNo=" + empNo + ", email=" + email
+//				+ ", phone=" + phone + ", departmentTitle=" + departmentTitle + ", jobName=" + jobName + ", salary="
+//				+ salary + "]";
+//	}
+	
 	
 	
 	
