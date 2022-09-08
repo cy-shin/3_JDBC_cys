@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -518,7 +519,9 @@ public class EmployeeDAO {
 	 * @return empMap
 	 */
 	public Map<String, Double> selectJobAvgSalary() {
-		Map<String, Double> empMap = new HashMap<>();
+//		Map<String, Double> empMap = new HashMap<>();
+		Map<String, Double> empMap = new LinkedHashMap<>();
+		// LinkedHashMap을 사용하면 Map의 저장된 Key 순서가 유지된다!
 		
 		try {
 			Class.forName(driver);
