@@ -37,6 +37,8 @@ public class EmployeeDAO {
 	private String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	private String user = "kh_cy";
 	private String pw = "kh1234";
+	private String user2 = "my_study";
+	private String pw2 = "DNJSGMD713";
 
 	/** 전체 사원 정보를 조회 DAO
 	 * @return empList
@@ -383,6 +385,79 @@ public class EmployeeDAO {
 			}
 		}
 		
+		
+		return result;
+	}
+
+	public List<Employee> selectDept(String inputDept) {
+		List<Employee> result = new ArrayList<>();
+		
+		try {
+			Class.forName(driver);
+//			Class.forName("oracle.jdbc.driver.OracleDriver");
+			// url = type + ip + port + sid
+			
+			conn = DriverManager.getConnection(url, user2, pw2);
+			
+			// pstmt를 사용할지, stmt를 사용할지 결정
+			// 1. stmt를 사용할 경우
+//			String sql = "SELECT EMP_ID, EMP_NAME, EMP_NO, EMAIL, PHONE, DEPT_TITLE, JOB_NAME, SALARY"
+//					+ " FROM EMPLOYEE"
+//					+ " JOIN DEPARTMENT ON(DEPT_CODE = DEPT_ID)"
+//					+ " JOIN JOB USING(JOB_CODE)"
+//					+ " WHERE DEPT_TITLE = '" + inputDept +"'";
+//			
+//			stmt = conn.createStatement(); 
+//			rs = stmt.executeQuery(sql);
+//			
+//			while(rs.next()) {
+//				int empId = rs.getInt("EMP_ID");
+//				String empName = rs.getString("EMP_NAME");
+//				String empNo = rs.getString("EMP_NO");
+//				String email = rs.getString("EMAIL");
+//				String phone = rs.getString("PHONE");
+//				String deptTitle = rs.getString("DEPT_TITLE");
+//				String jobName = rs.getString("JOB_NAME");
+//				int salary = rs.getInt("SALARY");
+//				
+//				Employee emp = new Employee(empId, empName, empNo, email, phone, deptTitle, jobName, salary);
+//				result.add(emp);
+			// 2. pstmt를 사용할 경우
+			String sql = "SELECT EMP_ID, EMP_NAME, EMP_NO, EMAIL, PHONE, DEPT_TITLE, JOB_NAME, SALARY"
+					+ " FROM EMPLOYEE"
+					+ " JOIN DEPARTMENT ON(DEPT_CODE = DEPT_ID)"
+					+ " JOIN JOB USING(JOB_CODE)"
+					+ " WHERE DEPT_TITLE = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, inputDept);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				int empId = rs.getInt("EMP_ID");
+				String empName = rs.getString("EMP_NAME");
+				String empNo = rs.getString("EMP_NO");
+				String email = rs.getString("EMAIL");
+				String phone = rs.getString("PHONE");
+				String deptTitle = rs.getString("DEPT_TITLE");
+				String jobName = rs.getString("JOB_NAME");
+				int salary = rs.getInt("SALARY");
+				
+				Employee emp = new Employee(empId, empName, empNo, email, phone, deptTitle, jobName, salary);
+				result.add(emp);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs!=null) rs.close();
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
 		return result;
 	}

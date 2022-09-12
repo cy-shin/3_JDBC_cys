@@ -38,6 +38,7 @@ public class EmployeeView {
 				
 				System.out.print("메뉴 선택 >> ");
 				input = sc.nextInt();
+				sc.nextLine();
 				
 				System.out.println();
 				
@@ -47,7 +48,7 @@ public class EmployeeView {
 				case 3: selectEmpId(); break;
 				case 4: updateEmployee(); break;
 				case 5: deleteEmployee(); break;
-				case 6: break;
+				case 6: selectDept(); break;
 				case 7: break;
 				case 8: break;
 
@@ -68,6 +69,20 @@ public class EmployeeView {
 	}
 	
 	
+	/**
+	 * 6. 입력 받은 부서와 일치하는 모든 사원 정보 조회
+	 */
+	private void selectDept() {
+		System.out.println("[입력 받은 부서와 일치하는 모든 사원 정보 조회]");
+		
+		System.out.print("부서 입력 : ");
+		String inputDept = sc.nextLine();
+		
+		List<Employee> result = dao.selectDept(inputDept);
+		printAll(result);
+	}
+
+
 	/** 1. 새로운 사원 정보 추가
 	 * 
 	 */
