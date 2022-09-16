@@ -41,7 +41,7 @@ public class JDBCTemplate {
 				//				XML입출력 작업에 특화되어있음
 				
 				// driver.xml 파일 읽어오기
-				prop.loadFromXML( new FileInputStream("dirver.xml") );
+				prop.loadFromXML( new FileInputStream("driver.xml") );
 				// -> XML 파일에 작성된 내용이 Properties 객체에 모두 저장됨
 				
 				// XML에서 읽어온 값을 모두 String 변수에 저장
