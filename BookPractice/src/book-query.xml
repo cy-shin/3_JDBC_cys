@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>book-query.xml file</comment>
+	
+	<!-- 통합 검색 -->
+	<entry key= "unifiedSearch">
+		SELECT BOOK_NO, CALL_NO, BOOK_NAME, AUTHOR, PUBLISHER, LOCATION, AVAILABILITY, NVL(TO_CHAR(DUE_DATE, 'YYYY-MM-DD'), '-')  DUE_DATE
+		FROM BOOK
+		WHERE BOOK_NAME = ?
+		OR AUTHOR = ?
+		OR PUBLISHER = ? 
+	</entry>
+</properties>
