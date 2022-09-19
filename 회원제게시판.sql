@@ -41,7 +41,7 @@ COMMENT ON COLUMN "MEMBER".SECESSION_FL IS '탈퇴여부(Y/N)';
 CREATE SEQUENCE  SEQ_MEMBER_NO
 START WITH 1
 INCREMENT BY 1
-NOCYCLE 
+NOCYCLE
 NOCACHE;
 
 COMMIT;
@@ -65,7 +65,15 @@ SELECT COUNT(*) FROM "MEMBER" WHERE MEMBER_ID = 'user05' AND SECESSION_FL = 'N';
 
 -- 중복이면 COUNT 결과가 1, 중복 아니면 COUNT 결과가 0 조회됨
 
-
+--------------------------------------------------------------
+-- 로그인 확인
+--> 아이디, 비밀번호가 일치하면서 탈퇴 X
+SELECT MEMBER_NO, MEMBER_ID, MEMBER_NM, MEMBER_GENDER,
+	   TO_CHAR(ENROLL_DATE, 'YYYY"년" MM"월" DD"일" HH24:MI:SS') ENROLL_DATE
+FROM MEMBER
+WHERE MEMBER_ID = 'user01' 
+AND MEMBER_PW = 'pass01'
+AND SECESSION_FL = 'N';
 
 
 

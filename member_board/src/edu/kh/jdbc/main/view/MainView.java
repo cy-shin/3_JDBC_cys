@@ -13,6 +13,11 @@ public class MainView {
 	
 	private MainService service = new MainService();
 	
+	// '로그인 된 회원의 정보를 저장한 객체'를 참조하는 참조변수
+	private Member loginMember = null;
+	// -> 로그인 X == null
+	// -> 로그인 O != null
+	
 	/**
 	 *  메인 메뉴 출력 메서드
 	 */
@@ -22,25 +27,58 @@ public class MainView {
 		
 		do {
 			try {
+				// ctrl + shift + f : 들여쓰기, 문장 정렬
+				// ctrl + shift + p : 시작 종료 괄호이동
 				
-				System.out.println("\n***** 회원제 게시판 프로그램 *****\n");
-				System.out.println("1. 로그인");
-				System.out.println("2. 회원가입");
-				System.out.println("0. 프로그램 종료");
+				// 로그인 X 화면
+				if(loginMember == null) {
+					
+					System.out.println("\n***** 회원제 게시판 프로그램 *****\n");
+					System.out.println("1. 로그인");
+					System.out.println("2. 회원가입");
+					System.out.println("0. 프로그램 종료");
+					
+					System.out.print("\n메뉴 선택 : ");
+					
+					input = sc.nextInt();
+					sc.nextLine(); // 입력버퍼에 남아있는 개행문자를 제거함
+					
+					System.out.println();
+					
+					switch(input) {
+					case 1: login(); break; // 로그인
+					case 2: signUP(); break; // 회원가입
+					case 0: System.out.println("프로그램을 종료합니다. "); break;
+					default : System.out.println("메뉴에 작성된 번호만 입력해주세요. ");
+					}
+				} else { // 로그인 O 화면
+					System.out.println("***** 로그인 메뉴 *****");
+					System.out.println("1. 회원 기능");
+					System.out.println("2. 게시판 기능");
+					System.out.println("0. 로그아웃");
+					// 로그아웃 = loginMember가 참조하는 객체 없음(== null)
+					System.out.println("99. 프로그램 종료");
 				
-				System.out.print("\n메뉴 선택 : ");
-				
-				input = sc.nextInt();
-				sc.nextLine(); // 입력버퍼에 남아있는 개행문자를 제거함
-				
-				System.out.println();
-				
-				switch(input) {
-				case 1: break;
-				case 2: signUP(); break;
-				case 0: System.out.println("프로그램을 종료합니다. "); break;
-				default : System.out.println("메뉴에 작성된 번호만 입력해주세요. ");
+					System.out.print("\n메뉴 선택 : ");
+					input = sc.nextInt();
+					
+					System.out.println();
+					switch(input) {
+					case 1: break;
+					case 2: break;
+					case 0: 
+						logout(); 
+						input = -1; // 바깥쪽에 있는 do-while문이 종료되지 않게 만듦 
+						break;
+					case 99: 
+						System.out.println("프로그램을 종료합니다. "); 
+						// input = 0; // do-while문 조건을 충족하지 못해서 종료
+						System.exit(0); // Java Virtual Machine을 강제로 종료, 매개변수는 정상적으로 종료시킬 경우 0, 이 외에는 오류를 의미함
+						break;
+					default: System.out.println("메뉴에 작성된 번호만 입력해주세요.");
+					}
 				}
+				
 			} catch (InputMismatchException e) {
 				System.out.println("\n<<입력 형식이 올바르지 않습니다.>>");
 				sc.nextLine(); // 입력버퍼에 남아있는 잘못된 문자열을 제거함
@@ -48,6 +86,7 @@ public class MainView {
 		} while(input != 0);
 	}
 
+	
 
 	/** 2. 회원가입 화면
 	 * 
@@ -144,4 +183,42 @@ public class MainView {
 	}
 	
 	
+	/** 1. 로그인 화면
+	 *  
+	 */
+	private void login() {
+		 System.out.println("[로그인]");
+		 
+		 System.out.print("아이디 : ");
+		 String memberId = sc.next();
+
+		 System.out.print("비밀번호 : ");
+		 String memberPw = sc.next();
+		 
+		 try {
+			 // 로그인 서비스 호출 후 조회 결과를 loginMember에 저장
+			 loginMember = service.login(memberId, memberPw);
+
+			 System.out.println();
+			 if(loginMember != null) { // 로그인 성공 시
+				 System.out.println(loginMember.getMemberName() + "님, 환영합니다.");
+
+			 } else { // 로그인 실패 시
+				 System.out.println("[아이디 또는 비밀번호가 일치하지 않습니다.]");
+			 }
+		 System.out.println();
+		 
+		 } catch(Exception e) {
+			 System.out.println("\n<<로그인 중 예외 발생>>\n");
+			 e.printStackTrace();
+		 }
+	}
+	
+	/** 1-0. 로그아웃
+	 * 
+	 */
+	private void logout() {
+		loginMember = null;
+		System.out.println("\n로그아웃 되었습니다.\n");
+	}
 }
