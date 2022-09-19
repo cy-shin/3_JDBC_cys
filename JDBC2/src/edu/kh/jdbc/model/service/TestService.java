@@ -1,12 +1,12 @@
 package edu.kh.jdbc.model.service;
 
+import static edu.kh.jdbc.common.JDBCTemplate.*;
+
 // import static 구문?
 // -> static이 붙은 필드, 메서드를 호출할 때 클래스명을 생략할 수 있게 해줌
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import static edu.kh.jdbc.commom.JDBCTemplate.*;
 
 import edu.kh.jdbc.model.dao.TestDAO;
 import edu.kh.jdbc.model.vo.TestVO;

@@ -1,6 +1,6 @@
 package edu.kh.jdbc.model.dao;
 
-import static edu.kh.jdbc.commom.JDBCTemplate.*;
+import static edu.kh.jdbc.common.JDBCTemplate.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;

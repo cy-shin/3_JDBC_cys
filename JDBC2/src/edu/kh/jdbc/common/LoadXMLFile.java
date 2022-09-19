@@ -1,4 +1,4 @@
-package edu.kh.jdbc.commom;
+package edu.kh.jdbc.common;
 
 import java.io.FileInputStream;
 import java.sql.Connection;
