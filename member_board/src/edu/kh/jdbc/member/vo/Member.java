@@ -14,7 +14,10 @@ public class Member {
 	private String memberGender;
 	private String enrollDate;
 	private String secessionFlag;
-	
+	private String lastLoginDate;
+	private String loginStatus;
+
+
 	// 기본 생성자
 	public Member() {}
 
@@ -84,8 +87,20 @@ public class Member {
 		this.secessionFlag = secessionFlag;
 	}
 	
+	public String getLastLoginDate() {
+		return lastLoginDate;
+	}
+
+	public void setLastLoginDate(String lastLoginDate) {
+		this.lastLoginDate = lastLoginDate;
+	}
 	
-	
+	public String getLoginStatus() {
+		return loginStatus;
+	}
+	public void setLoginStatus(String loginStatus) {
+		this.loginStatus = loginStatus;
+	}
 	
 	
 	

@@ -82,4 +82,23 @@ public class MainService {
 		// 4. 조회 결과 반환
 		return loginMember;
 	}
+
+	/** 로그아웃
+	 * @param memberNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int logout(int memberNo) throws Exception {
+		// 1. Connection 생성
+		Connection conn = getConnection();
+
+		// 2. DAO 호출
+		int result = dao.logout(conn, memberNo);
+
+		// 3. 커넥션 반환
+		close(conn);
+
+		// 4. 조회 결과 반환
+		return result;
+	}
 }

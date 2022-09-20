@@ -26,4 +26,14 @@
 		AND MEMBER_PW = ?
 		AND SECESSION_FL = 'N'
 	</entry>
+	
+	<!-- 접속날짜 -->
+	<entry key = "loginUpdate">
+		UPDATE "MEMBER" SET LOGIN_STATUS = '접속중', LAST_LOGIN_DATE = SYSDATE WHERE MEMBER_ID = ?
+	</entry>
+	
+	<entry key = "logout">
+		UPDATE "MEMBER" SET LOGIN_STATUS = NULL WHERE MEMBER_NO = ?
+	</entry>
+	
 </properties>

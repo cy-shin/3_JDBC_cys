@@ -45,7 +45,26 @@ NOCYCLE
 NOCACHE;
 
 COMMIT;
+-----------------------------------------------------------------------------------------
+-- 마지막 로그인 시점 기록해보기
+-- 1) 컬럼 생성
+ALTER TABLE "MEMBER" ADD (LAST_LOGIN_DATE DATE DEFAULT NULL);
+-- 2) 시험삼아 값 바꿔보기
+UPDATE "MEMBER" SET LAST_LOGIN_DATE = SYSDATE WHERE MEMBER_NO = 1;
+SELECT * FROM MEMBER;
+UPDATE "MEMBER" SET LAST_LOGIN_DATE = NULL WHERE MEMBER_NO = 1;
 
+SELECT MEMBER_ID, MEMBER_NM, MEMBER_GENDER , NVL(TO_CHAR(LAST_LOGIN_DATE,'YYYY-MM-DD HH24:MI:SS'), '-') LAST_LOGIN_DATE
+FROM MEMBER 
+WHERE SECESSION_FL = 'N' 
+ORDER BY MEMBER_NO DESC;
+-----------------------------------------------------------------------------------------
+-- 로그인중인 계정에 표시하기
+ALTER TABLE "MEMBER" ADD (LOGIN_STATUS CHAR(2) DEFAULT NULL);
+ALTER TABLE "MEMBER" MODIFY (LOGIN_STATUS VARCHAR2(10) DEFAULT NULL);
+UPDATE "MEMBER" SET LOGIN_STATUS = 'O', LAST_LOGIN_DATE = SYSDATE WHERE MEMBER_ID = 'user01';
+SELECT * FROM MEMBER;
+UPDATE "MEMBER" SET LOGIN_STATUS = NULL WHERE MEMBER_ID = 'user01';
 -------------------------------------------------------------
 -- 회원 가입 구문
 INSERT INTO "MEMBER" VALUES( SEQ_MEMBER_NO.NEXTVAL, 'user01', 'pass01', '유저일', 'M', DEFAULT, DEFAULT);
@@ -75,14 +94,46 @@ WHERE MEMBER_ID = 'user01'
 AND MEMBER_PW = 'pass01'
 AND SECESSION_FL = 'N';
 
+-----------------------------------------------------------------------------------
+-- 회원 정보 조회 (탈퇴 회원 미포함, 가입일 내림차순)
+SELECT MEMBER_ID, MEMBER_NM, MEMBER_GENDER
+FROM MEMBER
+WHERE SECESSION_FL = 'N'
+ORDER BY MEMBER_NO DESC;
+-- 날짜 데이터로도 정렬할 수 있지만 날짜 데이터는 내용이 복잡해서 속도가 느림
+-- 숫자 데이터인 MEMBER_NO를 활용함(가장 최근에 가입한 사람의 번호가 제일 큼~)
 
 
+UPDATE "MEMBER" SET LAST_LOGIN_DATE = SYSDATE WHERE MEMBER_ID = 'user01'
+SELECT MEMBER_NO, MEMBER_ID, MEMBER_NM, MEMBER_GENDER, TO_CHAR(ENROLL_DATE, 'YYYY"년" MM"월" DD"일" HH24:MI:SS') ENROLL_DATE
+FROM 
+WHERE MEMBER_ID = 'user01'
+AND MEMBER_PW = 'pass01'
+AND SECESSION_FL = 'N';
+-----------------------------------------------------------------------------------
+-- 회원 정보 수정(이름, 성별)
+UPDATE "MEMBER" SET
+MEMBER_NM = '유저일',
+MEMBER_GENDER = 'M'
+WHERE MEMBER_NO = 1;
+
+SELECT * FROM MEMBER;
+
+COMMIT;
 
 
+--------------------------------------------------------------------------------
+-- 비밀번호 수정
+UPDATE "MEMBER" SET
+MEMBER_PW = ?
+WHERE MEMBER_NO = ?
+AND MEMBER_PW = ?;
 
+COMMIT;
 
-
-
-
+-- 회원 탈퇴
+UPDATE "MEMBER" SET SECESSION_FL = 'Y'
+WHERE MEMBER_NO = ?
+AND MEMBER_PW = ?
 
 

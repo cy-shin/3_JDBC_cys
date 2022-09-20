@@ -121,9 +121,15 @@ public class MainDAO {
 		
 		try {
 			// 2. SQL 얻어오기
-			String sql = prop.getProperty("login");
-			
+			String sql = prop.getProperty("loginUpdate");
+
 			// 3. PreparedStatement 객체 생성
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, memberId);
+			rs = pstmt.executeQuery();
+
+			sql = prop.getProperty("login");
+			
 			pstmt = conn.prepareStatement(sql);
 			
 			// 4. ?에 알맞은 값 대입
@@ -156,5 +162,31 @@ public class MainDAO {
 		}
 		// 8. 조회 결과 반환
 		return loginMember;
+	}
+
+
+	
+	/** 로그아웃
+	 * @param conn
+	 * @param memberNo
+	 * @return
+	 */
+	public int logout(Connection conn, int memberNo) throws Exception {
+		int result = 0;
+
+		try {
+			String sql = prop.getProperty("logout");
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, memberNo);
+
+			result = pstmt.executeUpdate();
+
+		} finally {
+			close(pstmt);
+		}
+		return result;
+
 	}
 }

@@ -4,6 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import edu.kh.jdbc.main.model.service.MainService;
+import edu.kh.jdbc.member.view.MemberView;
 import edu.kh.jdbc.member.vo.Member;
 
 // 메인 화면
@@ -13,8 +14,12 @@ public class MainView {
 	
 	private MainService service = new MainService();
 	
+	private MemberView memberView = new MemberView();
+	
 	// '로그인 된 회원의 정보를 저장한 객체'를 참조하는 참조변수
-	private Member loginMember = null;
+	
+//	private Member loginMember = null;
+	public static Member loginMember = null;
 	// -> 로그인 X == null
 	// -> 로그인 O != null
 	
@@ -64,7 +69,7 @@ public class MainView {
 					
 					System.out.println();
 					switch(input) {
-					case 1: break;
+					case 1: memberView(); break;
 					case 2: break;
 					case 0: 
 						logout(); 
@@ -85,7 +90,13 @@ public class MainView {
 			}
 		} while(input != 0);
 	}
-
+	
+	/** 1-1. 로그인 회원기능
+	 * 
+	 */
+	private void memberView() {
+		memberView.memberMenu(loginMember);
+	}
 	
 
 	/** 2. 회원가입 화면
@@ -218,7 +229,24 @@ public class MainView {
 	 * 
 	 */
 	private void logout() {
-		loginMember = null;
-		System.out.println("\n로그아웃 되었습니다.\n");
+		try {
+			int result = service.logout(loginMember.getMemberNo());
+			if(result > 0) {
+				System.out.println("\n로그아웃 되었습니다.\n");
+				loginMember = null;
+			} else {
+				System.out.println("\n<<로그아웃 오류>>\n");
+			}
+			
+		} catch (Exception e) {
+			System.out.println("\n<<로그아웃 중 예외 발생>>\n");
+			e.printStackTrace();
+		}
 	}
+
+
+
+
+
 }
+
