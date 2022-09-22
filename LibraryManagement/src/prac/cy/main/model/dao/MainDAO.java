@@ -8,13 +8,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Properties;
 
-import static prac.cy.common.JDBCTemplate.*;
+import prac.cy.library.vo.Library;
 
-import prac.cy.lib.vo.LibVO;
+import static prac.cy.common.JDBCTemplate.*;
 
 public class MainDAO {
 	
@@ -34,80 +33,38 @@ public class MainDAO {
 		}
 	}
 	
-	
-	/** 1. 키워드로 통합 검색
-	 * @param conn
-	 * @param keyword
-	 * @return
-	 * @throws Exception
+	/* 1. 키워드로 통합 검색 -> Basic
+	 * 
 	 */
-	public List<LibVO> keywordSearch(Connection conn, String keyword) throws Exception {
-		List<LibVO> bookList = new ArrayList<>();
-		
-		try {
-			String sql = prop.getProperty("keywordSearch");
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, keyword);
-			pstmt.setString(2, keyword);
-			pstmt.setString(3, keyword);
-			
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				String callNo = rs.getString("CALL_NO");
-				String topic = rs.getString("TOPIC");
-				String bookName = rs.getString("BOOK_NAME");
-				String author = rs.getString("AUTHOR");
-				String publisher = rs.getString("PUBLISHER");
-				String loc = rs.getString("LOC");
-				String avail = rs.getString("AVAIL");
-				String dueDate = rs.getString("DUE_DATE");
-				
-				LibVO lib = new LibVO(callNo, topic, bookName, author, publisher, loc, avail, dueDate);
-				
-				bookList.add(lib);
-
-			}
-			
-		} finally {
-			close(rs);
-			close(pstmt);
-		}
-		
-		return bookList;
-	}
-
-
+	
 	/** 2. 로그인
 	 * @param conn
 	 * @param memberId
 	 * @param memberPw
 	 * @return
 	 */
-	public LibVO login(Connection conn, String memberId, String memberPw) throws Exception {
-		LibVO loginUser = null;
+	public Library login(Connection conn, String userId, String userPw) throws Exception {
+		Library loginUser = null;
 		
 		try {
 			String sql = prop.getProperty("login");
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, memberId);
-			pstmt.setString(2, memberPw);
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userPw);
 			
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				loginUser = new LibVO();
+				loginUser = new Library();
 				
-				String memberName = rs.getString("MEMBER_NAME");
+				String userName = rs.getString("USER_NAME");
 				String identityName = rs.getString("IDENTITY_NAME");
 				int lentNum = rs.getInt("LENT_NUM");
 				
-				loginUser.setMemberId(memberId);
-				loginUser.setMemberName(memberName);
+				loginUser.setuserId(userId);
+				loginUser.setuserName(userName);
 				loginUser.setIdentityName(identityName);
 				loginUser.setLentNum(lentNum);
 			}

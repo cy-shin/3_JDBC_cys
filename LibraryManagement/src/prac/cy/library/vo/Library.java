@@ -1,6 +1,6 @@
-package prac.cy.lib.vo;
+package prac.cy.library.vo;
 
-public class LibVO {
+public class Library {
 	
 	// TB_BOOKS
 	private int bookNo;
@@ -17,10 +17,10 @@ public class LibVO {
 	private String dueDate;
 	
 	// TB_MEMBER
-	private int memberNO;
-	private String memberId;
-	private String memberPw;
-	private String memberName;
+	private int userNO;
+	private String userId;
+	private String userPw;
+	private String userName;
 	private String identityCode;
 	private String identityName;
 	private int lentNum;
@@ -32,10 +32,10 @@ public class LibVO {
 	private boolean adminFl;
 	
 	// 기본 생성자
-	public LibVO() {}
+	public Library() {}
 	
 	// 매개변수 생성자
-	public LibVO(String callNo, String topic, String bookName, String author, String publisher, String loc,
+	public Library(String callNo, String topic, String bookName, String author, String publisher, String loc,
 			String avail, String dueDate) {
 		super();
 		this.callNo = callNo;
@@ -145,36 +145,36 @@ public class LibVO {
 		this.dueDate = dueDate;
 	}
 	
-	public int getMemberNO() {
-		return memberNO;
+	public int getuserNO() {
+		return userNO;
 	}
 
-	public void setMemberNO(int memberNO) {
-		this.memberNO = memberNO;
+	public void setuserNO(int userNO) {
+		this.userNO = userNO;
 	}
 
-	public String getMemberId() {
-		return memberId;
+	public String getuserId() {
+		return userId;
 	}
 
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
+	public void setuserId(String userId) {
+		this.userId = userId;
 	}
 
-	public String getMemberPw() {
-		return memberPw;
+	public String getuserPw() {
+		return userPw;
 	}
 
-	public void setMemberPw(String memberPw) {
-		this.memberPw = memberPw;
+	public void setuserPw(String userPw) {
+		this.userPw = userPw;
 	}
 
-	public String getMemberName() {
-		return memberName;
+	public String getuserName() {
+		return userName;
 	}
 
-	public void setMemberName(String memberName) {
-		this.memberName = memberName;
+	public void setuserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getIdentityCode() {

@@ -6,35 +6,24 @@ import java.sql.Connection;
 import java.util.List;
 
 import prac.cy.admin.model.dao.AdminDAO;
-import prac.cy.lib.vo.LibVO;
+import prac.cy.library.vo.Library;
 
 public class AdminService {
 	AdminDAO adminDAO = new AdminDAO();
 	
-	/** 1. 키워드 통합 검색
-	 * @param keyword
-	 * @return
-	 * @throws Exception
+	/* 1. 키워드로 통합 검색 -> Basic
+	 * 
 	 */
-	public List<LibVO> keywordSearch(String keyword) throws Exception {
-		Connection conn = getConnection();
-		
-		List<LibVO> bookList = adminDAO.keywordSearch(conn, keyword);
-		
-		close(conn);
-		
-		return bookList;
-	}
 	
 	
 	/** 2. 도서 전체 조회 서비스
 	 * @return
 	 * @throws Exception
 	 */
-	public List<LibVO> searchAll() throws Exception {
+	public List<Library> searchAll() throws Exception {
 		Connection conn = getConnection();
 		
-		List<LibVO> bookList = adminDAO.searchAll(conn);
+		List<Library> bookList = adminDAO.searchAll(conn);
 		
 		close(conn);
 		

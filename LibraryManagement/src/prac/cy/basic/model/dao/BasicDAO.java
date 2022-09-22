@@ -1,4 +1,6 @@
-package prac.cy.admin.model.dao;
+package prac.cy.basic.model.dao;
+
+import static prac.cy.common.JDBCTemplate.*;
 
 import java.io.FileInputStream;
 import java.sql.Connection;
@@ -11,44 +13,41 @@ import java.util.Properties;
 
 import prac.cy.library.vo.Library;
 
-import static prac.cy.common.JDBCTemplate.*;
-
-public class AdminDAO {
-
-	private PreparedStatement pstmt;
-	private Statement stmt;
-	private ResultSet rs;
+public class BasicDAO {
 	
+	private Statement stmt;
+	private PreparedStatement pstmt;
+	private ResultSet rs;
 	private Properties prop;
 	
-	public AdminDAO() {
+	public BasicDAO() {
 		try {
 			prop = new Properties();
-			prop.loadFromXML(new FileInputStream("admin-query.xml"));
-			
+			prop.loadFromXML(new FileInputStream("basic-query.xml"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	/* 1. 키워드로 통합 검색 -> Basic
-	 * 
-	 */
-	
-	/**
+	/** 1. 키워드로 통합 검색
 	 * @param conn
+	 * @param keyword
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Library> searchAll(Connection conn) throws Exception {
+	public List<Library> keywordSearch(Connection conn, String keyword) throws Exception {
 		List<Library> bookList = new ArrayList<>();
 		
 		try {
-			String sql = prop.getProperty("searchAll");
+			String sql = prop.getProperty("keywordSearch");
 			
-			stmt = conn.createStatement();
+			pstmt = conn.prepareStatement(sql);
 			
-			rs = stmt.executeQuery(sql);
+			pstmt.setString(1, keyword);
+			pstmt.setString(2, keyword);
+			pstmt.setString(3, keyword);
+			
+			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
 				String callNo = rs.getString("CALL_NO");
@@ -63,7 +62,7 @@ public class AdminDAO {
 				Library lib = new Library(callNo, topic, bookName, author, publisher, loc, avail, dueDate);
 				
 				bookList.add(lib);
-				
+
 			}
 			
 		} finally {
@@ -73,5 +72,4 @@ public class AdminDAO {
 		
 		return bookList;
 	}
-
 }

@@ -3,7 +3,7 @@ package prac.cy.main.model.service;
 import java.sql.Connection;
 import java.util.List;
 
-import prac.cy.lib.vo.LibVO;
+import prac.cy.library.vo.Library;
 import prac.cy.main.model.dao.MainDAO;
 
 import static prac.cy.common.JDBCTemplate.*;
@@ -12,30 +12,19 @@ import static prac.cy.common.JDBCTemplate.*;
 public class MainService {
 	MainDAO dao = new MainDAO();
 	
-	/** 1. 키워드 통합 검색
-	 * @param keyword
-	 * @return
-	 * @throws Exception
+	/* 1. 키워드로 통합 검색 -> Basic
+	 * 
 	 */
-	public List<LibVO> keywordSearch(String keyword) throws Exception {
-		Connection conn = getConnection();
-		
-		List<LibVO> bookList = dao.keywordSearch(conn, keyword);
-		
-		close(conn);
-		
-		return bookList;
-	}
 
 	/** 2. 로그인
 	 * @param memberId
 	 * @param memberPw
 	 * @return
 	 */
-	public LibVO login(String memberId, String memberPw) throws Exception {
+	public Library login(String userId, String userPw) throws Exception {
 		Connection conn = getConnection();
 		
-		LibVO loginUser = dao.login(conn, memberId, memberPw);
+		Library loginUser = dao.login(conn, userId, userPw);
 		
 		close(conn);
 		
