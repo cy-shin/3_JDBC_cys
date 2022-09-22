@@ -31,47 +31,5 @@ public class AdminDAO {
 		}
 	}
 	
-	/* 1. 키워드로 통합 검색 -> Basic
-	 * 
-	 */
-	
-	/**
-	 * @param conn
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Library> searchAll(Connection conn) throws Exception {
-		List<Library> bookList = new ArrayList<>();
-		
-		try {
-			String sql = prop.getProperty("searchAll");
-			
-			stmt = conn.createStatement();
-			
-			rs = stmt.executeQuery(sql);
-			
-			while(rs.next()) {
-				String callNo = rs.getString("CALL_NO");
-				String topic = rs.getString("TOPIC");
-				String bookName = rs.getString("BOOK_NAME");
-				String author = rs.getString("AUTHOR");
-				String publisher = rs.getString("PUBLISHER");
-				String loc = rs.getString("LOC");
-				String avail = rs.getString("AVAIL");
-				String dueDate = rs.getString("DUE_DATE");
-				
-				Library lib = new Library(callNo, topic, bookName, author, publisher, loc, avail, dueDate);
-				
-				bookList.add(lib);
-				
-			}
-			
-		} finally {
-			close(rs);
-			close(pstmt);
-		}
-		
-		return bookList;
-	}
 
 }

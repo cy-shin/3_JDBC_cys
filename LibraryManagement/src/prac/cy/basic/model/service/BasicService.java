@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.util.List;
 
 import prac.cy.basic.model.dao.BasicDAO;
-import prac.cy.library.vo.Library;
+import prac.cy.library.vo.Book;
 
 public class BasicService {
 	
@@ -17,10 +17,10 @@ public class BasicService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Library> keywordSearch(String keyword) throws Exception {
+	public List<Book> keywordSearch(String keyword) throws Exception {
 		Connection conn = getConnection();
 		
-		List<Library> bookList = bDao.keywordSearch(conn, keyword);
+		List<Book> bookList = bDao.keywordSearch(conn, keyword);
 		
 		close(conn);
 		

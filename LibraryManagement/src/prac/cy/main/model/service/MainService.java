@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 
 import prac.cy.library.vo.Library;
+import prac.cy.library.vo.User;
 import prac.cy.main.model.dao.MainDAO;
 
 import static prac.cy.common.JDBCTemplate.*;
@@ -21,10 +22,10 @@ public class MainService {
 	 * @param memberPw
 	 * @return
 	 */
-	public Library login(String userId, String userPw) throws Exception {
+	public User login(String userId, String userPw) throws Exception {
 		Connection conn = getConnection();
 		
-		Library loginUser = dao.login(conn, userId, userPw);
+		User loginUser = dao.login(conn, userId, userPw);
 		
 		close(conn);
 		

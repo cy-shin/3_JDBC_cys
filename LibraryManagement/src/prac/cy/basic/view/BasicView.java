@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import prac.cy.basic.model.service.BasicService;
+import prac.cy.library.vo.Book;
 import prac.cy.library.vo.Library;
 
 public class BasicView {
@@ -21,7 +22,7 @@ public class BasicView {
 		System.out.println("\n검색중...\n");
 		
 		try {
-			List<Library> bookList = basicService.keywordSearch(keyword);
+			List<Book> bookList = basicService.keywordSearch(keyword);
 			
 			if(bookList.isEmpty()) {
 				System.out.println("\n[알림] 검색 결과가 없습니다.\n");
@@ -31,7 +32,8 @@ public class BasicView {
 			}
 			
 		} catch (Exception e) {
-			System.out.println("\n[알림] 도서 검색 중 오류가 발생했습니다.\n");
+			System.out.println("\n[알림] 도서 검색 중 문제가 발생했습니다.\n");
+			System.out.println("\n       문제가 지속될 경우 담당자에게 문의해주세요.\n");
 			e.printStackTrace();
 		}
 	}
@@ -39,7 +41,7 @@ public class BasicView {
 	/**
 	 *  B. 목록 조회 
 	 */
-	public void print(List<Library> bookList) {
+	public void print(List<Book> bookList) {
 		System.out.println();
 		System.out.printf("%-7s|%-6s|%-12s|%-10s|%-10s|%-6s|%-6s|%-10s\n",
 				"청구기호","주제","제목","저자","출판사","위치","상태","반납예정일");

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import prac.cy.library.vo.Library;
+import prac.cy.library.vo.Book;
 
 public class BasicDAO {
 	
@@ -35,8 +35,8 @@ public class BasicDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Library> keywordSearch(Connection conn, String keyword) throws Exception {
-		List<Library> bookList = new ArrayList<>();
+	public List<Book> keywordSearch(Connection conn, String keyword) throws Exception {
+		List<Book> bookList = new ArrayList<>();
 		
 		try {
 			String sql = prop.getProperty("keywordSearch");
@@ -59,9 +59,9 @@ public class BasicDAO {
 				String avail = rs.getString("AVAIL");
 				String dueDate = rs.getString("DUE_DATE");
 				
-				Library lib = new Library(callNo, topic, bookName, author, publisher, loc, avail, dueDate);
+				Book book = new Book(callNo, topic, bookName, author, publisher, loc, avail, dueDate);
 				
-				bookList.add(lib);
+				bookList.add(book);
 
 			}
 			

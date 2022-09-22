@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 
 import prac.cy.library.vo.Library;
+import prac.cy.library.vo.User;
 
 import static prac.cy.common.JDBCTemplate.*;
 
@@ -43,8 +44,8 @@ public class MainDAO {
 	 * @param memberPw
 	 * @return
 	 */
-	public Library login(Connection conn, String userId, String userPw) throws Exception {
-		Library loginUser = null;
+	public User login(Connection conn, String userId, String userPw) throws Exception {
+		User loginUser = null;
 		
 		try {
 			String sql = prop.getProperty("login");
@@ -57,14 +58,14 @@ public class MainDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				loginUser = new Library();
+				loginUser = new User();
 				
 				String userName = rs.getString("USER_NAME");
 				String identityName = rs.getString("IDENTITY_NAME");
 				int lentNum = rs.getInt("LENT_NUM");
 				
-				loginUser.setuserId(userId);
-				loginUser.setuserName(userName);
+				loginUser.setUserId(userId);
+				loginUser.setUserName(userName);
 				loginUser.setIdentityName(identityName);
 				loginUser.setLentNum(lentNum);
 			}

@@ -3,8 +3,6 @@
 <properties>
 	<comment>main-query.xml file</comment>
 	
-	
-	
 	<entry key = 'login'>
 		SELECT USER_ID, USER_NAME, IDENTITY_NAME, LENT_NUM
 		FROM TB_USER
