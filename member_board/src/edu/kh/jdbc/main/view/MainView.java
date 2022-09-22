@@ -3,6 +3,7 @@ package edu.kh.jdbc.main.view;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import edu.kh.jdbc.board.view.BoardView;
 import edu.kh.jdbc.main.model.service.MainService;
 import edu.kh.jdbc.member.view.MemberView;
 import edu.kh.jdbc.member.vo.Member;
@@ -15,6 +16,9 @@ public class MainView {
 	private MainService service = new MainService();
 	
 	private MemberView memberView = new MemberView();
+	
+	// 게시판 기능 메뉴 객체 생성
+	private BoardView boardView = new BoardView();
 	
 	// '로그인 된 회원의 정보를 저장한 객체'를 참조하는 참조변수
 	
@@ -67,10 +71,13 @@ public class MainView {
 					System.out.print("\n메뉴 선택 : ");
 					input = sc.nextInt();
 					
+					
 					System.out.println();
 					switch(input) {
 					case 1: memberView(); break;
-					case 2: break;
+					case 2: boardView.boardMenu(); break;
+					// 회원 정보가 필요한 경우 static에서 얻어와 사용할 예정
+					
 					case 0: 
 						logout(); 
 						input = -1; // 바깥쪽에 있는 do-while문이 종료되지 않게 만듦 
