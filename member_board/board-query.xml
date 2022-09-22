@@ -4,7 +4,9 @@
 	<comment>board-query.xml file</comment>
 	
 	<!--  
+	
 	<![CDATA[]]> 해석하지 말고 일반 문자로 처리?
+	
 	-->
 	<entry key='selectAllBoard'>
 	
@@ -29,6 +31,23 @@
 			ORDER BY BOARD_NO DESC
 		]]>
 		
+	</entry>
+	
+	<entry key='selectBoard'>
+	   SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT,
+	   MEMBER_NO, MEMBER_NM, READ_COUNT,
+	   TO_CHAR(CREATE_DT,'YYYY"년" MM"월" DD"일" HH24:MI:SS') CREATE_DT
+	   FROM "BOARD"
+	   JOIN "MEMBER" USING(MEMBER_NO)
+	   WHERE DELETE_FL = 'N'
+	   AND BOARD_NO = ?
+	
+	</entry>
+	
+	<entry key='increaseReadCount'>
+		UPDATE "BOARD" SET
+		READ_COUNT = READ_COUNT + 1
+		WHERE BOARD_NO = ?
 	</entry>
 	
 	

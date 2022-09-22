@@ -6,7 +6,7 @@ import java.util.List;
 public class Board {
 	private int boardNo; 			// 게시글 번호
 	private String boardTitle;  	// 게시글 제목
-	private String boradContent; 	// 게시글 내용
+	private String boardContent; 	// 게시글 내용
 	private String createDate; 		// 작성일
 	private int readcount;			// 조회수
 	private int memberNo;			// 작성자 회원 번호
@@ -33,12 +33,12 @@ public class Board {
 		this.boardTitle = boardTitle;
 	}
 
-	public String getBoradContent() {
-		return boradContent;
+	public String getBoardContent() {
+		return boardContent;
 	}
 
-	public void setBoradContent(String boradContent) {
-		this.boradContent = boradContent;
+	public void setBoardContent(String boardContent) {
+		this.boardContent = boardContent;
 	}
 
 	public String getCreateDate() {
