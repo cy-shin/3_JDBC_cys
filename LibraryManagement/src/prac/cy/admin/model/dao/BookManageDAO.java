@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 
 import prac.cy.library.vo.Book;
+import prac.cy.library.vo.Library;
 
 public class BookManageDAO {
 	private PreparedStatement pstmt;
@@ -71,14 +72,15 @@ public class BookManageDAO {
 		
 		return bookList;
 	}
+	
 
 	/** 3. 연체 도서 조회 서비스
 	 * @param conn
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Book> searchOverdue(Connection conn) throws Exception {
-		List<Book> overdueList = new ArrayList<>();
+	public List<Library> searchOverdue(Connection conn) throws Exception {
+		List<Library> overdueList = new ArrayList<>();
 		
 		try {
 			String sql = prop.getProperty("searchOverdue");
@@ -90,17 +92,16 @@ public class BookManageDAO {
 			while(rs.next()) {
 				int bookNo = rs.getInt("BOOK_NO");
 				String callNo = rs.getString("CALL_NO");
-				String topic = rs.getString("TOPIC");
 				String bookName = rs.getString("BOOK_NAME");
-				String author = rs.getString("AUTHOR");
-				String publisher = rs.getString("PUBLISHER");
-				String loc = rs.getString("LOC");
-				String avail = rs.getString("AVAIL");
+				int userNo = rs.getInt("USER_NO");
+				String userName = rs.getString("USER_NAME");
+				String lentDate = rs.getString("LENT_DATE");
 				String dueDate = rs.getString("DUE_DATE");
+				String returnDate = rs.getString("RETURN_DATE");
 				
-				Book book = new Book(bookNo, callNo, topic, bookName, author, publisher, loc, avail, dueDate);
+				Library library = new Library(bookNo, callNo, bookName, userNo, userName, lentDate, dueDate, returnDate);
 				
-				overdueList.add(book);
+				overdueList.add(library);
 			}
 			
 			
@@ -109,5 +110,55 @@ public class BookManageDAO {
 			close(stmt);
 		}
 		return overdueList;
+	}
+
+	/** B. 책 1권 조회 서비스(by 청구기호)
+	 * @param conn
+	 * @param callNo
+	 * @return
+	 */
+	public List<Book> bookInfo(Connection conn, String callNo) throws Exception {
+		List<Book> bookSingle = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("bookInfo");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, callNo);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				callNo = rs.getString("CALL_NO");
+				String topic = rs.getString("TOPIC");
+				String bookName = rs.getString("BOOK_NAME");
+				String author = rs.getString("AUTHOR");
+				String publisher = rs.getString("PUBLISHER");
+				String loc = rs.getString("LOC");
+				String avail = rs.getString("AVAIL");
+				String dueDate = rs.getString("DUE_DATE");
+				
+				Book book = new Book();
+				
+				book.setCallNo(callNo);
+				book.setTopic(topic);
+				book.setBookName(bookName);
+				book.setAuthor(author);
+				book.setPublisher(publisher);
+				book.setLoc(loc);
+				book.setAvail(avail);
+				book.setDueDate(dueDate);
+				
+				bookSingle.add(book);
+
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return bookSingle;
 	}
 }

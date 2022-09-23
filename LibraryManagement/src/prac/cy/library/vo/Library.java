@@ -8,17 +8,31 @@ public class Library {
 	private int userNo;
 	private String lentDate;
 	private String dueDate;
+	private String returnDate;
 	
+
 	// TB_MEMBER
 	private String userName;
 	
 	// TB_BOOKS
+	private String callNo;
 	private String bookName;
 	
 	// 기본 생성자
 	public Library() {}
 	
-	
+	public Library(int bookNo, String callNo, String bookName, int userNo, String userName, String lentDate, String dueDate, String returnDate) {
+		super();
+		this.bookNo = bookNo;
+		this.callNo = callNo;
+		this.bookName = bookName;
+		this.userNo = userNo;
+		this.userName = userName;
+		this.lentDate = lentDate;
+		this.dueDate = dueDate;
+		this.returnDate = returnDate;
+	}
+
 	// GETTER & SETTER
 	public String getUserName() {
 		return userName;
@@ -68,6 +82,21 @@ public class Library {
 		this.dueDate = dueDate;
 	}
 
+	public String getReturnDate() {
+		return returnDate;
+	}
+
+	public void setReturnDate(String returnDate) {
+		this.returnDate = returnDate;
+	}
+	
+	public String getCallNo() {
+		return callNo;
+	}
+
+	public void setCallNo(String callNo) {
+		this.callNo = callNo;
+	}
 
 	public String getBookName() {
 		return bookName;

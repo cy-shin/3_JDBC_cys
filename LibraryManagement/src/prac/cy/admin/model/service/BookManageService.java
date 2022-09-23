@@ -8,6 +8,7 @@ import java.util.List;
 
 import prac.cy.admin.model.dao.BookManageDAO;
 import prac.cy.library.vo.Book;
+import prac.cy.library.vo.Library;
 
 public class BookManageService {
 
@@ -36,13 +37,28 @@ public class BookManageService {
 	 * @return overdueList
 	 * @throws Exception
 	 */
-	public List<Book> searchOverdue() throws Exception {
+	public List<Library> searchOverdue() throws Exception {
 		Connection conn = getConnection();
 		
-		List<Book> overdueList = BMDAO.searchOverdue(conn);
+		List<Library> overdueList = BMDAO.searchOverdue(conn);
 		
 		close(conn);
 		
 		return overdueList;
+	}
+
+	/** B. 책 1권 조회 서비스(by 청구기호)
+	 * @param callNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Book> bookInfo(String callNo) throws Exception {
+		Connection conn = getConnection();
+		
+		List<Book> bookSingle = BMDAO.bookInfo(conn, callNo);
+		
+		close(conn);
+		
+		return bookSingle;
 	}
 }

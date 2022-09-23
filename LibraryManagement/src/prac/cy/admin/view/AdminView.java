@@ -2,17 +2,11 @@ package prac.cy.admin.view;
 
 import java.util.InputMismatchException;
 
-import static prac.cy.main.view.MainView.loginUser;
-import static prac.cy.main.view.MainView.userFlag;
-
-import java.util.List;
 import java.util.Scanner;
 
 import prac.cy.admin.model.service.AdminService;
 import prac.cy.basic.model.service.BasicService;
 import prac.cy.basic.view.BasicView;
-import prac.cy.library.vo.Book;
-import prac.cy.library.vo.Library;
 import prac.cy.main.view.MainView;
 
 public class AdminView {
@@ -35,7 +29,7 @@ public class AdminView {
 	public void adminMenu() {
 		do {
 			try {
-				String myName = loginUser.getUserName();
+				String myName = MainView.loginUser.getUserName();
 				
 				System.out.printf("\n| %-15s| %-5s|\n", "관리자 메뉴", myName);
 				System.out.println("----------------------------");
@@ -52,8 +46,8 @@ public class AdminView {
 				case 2: BMView.BookManageMenu(myName); break;
 				case 3: UMView.userManageMenu(myName); break;
 				case 0:
-					loginUser = null;
-					userFlag = false;
+					MainView.loginUser = null;
+					MainView.userFlag = false;
 					input = 0;
 					System.out.println("\n[알림] 로그아웃 되었습니다.\n");
 					break;
