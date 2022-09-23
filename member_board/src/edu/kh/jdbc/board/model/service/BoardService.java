@@ -35,7 +35,7 @@ public class BoardService {
 		return boardList;
 	}
 
-	/**
+	/**	게시글 상세 조회 서비스
 	 * @param boardNo
 	 * @param memberNo
 	 * @return
@@ -65,7 +65,7 @@ public class BoardService {
 					commit(conn);
 					// 미리 조회된 board의 조회 수를
 					// 증가된 DB의 조회 수와 동기화 작업이 필요함
-					board.setReadcount(board.getReadcount() + 1);
+					board.setReadcount(board.getReadCount() + 1);
 					// DB에서 가져와도 상관 없음
 				}
 				else {
@@ -83,6 +83,52 @@ public class BoardService {
 				
 		return board;
 		
+	}
+
+	/** 게시글 수정
+	 * @param board
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateBoard(Board board) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = bDao.updateBoard(conn, board);
+				
+		if(result > 0) {
+			commit(conn);
+			board.setReadcount(board.getReadCount() + 1);
+		}
+		else {
+			rollback(conn);
+		}
+		
+		close(conn);
+				
+		return result;
+	}
+
+	
+	/** 게시글 삭제
+	 * @param boardNo
+	 * @return
+	 * @Exception 
+	 */
+	public int deleteBoard(int boardNo) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = bDao.deleteBoard(conn, boardNo);
+				
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		
+		close(conn);
+				
+		return result;
 	}
 	
 	

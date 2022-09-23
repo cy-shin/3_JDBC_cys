@@ -8,7 +8,7 @@ public class Board {
 	private String boardTitle;  	// 게시글 제목
 	private String boardContent; 	// 게시글 내용
 	private String createDate; 		// 작성일
-	private int readcount;			// 조회수
+	private int readCount;			// 조회수
 	private int memberNo;			// 작성자 회원 번호
 	private String memberName;      // 작성자 회원 이름
 	private int commentCount; 		// 댓글수
@@ -49,12 +49,12 @@ public class Board {
 		this.createDate = createDate;
 	}
 
-	public int getReadcount() {
-		return readcount;
+	public int getReadCount() {
+		return readCount;
 	}
 
-	public void setReadcount(int readcount) {
-		this.readcount = readcount;
+	public void setReadcount(int readCount) {
+		this.readCount = readCount;
 	}
 
 	public int getMemberNo() {
