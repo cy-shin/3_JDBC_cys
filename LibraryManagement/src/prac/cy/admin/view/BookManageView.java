@@ -139,7 +139,49 @@ public class BookManageView {
 			if(!(book.isEmpty())) {
 				print(book);
 				// 2. 만약 대출중이었던 책인 경우, 반납처리함
-				if(book.get(0).getAvail())
+				String avail = book.get(0).getAvail();
+				switch(avail) {
+				case "대출가능" : // 대출처리
+					// 회원 정보를 조회함 연체중인 도서가 있는지, 도서 한도 넘겼는지 확인함
+					// 회원 정보 입력받기
+					System.out.print("회원 아이디 입력 : ");
+					String userId = sc.next();
+					// 회원정보조회
+					// 대출서비스
+					break;
+				case "대출중" : // 반납처리
+					while(true) {
+						System.out.print("반납 처리 하시겠습니까(Y/N)? : ");
+						char confirm = sc.next().toUpperCase().charAt(0);
+						if(confirm != 'Y' && confirm != 'N') { // y/n입력 오류
+							System.out.println("/n[알림]Y 또는 N 만 입력해주세요. /n");
+							continue;
+						}
+						if(confirm == 'Y') { // 반납처리
+							returnBook(book.get(0).getBookNo());
+						}
+						if(confirm == 'N') { // 취소
+						System.out.println("/n[알림] 작업이 취소되었습니다. /n");
+						}
+						
+						break;
+					}
+					
+					// confirm 확인하기 y,n,잘못입력
+					// 반납 처리 여부 확인
+					// 책 번호를 전달하고 반납 날짜를 기록
+					break;
+				case "대출불가" : // 대출불가1
+					System.out.println("\n[알림] 해당 도서는 대출불가 도서입니다.\n");
+					break;
+				case "분실" : // 대출불가2
+					System.out.println("\n[알림] 해당 도서는 분실처리된 도서입니다.\n");
+					break;
+				case "파손" : // 대출불가3
+					System.out.println("\n[알림] 해당 도서는 파손처리된 도서입니다.\n");
+					break;
+				default : System.out.println("\n[알림] 해당 도서의 도서상태를 확인해주세요.\n");
+				}
 			}
 			
 			
@@ -150,7 +192,6 @@ public class BookManageView {
 		}
 		
 	}
-	
 
 	/**
 	 *  A. 도서 목록 조회용 
@@ -174,5 +215,52 @@ public class BookManageView {
 		}
 		System.out.println();
 	}
+	
+	/**
+	 *  B. 책 1권 조회 서비스(by 청구기호)
+	 */
+	
+	/**
+	 *  C. 회원 1명 조회 서비스(by Id)
+	 */
+	 
+	/** D. 책 1명 반납 서비스
+	 * @param bookNo
+	 */
+	private void returnBook(int bookNo) {
+		try {
+			int result = BMService.returnBook(bookNo);
+			
+			if(result > 0) {
+				System.out.println("\n[알림] 반납 처리되었습니다.\n");
+			} else {
+				System.out.println("\n[알림] 반납 처리 중 문제가 발생했습니다. 다시 시도해주세요. \n");
+			}
+		} catch (Exception e) {
+			System.out.println("\n[알림] 반납 처리 중 문제가 발생했습니다.\n");
+			System.out.println("\n      문제가 지속될 경우 담당자에게 문의해주세요.\n");
+			e.printStackTrace();
+		}
+	}
+	
+	/** E. 책 1명 대출 서비스
+	 * @param bookNo
+	 */
+	private void lentBook(int userNo, int bookNo) {
+		try {
+			int result = BMService.lentBook(userNo, bookNo);
+			
+			if(result > 0) {
+				System.out.println("\n[알림] 대출 처리되었습니다.\n");
+			} else {
+				System.out.println("\n[알림] 대출 처리 중 문제가 발생했습니다. 다시 시도해주세요. \n");
+			}
+		} catch (Exception e) {
+			System.out.println("\n[알림] 대출 처리 중 문제가 발생했습니다.\n");
+			System.out.println("\n      문제가 지속될 경우 담당자에게 문의해주세요.\n");
+			e.printStackTrace();
+		}
+	}
+
 	
 }

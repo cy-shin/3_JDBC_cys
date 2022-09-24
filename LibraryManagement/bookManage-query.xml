@@ -48,5 +48,22 @@
 		JOIN TB_AVAILABILITY USING (AVAIL_CODE)
 		WHERE CALL_NO = ?
 	</entry>
-
+	
+	<!-- ReturnBook  -->
+	<entry key = "returnBook">
+		UPDATE TB_BOOKS
+		SET DUE_DATE = NULL,
+			AVAIL_CODE = 'PL'
+		WHERE BOOK_NO = ?
+	</entry>
+	
+	<!-- ReturnLentRec  -->
+	<entry key = "returnLentRec">
+		UPDATE TB_LENT_RECORD
+		SET RETURN_DATE = SYSDATE
+		WHERE BOOK_NO = ?
+		AND RETURN_DATE IS NOT NULL
+	</entry>
+	
+	
 </properties>

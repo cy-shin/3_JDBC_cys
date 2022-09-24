@@ -1,9 +1,7 @@
 package prac.cy.main.model.service;
 
 import java.sql.Connection;
-import java.util.List;
 
-import prac.cy.library.vo.Library;
 import prac.cy.library.vo.User;
 import prac.cy.main.model.dao.MainDAO;
 

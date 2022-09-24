@@ -1,7 +1,6 @@
 package prac.cy.admin.model.service;
 
-import static prac.cy.common.JDBCTemplate.close;
-import static prac.cy.common.JDBCTemplate.getConnection;
+import static prac.cy.common.JDBCTemplate.*;
 
 import java.sql.Connection;
 import java.util.List;
@@ -60,5 +59,46 @@ public class BookManageService {
 		close(conn);
 		
 		return bookSingle;
+	}
+
+	/** C. 1권 반납 처리
+	 * @param bookNo
+	 * @return result
+	 * @throws Exception
+	 */
+	public int returnBook(int bookNo) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = BMDAO.returnBook(conn,bookNo);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
+	}
+
+	/** D. 1권 대출 처리
+	 * @param userNo
+	 * @param bookNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int lentBook(int userNo, int bookNo) throws Exception {
+Connection conn = getConnection();
+		
+		int result = BMDAO.lentBook(conn,userNo,bookNo);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
 	}
 }

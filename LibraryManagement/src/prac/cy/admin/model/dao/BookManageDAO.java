@@ -161,4 +161,60 @@ public class BookManageDAO {
 		
 		return bookSingle;
 	}
+
+	/**
+	 * @param conn
+	 * @param bookNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int returnBook(Connection conn, int bookNo) throws Exception {
+		int result = 0;
+	
+		try {
+			String sql1 = prop.getProperty("returnBook");
+			
+			pstmt = conn.prepareStatement(sql1);
+			pstmt.setInt(1, bookNo);
+			result += pstmt.executeUpdate();
+
+			
+			String sql2 = prop.getProperty("returnLentRec");
+			
+			pstmt = conn.prepareStatement(sql2);
+			pstmt.setInt(1, bookNo);
+			result += pstmt.executeUpdate();
+			
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return result;
+	}
+
+	/** 반납처리
+	 * @param conn
+	 * @param userNo
+	 * @param bookNo
+	 * @return result
+	 * @throws Exception
+	 */
+	public int lentBook(Connection conn, int userNo, int bookNo) throws Exception {
+		int result = 0;
+		
+		try {
+			String sql = prop.getProperty("lentBook");
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bookNo);
+			result = pstmt.executeUpdate();
+			
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return result;
+	}
 }
