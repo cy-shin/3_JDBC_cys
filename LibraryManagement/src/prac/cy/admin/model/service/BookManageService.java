@@ -8,6 +8,7 @@ import java.util.List;
 import prac.cy.admin.model.dao.BookManageDAO;
 import prac.cy.library.vo.Book;
 import prac.cy.library.vo.Library;
+import prac.cy.library.vo.User;
 
 public class BookManageService {
 
@@ -88,7 +89,7 @@ public class BookManageService {
 	 * @throws Exception
 	 */
 	public int lentBook(int userNo, int bookNo) throws Exception {
-Connection conn = getConnection();
+		Connection conn = getConnection();
 		
 		int result = BMDAO.lentBook(conn,userNo,bookNo);
 		
@@ -100,5 +101,20 @@ Connection conn = getConnection();
 		close(conn);
 		
 		return result;
+	}
+
+	/** 이용자 1명 조회
+	 * @param userId
+	 * @return user
+	 * @throws Exception
+	 */
+	public List<User> userInfo(String userId) throws Exception {
+		Connection conn = getConnection();
+		
+		List<User> userSingle = BMDAO.userInfo(conn, userId);
+		
+		close(conn);
+		
+		return userSingle;
 	}
 }

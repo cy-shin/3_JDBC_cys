@@ -6,29 +6,29 @@ public class Book {
 	private int bookNo;
 	private String callNo;
 	private String topicCode;
-	private String topic;
+	private String topicName;
 	private String bookName;
 	private String author;
 	private String publisher;
 	private String locCode;
-	private String loc;
+	private String locName;
 	private String availCode;
-	private String avail;
+	private String availName;
 	private String dueDate;
 	
 	// 기본 생성자
 	public Book() {}
 	
 	// 매개변수 생성자1
-	public Book(String callNo, String topic, String bookName, String author, String publisher, String loc, String avail, String dueDate) {
+	public Book(String callNo, String topicName, String bookName, String author, String publisher, String locName, String availName, String dueDate) {
 		super();
 		this.callNo = callNo;
-		this.topic = topic;
+		this.topicName = topicName;
 		this.bookName = bookName;
 		this.author = author;
 		this.publisher = publisher;
-		this.loc = loc;
-		this.avail = avail;
+		this.locName = locName;
+		this.availName = availName;
 		this.dueDate = dueDate;
 	}
 	
@@ -37,12 +37,12 @@ public class Book {
 		super();
 		this.bookNo = bookNo;
 		this.callNo = callNo;
-		this.topic = topic;
+		this.topicName = topic;
 		this.bookName = bookName;
 		this.author = author;
 		this.publisher = publisher;
-		this.loc = loc;
-		this.avail = avail;
+		this.locName = loc;
+		this.availName = avail;
 		this.dueDate = dueDate;
 	}
 
@@ -70,12 +70,12 @@ public class Book {
 		this.topicCode = topicCode;
 	}
 
-	public String getTopic() {
-		return topic;
+	public String getTopicName() {
+		return topicName;
 	}
 
-	public void setTopic(String topic) {
-		this.topic = topic;
+	public void setTopic(String topicName) {
+		this.topicName = topicName;
 	}
 
 	public String getBookName() {
@@ -110,12 +110,12 @@ public class Book {
 		this.locCode = locCode;
 	}
 
-	public String getLoc() {
-		return loc;
+	public String getLocName() {
+		return locName;
 	}
 
-	public void setLoc(String loc) {
-		this.loc = loc;
+	public void setLoc(String locName) {
+		this.locName = locName;
 	}
 
 	public String getAvailCode() {
@@ -126,12 +126,12 @@ public class Book {
 		this.availCode = availCode;
 	}
 
-	public String getAvail() {
-		return avail;
+	public String getAvailName() {
+		return availName;
 	}
 
-	public void setAvail(String avail) {
-		this.avail = avail;
+	public void setAvail(String availName) {
+		this.availName = availName;
 	}
 
 	public String getDueDate() {

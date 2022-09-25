@@ -9,6 +9,7 @@ import prac.cy.admin.model.service.BookManageService;
 import prac.cy.basic.view.BasicView;
 import prac.cy.library.vo.Book;
 import prac.cy.library.vo.Library;
+import prac.cy.library.vo.User;
 
 public class BookManageView {
 	private int input = -1;
@@ -23,7 +24,7 @@ public class BookManageView {
 		do {
 			input = -1;
 			try {
-				System.out.println("----------------------------");
+				System.out.println("-------------------------------------------------------------------------------------------");
 				System.out.printf("\n| %-15s| %-5s|\n", "도서 관리 메뉴", myName);
 				System.out.println("----------------------------");
 				System.out.println("1. 도서 검색");
@@ -73,7 +74,7 @@ public class BookManageView {
 			if(bookList.isEmpty()) {
 				System.out.println("[알림] 검색 결과가 없습니다.");
 			} else {
-				print(bookList);
+				printBook(bookList);
 			}
 			
 		} catch(Exception e) {
@@ -94,11 +95,11 @@ public class BookManageView {
 			if(overDueList.isEmpty()) {
 				System.out.println("[알림] 연체중인 도서가 없습니다.");
 			} else {
-				System.out.printf("%-5s|%-7s|%-12s|%-8s|%-8s|%-10s|%-8s|%-10s\n",
+				System.out.printf("%-5s|%-7s|%-12s|%-8s|%-8s|%-10s|%-10s|%-10s\n",
 						"번호", "청구기호", "제목", "이용자 번호", "이용자 이름", "대출일", "반납예정일", "반납일");
-				System.out.println("----------------------------------------------------------------------------------------------");
+				System.out.println("-------------------------------------------------------------------------------------------");
 				for(int i=0; i<overDueList.size(); i++) {
-					System.out.printf("%-6d|%-8s|%-12s|%-10s|%-10s|%-10s|%-10s|%-10s\n",
+					System.out.printf("%-5d|%-8s|%-12s|%-9s|%-8s|%-11s|%-11s|%-10s\n",
 							overDueList.get(i).getBookNo(),
 							overDueList.get(i).getCallNo(),
 							overDueList.get(i).getBookName(),
@@ -137,15 +138,22 @@ public class BookManageView {
 				System.out.println("\n[알림] 해당 도서를 찾을 수 없습니다. 청구 기호를 확인해주세요.\n");
 			}
 			if(!(book.isEmpty())) {
-				print(book);
-				// 2. 만약 대출중이었던 책인 경우, 반납처리함
-				String avail = book.get(0).getAvail();
+				printBook(book);
+				String avail = book.get(0).getAvailName(); // 도서 상태를 가져옴
 				switch(avail) {
 				case "대출가능" : // 대출처리
 					// 회원 정보를 조회함 연체중인 도서가 있는지, 도서 한도 넘겼는지 확인함
 					// 회원 정보 입력받기
 					System.out.print("회원 아이디 입력 : ");
 					String userId = sc.next();
+					List<User> user = BMService.userInfo(userId);
+					
+					if(!(user.isEmpty())) {
+						printUser(user);
+						if(user.get(0).getStatusName().equals("정상") && user.get(0).getAvailNum() > 0) {
+							System.out.println("대출처리하시겠습니까?");
+						}
+					}
 					// 회원정보조회
 					// 대출서비스
 					break;
@@ -154,14 +162,14 @@ public class BookManageView {
 						System.out.print("반납 처리 하시겠습니까(Y/N)? : ");
 						char confirm = sc.next().toUpperCase().charAt(0);
 						if(confirm != 'Y' && confirm != 'N') { // y/n입력 오류
-							System.out.println("/n[알림]Y 또는 N 만 입력해주세요. /n");
+							System.out.println("\n[알림]Y 또는 N 만 입력해주세요. \n");
 							continue;
 						}
 						if(confirm == 'Y') { // 반납처리
 							returnBook(book.get(0).getBookNo());
 						}
 						if(confirm == 'N') { // 취소
-						System.out.println("/n[알림] 작업이 취소되었습니다. /n");
+						System.out.println("\n[알림] 작업이 취소되었습니다. \n");
 						}
 						
 						break;
@@ -196,7 +204,7 @@ public class BookManageView {
 	/**
 	 *  A. 도서 목록 조회용 
 	 */
-	private void print(List<Book> bookList) {
+	private void printBook(List<Book> bookList) {
 		System.out.println();
 		System.out.printf("%-5s|%-7s|%-6s|%-12s|%-10s|%-10s|%-6s|%-6s|%-10s\n",
 				"번호","청구기호","주제","제목","저자","출판사","위치","상태","반납예정일");
@@ -205,26 +213,50 @@ public class BookManageView {
 			System.out.printf("%-5d|%-8s|%-6s|%-12s|%-10s|%-10s|%-6s|%-6s|%-10s\n",
 					bookList.get(i).getBookNo(),
 					bookList.get(i).getCallNo(),
-					bookList.get(i).getTopic(),
+					bookList.get(i).getTopicName(),
 					bookList.get(i).getBookName(),
 					bookList.get(i).getAuthor(),
 					bookList.get(i).getPublisher(),
-					bookList.get(i).getLoc(),
-					bookList.get(i).getAvail(),
+					bookList.get(i).getLocName(),
+					bookList.get(i).getAvailName(),
 					bookList.get(i).getDueDate());
 		}
 		System.out.println();
 	}
 	
+	/** B. 유저 목록 조회용
+	 * @param userList
+	 */
+	private void printUser(List<User> userList) {
+		System.out.println();
+		System.out.printf("%-5s|%-15s|%-6s|%-6s|%-6s|%-6s|%-6s|%-6s\n",
+				"번호","아이디","이름","신분","상태","최대권수","대출권수","잔여권수");
+		System.out.println("----------------------------------------------------------------------------------------------");
+		for(int i=0; i<userList.size(); i++) {
+			System.out.printf("%-5d|%-15s|%-6s|%-6s|%-6s|%-6d|%-6d|%-6d\n",
+					userList.get(i).getUserNo(),
+					userList.get(i).getUserId(),
+					userList.get(i).getUserName(),
+					userList.get(i).getIdentityName(),
+					userList.get(i).getStatusName(),
+					userList.get(i).getIdentityLimit(),
+					userList.get(i).getLentNum(),
+					userList.get(i).getAvailNum());
+		}
+		System.out.println();
+	}
+	
+	
+	
 	/**
-	 *  B. 책 1권 조회 서비스(by 청구기호)
+	 *  C. 책 1권 조회 서비스(by 청구기호)
 	 */
 	
 	/**
-	 *  C. 회원 1명 조회 서비스(by Id)
+	 *  D. 회원 1명 조회 서비스(by Id)
 	 */
 	 
-	/** D. 책 1명 반납 서비스
+	/** E. 책 1권 반납 서비스
 	 * @param bookNo
 	 */
 	private void returnBook(int bookNo) {
@@ -243,7 +275,7 @@ public class BookManageView {
 		}
 	}
 	
-	/** E. 책 1명 대출 서비스
+	/** F. 책 1명 대출 서비스
 	 * @param bookNo
 	 */
 	private void lentBook(int userNo, int bookNo) {

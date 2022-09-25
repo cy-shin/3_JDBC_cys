@@ -62,12 +62,10 @@ public class MainDAO {
 				
 				String userName = rs.getString("USER_NAME");
 				String identityName = rs.getString("IDENTITY_NAME");
-				int lentNum = rs.getInt("LENT_NUM");
 				
 				loginUser.setUserId(userId);
 				loginUser.setUserName(userName);
 				loginUser.setIdentityName(identityName);
-				loginUser.setLentNum(lentNum);
 			}
 		} finally {
 			close(rs);

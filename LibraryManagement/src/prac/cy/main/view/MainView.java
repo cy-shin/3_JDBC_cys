@@ -11,26 +11,22 @@ import prac.cy.library.vo.Book;
 import prac.cy.library.vo.Library;
 import prac.cy.library.vo.User;
 import prac.cy.main.model.service.MainService;
+import prac.cy.user.view.UserView;
 
 public class MainView {
 	MainService mainService = new MainService();
 	
-	BasicService basicService = new BasicService();
+	BasicView basicView = new BasicView(); 			// 공통 기능(main, admin, user 모두 사용하는 기능)
+	AdminView adminView = new AdminView(); 			// 관리자 기능
+	UserView userView = new UserView(); 			// 회원 기능
 	
-	BasicView basicView = new BasicView();
-	AdminView adminView = new AdminView();
+	private Scanner sc = new Scanner(System.in); 	// 스캐너
 	
-	// 스캐너
-	private Scanner sc = new Scanner(System.in);
+	private int input = -1;							// 입력값
 	
-	// 입력값
-	private int input = -1;
+	public static User loginUser = null;			// 로그인 유저 정보
 	
-	// 로그인유저 정보
-	public static User loginUser = null;
-	
-	// 관리자계정 여부
-	public static boolean userFlag = false;
+	public static boolean userFlag = false;			// 관리자 계정 식별
 	
 	/**
 	 *  메인 메뉴
@@ -102,27 +98,5 @@ public class MainView {
 			System.out.println("\n       문제가 지속될 경우 담당자에게 문의해주세요.\n");
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 *  A. 목록 조회용
-	 */
-	public void print(List<Book> bookList) {
-		System.out.println();
-		System.out.printf("%-7s|%-6s|%-12s|%-10s|%-10s|%-6s|%-6s|%-10s\n",
-				"청구기호","주제","제목","저자","출판사","위치","상태","반납예정일");
-		System.out.println("----------------------------------------------------------------------------------------------");
-		for(int i=0; i<bookList.size(); i++) {
-			System.out.printf("%-8s|%-6s|%-12s|%-10s|%-10s|%-6s|%-6s|%-10s\n",
-					bookList.get(i).getCallNo(),
-					bookList.get(i).getTopic(),
-					bookList.get(i).getBookName(),
-					bookList.get(i).getAuthor(),
-					bookList.get(i).getPublisher(),
-					bookList.get(i).getLoc(),
-					bookList.get(i).getAvail(),
-					bookList.get(i).getDueDate());
-		}
-		System.out.println();
 	}
 }

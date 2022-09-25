@@ -51,15 +51,15 @@ public class BasicDAO {
 			
 			while(rs.next()) {
 				String callNo = rs.getString("CALL_NO");
-				String topic = rs.getString("TOPIC");
+				String topicName = rs.getString("TOPIC_NAME");
 				String bookName = rs.getString("BOOK_NAME");
 				String author = rs.getString("AUTHOR");
 				String publisher = rs.getString("PUBLISHER");
-				String loc = rs.getString("LOC");
-				String avail = rs.getString("AVAIL");
+				String locName = rs.getString("LOC_NAME");
+				String availName = rs.getString("AVAIL_NAME");
 				String dueDate = rs.getString("DUE_DATE");
 				
-				Book book = new Book(callNo, topic, bookName, author, publisher, loc, avail, dueDate);
+				Book book = new Book(callNo, topicName, bookName, author, publisher, locName, availName, dueDate);
 				
 				bookList.add(book);
 

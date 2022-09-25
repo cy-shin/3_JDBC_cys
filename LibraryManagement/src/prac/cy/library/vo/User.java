@@ -2,25 +2,28 @@ package prac.cy.library.vo;
 
 public class User {
 		// TB_USER
-		private int userNO;
+		private int userNo;
 		private String userId;
 		private String userPw;
 		private String userName;
 		private String identityCode;
 		private String identityName;
+		private String statusName;
+		private int identityLimit;
 		private int lentNum;
+		private int availNum;
 		
 		// 기본 생성자
 		public User() {}
 
 		
 		// GETTER & SETTER
-		public int getUserNO() {
-			return userNO;
+		public int getUserNo() {
+			return userNo;
 		}
 
-		public void setUserNO(int userNO) {
-			this.userNO = userNO;
+		public void setUserNo(int userNo) {
+			this.userNo = userNo;
 		}
 
 		public String getUserId() {
@@ -63,13 +66,46 @@ public class User {
 			this.identityName = identityName;
 		}
 
+
+		public String getStatusName() {
+			return statusName;
+		}
+
+
+		public void setStatusName(String statusName) {
+			this.statusName = statusName;
+		}
+
+
+		public int getIdentityLimit() {
+			return identityLimit;
+		}
+
+
+		public void setIdentityLimit(int identityLimit) {
+			this.identityLimit = identityLimit;
+		}
+
+
 		public int getLentNum() {
 			return lentNum;
 		}
 
+
 		public void setLentNum(int lentNum) {
 			this.lentNum = lentNum;
 		}
+
+
+		public int getAvailNum() {
+			return availNum;
+		}
+
+
+		public void setAvailNum(int availNum) {
+			this.availNum = availNum;
+		}
+
 		
 		
 }

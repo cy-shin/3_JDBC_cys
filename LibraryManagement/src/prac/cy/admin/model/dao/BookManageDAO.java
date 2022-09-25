@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import prac.cy.library.vo.Book;
 import prac.cy.library.vo.Library;
+import prac.cy.library.vo.User;
 
 public class BookManageDAO {
 	private PreparedStatement pstmt;
@@ -52,15 +53,15 @@ public class BookManageDAO {
 			while(rs.next()) {
 				int bookNo = rs.getInt("BOOK_NO");
 				String callNo = rs.getString("CALL_NO");
-				String topic = rs.getString("TOPIC");
+				String topicName = rs.getString("TOPIC_NAME");
 				String bookName = rs.getString("BOOK_NAME");
 				String author = rs.getString("AUTHOR");
 				String publisher = rs.getString("PUBLISHER");
-				String loc = rs.getString("LOC");
-				String avail = rs.getString("AVAIL");
+				String locName = rs.getString("LOC_NAME");
+				String availName = rs.getString("AVAIL_NAME");
 				String dueDate = rs.getString("DUE_DATE");
 				
-				Book book = new Book(bookNo, callNo, topic, bookName, author, publisher, loc, avail, dueDate);
+				Book book = new Book(bookNo, callNo, topicName, bookName, author, publisher, locName, availName, dueDate);
 				
 				bookList.add(book);
 			}
@@ -131,23 +132,23 @@ public class BookManageDAO {
 			
 			if(rs.next()) {
 				callNo = rs.getString("CALL_NO");
-				String topic = rs.getString("TOPIC");
+				String topicName = rs.getString("TOPIC_NAME");
 				String bookName = rs.getString("BOOK_NAME");
 				String author = rs.getString("AUTHOR");
 				String publisher = rs.getString("PUBLISHER");
-				String loc = rs.getString("LOC");
-				String avail = rs.getString("AVAIL");
+				String locName = rs.getString("LOC_NAME");
+				String availName = rs.getString("AVAIL_NAME");
 				String dueDate = rs.getString("DUE_DATE");
 				
 				Book book = new Book();
 				
 				book.setCallNo(callNo);
-				book.setTopic(topic);
+				book.setTopic(topicName);
 				book.setBookName(bookName);
 				book.setAuthor(author);
 				book.setPublisher(publisher);
-				book.setLoc(loc);
-				book.setAvail(avail);
+				book.setLoc(locName);
+				book.setAvail(availName);
 				book.setDueDate(dueDate);
 				
 				bookSingle.add(book);
@@ -162,7 +163,7 @@ public class BookManageDAO {
 		return bookSingle;
 	}
 
-	/**
+	/** 책 하나 반납처리
 	 * @param conn
 	 * @param bookNo
 	 * @return
@@ -172,19 +173,11 @@ public class BookManageDAO {
 		int result = 0;
 	
 		try {
-			String sql1 = prop.getProperty("returnBook");
+			String sql = prop.getProperty("returnBook");
 			
-			pstmt = conn.prepareStatement(sql1);
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bookNo);
-			result += pstmt.executeUpdate();
-
-			
-			String sql2 = prop.getProperty("returnLentRec");
-			
-			pstmt = conn.prepareStatement(sql2);
-			pstmt.setInt(1, bookNo);
-			result += pstmt.executeUpdate();
-			
+			result = pstmt.executeUpdate();
 			
 		} finally {
 			close(rs);
@@ -204,7 +197,7 @@ public class BookManageDAO {
 		int result = 0;
 		
 		try {
-			String sql = prop.getProperty("lentBook");
+			String sql  = prop.getProperty("lentBook");
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bookNo);
@@ -217,4 +210,58 @@ public class BookManageDAO {
 		}
 		return result;
 	}
+
+	/** 이용자 1명 조회 서비스
+	 * @param conn
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> userInfo(Connection conn, String userId) throws Exception {
+		List<User> userSingle = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("userInfo");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
+			pstmt.setString(3, userId);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				int userNo = rs.getInt("USER_NO");
+				userId = rs.getString("USER_ID");
+				String userName = rs.getString("USER_NAME");
+				String identityName = rs.getString("IDENTITY_NAME");
+				String statusName = rs.getString("STATUS_NAME");
+				int identityLimit = rs.getInt("IDENTITY_LIMIT");
+				int lentNum = rs.getInt("LENT_NUM");
+				int availNum = rs.getInt("AVAIL_NUM");
+				
+				User user = new User();
+				
+				user.setUserNo(userNo);
+				user.setUserId(userId);
+				user.setUserName(userName);
+				user.setIdentityName(identityName);
+				user.setStatusName(statusName);
+				user.setIdentityLimit(identityLimit);
+				user.setLentNum(lentNum);
+				user.setAvailNum(availNum);
+				
+				userSingle.add(user);
+
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return userSingle;
+	}
+
 }

@@ -49,12 +49,12 @@ public class BasicView {
 		for(int i=0; i<bookList.size(); i++) {
 			System.out.printf("%-8s|%-6s|%-12s|%-10s|%-10s|%-6s|%-6s|%-10s\n",
 					bookList.get(i).getCallNo(),
-					bookList.get(i).getTopic(),
+					bookList.get(i).getTopicName(),
 					bookList.get(i).getBookName(),
 					bookList.get(i).getAuthor(),
 					bookList.get(i).getPublisher(),
-					bookList.get(i).getLoc(),
-					bookList.get(i).getAvail(),
+					bookList.get(i).getLocName(),
+					bookList.get(i).getAvailName(),
 					bookList.get(i).getDueDate());
 		}
 		System.out.println();
