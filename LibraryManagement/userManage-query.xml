@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>userManage-query.xml file</comment>
+	
+	<!-- 이용자 정보 검색 -->
+	<entry key = 'userInfo'>
+		SELECT USER_NO, USER_ID, USER_NAME, IDENTITY_NAME, STATUS_NAME, IDENTITY_LIMIT, 
+			   (SELECT COUNT(*) FROM LENT_RECORD WHERE (USER_ID = ? OR USER_NAME = ?) AND REC_FL IS NULL) LENT_NUM,
+			   IDENTITY_LIMIT - (SELECT COUNT(*) FROM LENT_RECORD WHERE (USER_ID = ? OR USER_NAME = ?) AND REC_FL IS NULL) AVAIL_NUM
+		FROM "USER"
+		LEFT JOIN "LENT_RECORD" USING(USER_NO)
+		JOIN "IDENTITY" USING(IDENTITY_CODE)
+		JOIN STATUS USING(STATUS_CODE)
+		WHERE USER_ID = ?
+		OR USER_NAME = ?
+		AND ROWNUM = 1
+	</entry>
+	
+	
+	
+	
+	
+</properties>

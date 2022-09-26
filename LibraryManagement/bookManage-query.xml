@@ -31,7 +31,7 @@
 		</entry>
 	
 	<!--  연체 도서 검색 -->
-	<entry key ="searchOverdue">
+	<entry key = "searchOverdue1">
 		<![CDATA[
 			SELECT REC_NO, BOOK_NO, CALL_NO, BOOK_NAME, USER_NO, USER_NAME,
 			TO_CHAR(LENT_DATE, 'YYYY-MM-DD') LENT_DATE, 
@@ -42,10 +42,18 @@
 			JOIN "USER" USING(USER_NO)
 			WHERE SYSDATE > REC.DUE_DATE
 			AND RETURN_DATE IS NULL
-			ORDER BY REC_NO DESC
 		]]>	
 	</entry>
+
+	<entry key = "searchOverdue2">
+		AND USER_NO = ?
+	</entry>	
 	
+	<entry key = "searchOverdue3">
+			ORDER BY REC_NO DESC
+	</entry>
+	
+	<!-- =========================================================================  -->
 	<!-- 청구기호로 검색 -->
 	<entry key = 'bookInfo'>
 		SELECT CALL_NO, TOPIC_NAME, BOOK_NAME, AUTHOR, PUBLISHER, LOC_NAME, AVAIL_NAME, NVL(TO_CHAR(DUE_DATE, 'YYYY-MM-DD'),'-') DUE_DATE
@@ -62,27 +70,22 @@
 		
 	</entry>
 	
-	<entry key = 'userInfo'>
-		SELECT USER_NO, USER_ID, USER_NAME, IDENTITY_NAME, STATUS_NAME, IDENTITY_LIMIT, 
-			   (SELECT COUNT(*) FROM LENT_RECORD WHERE USER_ID = ? AND REC_FL IS NULL) LENT_NUM,
-			   IDENTITY_LIMIT - (SELECT COUNT(*) FROM LENT_RECORD WHERE USER_ID = ? AND REC_FL IS NULL) AVAIL_NUM
-		FROM "USER"
-		LEFT JOIN "LENT_RECORD" USING(USER_NO)
-		JOIN "IDENTITY" USING(IDENTITY_CODE)
-		JOIN STATUS USING(STATUS_CODE)
-		WHERE USER_ID = ?
-		AND ROWNUM = 1
-	</entry>
-	
 	
 	<!-- 책 반납 -->
 	<entry key = "returnLentRec">
-		UPDATE TB_LENT_RECORD
+		UPDATE LENT_RECORD
 		SET RETURN_DATE = SYSDATE,
 		DUE_DATE = NULL
 		WHERE BOOK_NO = ?
 		AND RETURN_DATE IS NOT NULL
 	</entry>
 	
+	<!-- 책 대출 -->
+	<entry key = "lentBook">
+		INSERT INTO LENT_RECORD(REC_NO, BOOK_NO, USER_NO, DUE_DATE)
+		VALUES(SEQ_REC_NO.NEXTVAL, ?, ?, SYSDATE + 14)
+	</entry>
+	
+	<entry key =
 	
 </properties>

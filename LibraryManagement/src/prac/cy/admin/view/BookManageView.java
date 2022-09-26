@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import prac.cy.admin.model.service.AdminService;
 import prac.cy.admin.model.service.BookManageService;
+import prac.cy.admin.model.service.UserManageService;
 import prac.cy.basic.view.BasicView;
 import prac.cy.library.vo.Book;
 import prac.cy.library.vo.Library;
@@ -16,7 +17,10 @@ public class BookManageView {
 	private Scanner sc = new Scanner(System.in);
 	
 	BasicView basicView = new BasicView();
+	UserManageView UMView = new UserManageView();
+	
 	BookManageService BMService = new BookManageService();
+	UserManageService UMService = new UserManageService();
 	
 	AdminService adminService = new AdminService(); 
 	
@@ -56,10 +60,7 @@ public class BookManageView {
 		
 	}
 	
-	/**
-	 *  1. 도서 검색 서비스 for admin
-	 *  
-	 */
+	// 1. 도서 검색 서비스
 	
 	/**
 	 *  2. 도서 전체 조회 서비스
@@ -84,32 +85,14 @@ public class BookManageView {
 		}
 	}
 	
-	
 	/**
 	 *  3. 연체 도서 조회 서비스
 	 */
 	private void searchOverdue() {
 		try {
-			List<Library> overDueList = BMService.searchOverdue();
+			List<Library> overDueList = BMService.searchOverdue(-1);
 			
-			if(overDueList.isEmpty()) {
-				System.out.println("[알림] 연체중인 도서가 없습니다.");
-			} else {
-				System.out.printf("%-5s|%-7s|%-12s|%-8s|%-8s|%-10s|%-10s|%-10s\n",
-						"번호", "청구기호", "제목", "이용자 번호", "이용자 이름", "대출일", "반납예정일", "반납일");
-				System.out.println("-------------------------------------------------------------------------------------------");
-				for(int i=0; i<overDueList.size(); i++) {
-					System.out.printf("%-5d|%-8s|%-12s|%-9s|%-8s|%-11s|%-11s|%-10s\n",
-							overDueList.get(i).getBookNo(),
-							overDueList.get(i).getCallNo(),
-							overDueList.get(i).getBookName(),
-							overDueList.get(i).getUserNo(),
-							overDueList.get(i).getUserName(),
-							overDueList.get(i).getLentDate(),
-							overDueList.get(i).getDueDate(),
-							overDueList.get(i).getReturnDate());
-				}
-			}
+			printOverdue(overDueList);
 			
 		} catch (Exception e) {
 			System.out.println("\n[알림] 도서를 조회하는 과정에서 문제가 발생했습니다.\n");
@@ -118,14 +101,12 @@ public class BookManageView {
 		}
 	}
 	
+	
 	/**
 	 *  4. 도서 대출 / 반납 서비스
 	 */
 	private void bookLentReturn() {
 		try {
-			// 3. 대출중이 아니었던 책인 경우, 책의 대출가능여부를 확인해서 대출불가시 대출불가 안내함
-			// 4. 대출중이 아니고, 대출도 가능한 책인 경우 회원 아이디를 입력받음
-			// 5. 회원 정보를 불러옴(아이디, 이름, 신분, 대출권수, 대출목록)
 			// 6. 만약 연체중인 책이 있는 경우, 대출 불가 경고 메세지 띄움
 			// 7. 만약 대출가능권수를 초과한 경우, 대출 불가 경고 메세지 띄움
 			// 8. 대출 처리 시 반납기한 띄움
@@ -140,22 +121,10 @@ public class BookManageView {
 			if(!(book.isEmpty())) {
 				printBook(book);
 				String avail = book.get(0).getAvailName(); // 도서 상태를 가져옴
+				
 				switch(avail) {
-				case "대출가능" : // 대출처리
-					// 회원 정보를 조회함 연체중인 도서가 있는지, 도서 한도 넘겼는지 확인함
-					// 회원 정보 입력받기
-					System.out.print("회원 아이디 입력 : ");
-					String userId = sc.next();
-					List<User> user = BMService.userInfo(userId);
-					
-					if(!(user.isEmpty())) {
-						printUser(user);
-						if(user.get(0).getStatusName().equals("정상") && user.get(0).getAvailNum() > 0) {
-							System.out.println("대출처리하시겠습니까?");
-						}
-					}
-					// 회원정보조회
-					// 대출서비스
+				case "대출가능" :
+					bookLent(book.get(0).getBookNo());
 					break;
 				case "대출중" : // 반납처리
 					while(true) {
@@ -174,18 +143,14 @@ public class BookManageView {
 						
 						break;
 					}
-					
-					// confirm 확인하기 y,n,잘못입력
-					// 반납 처리 여부 확인
-					// 책 번호를 전달하고 반납 날짜를 기록
 					break;
-				case "대출불가" : // 대출불가1
+				case "대출불가" :
 					System.out.println("\n[알림] 해당 도서는 대출불가 도서입니다.\n");
 					break;
-				case "분실" : // 대출불가2
+				case "분실" :
 					System.out.println("\n[알림] 해당 도서는 분실처리된 도서입니다.\n");
 					break;
-				case "파손" : // 대출불가3
+				case "파손" :
 					System.out.println("\n[알림] 해당 도서는 파손처리된 도서입니다.\n");
 					break;
 				default : System.out.println("\n[알림] 해당 도서의 도서상태를 확인해주세요.\n");
@@ -200,9 +165,66 @@ public class BookManageView {
 		}
 		
 	}
+	
+	/** 4-1. 대출 처리
+	 * @throws Exception
+	 */
+	private void bookLent(int bookNo) throws Exception {
+		System.out.print("회원 정보 입력(아이디 또는 전화번호) : ");
+		String userInput = sc.next();
+		List<User> user =UMService.userInfo(userInput);
+		
+		if(!(user.isEmpty())) {
+			System.out.println("\n[사용자 정보]");
+			UMView.printDetailUser(user); // 사용자 정보 출력
+			
+			List<Library> overDueList = BMService.searchOverdue(user.get(0).getUserNo());
+			System.out.println("\n[연체 목록]");
+			printOverdue(overDueList);
+			
+			boolean flag = true;
+			
+			if(!(user.get(0).getStatusName().equals("정상"))) System.out.println("\n[알림] 대출 불가 - 사유 : 회원 상태 확인\n"); flag = false;
+			if(!(user.get(0).getAvailNum() > 0)) System.out.println("\n[알림] 대출 불가 - 사유 : 도서 대출 권수 초과\n"); flag = false;
+			if(!(overDueList.isEmpty())) System.out.println("\n[알림] 대출 불가 - 사유 : 연체중인 도서 확인\n"); flag = false;
+			
+			while(flag) {
+				System.out.print("\n대출 처리 하시겠습니까(Y/N)? : ");
+				char confirm = sc.next().toUpperCase().charAt(0);
+				if(confirm != 'Y' && confirm != 'N') { // y/n입력 오류
+					System.out.println("\n[알림]Y 또는 N 만 입력해주세요. \n");
+					continue;
+				}
+				
+				if(confirm == 'Y') { // 대출처리
+					try {
+						int result = BMService.bookLent(user.get(0).getUserNo(), bookNo);
+						
+						if(result > 0) {
+							System.out.println("\n[알림] 대출 처리되었습니다.\n");
+						} else {
+							System.out.println("\n[알림] 대출 처리 중 문제가 발생했습니다. 다시 시도해주세요. \n");
+						}
+					} catch (Exception e) {
+						System.out.println("\n[알림] 대출 처리 중 문제가 발생했습니다.\n");
+						System.out.println("\n      문제가 지속될 경우 담당자에게 문의해주세요.\n");
+						e.printStackTrace();
+					}
+				}
+				
+				if(confirm == 'N') { // 취소
+				System.out.println("\n[알림] 작업이 취소되었습니다. \n");
+				}
+				
+				break;
+				
+			}
+		}
+	}
+	
 
 	/**
-	 *  A. 도서 목록 조회용 
+	 *  A. 도서 목록 출력 
 	 */
 	private void printBook(List<Book> bookList) {
 		System.out.println();
@@ -224,36 +246,34 @@ public class BookManageView {
 		System.out.println();
 	}
 	
-	/** B. 유저 목록 조회용
-	 * @param userList
+	/** B. 연체 도서 출력
+	 * @param overdueList
 	 */
-	private void printUser(List<User> userList) {
-		System.out.println();
-		System.out.printf("%-5s|%-15s|%-6s|%-6s|%-6s|%-6s|%-6s|%-6s\n",
-				"번호","아이디","이름","신분","상태","최대권수","대출권수","잔여권수");
-		System.out.println("----------------------------------------------------------------------------------------------");
-		for(int i=0; i<userList.size(); i++) {
-			System.out.printf("%-5d|%-15s|%-6s|%-6s|%-6s|%-6d|%-6d|%-6d\n",
-					userList.get(i).getUserNo(),
-					userList.get(i).getUserId(),
-					userList.get(i).getUserName(),
-					userList.get(i).getIdentityName(),
-					userList.get(i).getStatusName(),
-					userList.get(i).getIdentityLimit(),
-					userList.get(i).getLentNum(),
-					userList.get(i).getAvailNum());
+	public void printOverdue(List<Library> overdueList) {
+		if(overdueList.isEmpty()) {
+			System.out.println("[알림] 연체중인 도서가 없습니다.");
+		} else {
+			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.printf("%-5s|%-7s|%-12s|%-8s|%-8s|%-10s|%-10s|%-10s\n",
+					"번호", "청구기호", "제목", "이용자 번호", "이용자 이름", "대출일", "반납예정일", "반납일");
+			System.out.println("-------------------------------------------------------------------------------------------");
+			for(int i=0; i<overdueList.size(); i++) {
+				System.out.printf("%-5d|%-8s|%-12s|%-9s|%-8s|%-11s|%-11s|%-10s\n",
+						overdueList.get(i).getBookNo(),
+						overdueList.get(i).getCallNo(),
+						overdueList.get(i).getBookName(),
+						overdueList.get(i).getUserNo(),
+						overdueList.get(i).getUserName(),
+						overdueList.get(i).getLentDate(),
+						overdueList.get(i).getDueDate(),
+						overdueList.get(i).getReturnDate());
+			}
 		}
-		System.out.println();
 	}
-	
 	
 	
 	/**
 	 *  C. 책 1권 조회 서비스(by 청구기호)
-	 */
-	
-	/**
-	 *  D. 회원 1명 조회 서비스(by Id)
 	 */
 	 
 	/** E. 책 1권 반납 서비스
@@ -275,24 +295,5 @@ public class BookManageView {
 		}
 	}
 	
-	/** F. 책 1명 대출 서비스
-	 * @param bookNo
-	 */
-	private void lentBook(int userNo, int bookNo) {
-		try {
-			int result = BMService.lentBook(userNo, bookNo);
-			
-			if(result > 0) {
-				System.out.println("\n[알림] 대출 처리되었습니다.\n");
-			} else {
-				System.out.println("\n[알림] 대출 처리 중 문제가 발생했습니다. 다시 시도해주세요. \n");
-			}
-		} catch (Exception e) {
-			System.out.println("\n[알림] 대출 처리 중 문제가 발생했습니다.\n");
-			System.out.println("\n      문제가 지속될 경우 담당자에게 문의해주세요.\n");
-			e.printStackTrace();
-		}
-	}
-
 	
 }

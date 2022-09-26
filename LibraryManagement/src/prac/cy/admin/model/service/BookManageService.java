@@ -37,10 +37,10 @@ public class BookManageService {
 	 * @return overdueList
 	 * @throws Exception
 	 */
-	public List<Library> searchOverdue() throws Exception {
+	public List<Library> searchOverdue(int userNo) throws Exception {
 		Connection conn = getConnection();
 		
-		List<Library> overdueList = BMDAO.searchOverdue(conn);
+		List<Library> overdueList = BMDAO.searchOverdue(conn, userNo);
 		
 		close(conn);
 		
@@ -88,10 +88,10 @@ public class BookManageService {
 	 * @return
 	 * @throws Exception
 	 */
-	public int lentBook(int userNo, int bookNo) throws Exception {
+	public int bookLent(int userNo, int bookNo) throws Exception {
 		Connection conn = getConnection();
 		
-		int result = BMDAO.lentBook(conn,userNo,bookNo);
+		int result = BMDAO.lentBook(conn, userNo, bookNo);
 		
 		if(result > 0) {
 			commit(conn);

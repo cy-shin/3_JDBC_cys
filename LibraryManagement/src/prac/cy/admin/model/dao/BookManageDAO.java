@@ -80,21 +80,32 @@ public class BookManageDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Library> searchOverdue(Connection conn) throws Exception {
+	public List<Library> searchOverdue(Connection conn, int userNo) throws Exception {
 		List<Library> overdueList = new ArrayList<>();
 		
 		try {
-			String sql = prop.getProperty("searchOverdue");
+			String sql = null;
 			
-			stmt = conn.createStatement();
+			if(userNo > -1) {
+				sql = prop.getProperty("searchOverdue1")
+					  + prop.getProperty("searchOverdue2")
+					  + prop.getProperty("searchOverdue3");
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, userNo);
+			}
+
+			if(userNo == -1) {
+				sql = prop.getProperty("searchOverdue1");
+				pstmt = conn.prepareStatement(sql);
+			}
 			
-			rs = stmt.executeQuery(sql);
+			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
 				int bookNo = rs.getInt("BOOK_NO");
 				String callNo = rs.getString("CALL_NO");
 				String bookName = rs.getString("BOOK_NAME");
-				int userNo = rs.getInt("USER_NO");
+				userNo = rs.getInt("USER_NO");
 				String userName = rs.getString("USER_NAME");
 				String lentDate = rs.getString("LENT_DATE");
 				String dueDate = rs.getString("DUE_DATE");
@@ -186,7 +197,7 @@ public class BookManageDAO {
 		return result;
 	}
 
-	/** 반납처리
+	/** 대출처리
 	 * @param conn
 	 * @param userNo
 	 * @param bookNo
@@ -201,6 +212,8 @@ public class BookManageDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bookNo);
+			pstmt.setInt(2, userNo);
+			
 			result = pstmt.executeUpdate();
 			
 			
