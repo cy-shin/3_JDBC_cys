@@ -30,8 +30,8 @@ private Scanner sc = new Scanner(System.in);
 				System.out.println("\n***** 게시판 기능 *****\n");
 				System.out.println("1.게시판 목록 조회");
 				System.out.println("2.게시판 목록 조회(+ 댓글 기능)");
-				System.out.println("3.게시판 작성");
-				System.out.println("4.게시판 검색");
+				System.out.println("3.게시글 작성");
+				System.out.println("4.게시글 검색");
 				System.out.println("0.로그인 메뉴로 이동");
 				
 				System.out.print("\n메뉴 선택 : ");
@@ -45,8 +45,12 @@ private Scanner sc = new Scanner(System.in);
 				
 				case 2: selectBoard(); break; // 게시글 상세 조회
 				
-				case 3: break;
-				case 4: break;
+				case 3: insertBoard(); break; // 게시글 작성
+				
+				case 4: searchBoard(); break; // 게시글 검색
+				
+				// 게시글 검색 키워드를 입력받음 -> 입력받은 키워드를 Service 메서드로 전달함 -> Dao 메서드로 전달함 -> 
+				
 				case 0: System.out.println("[로그인 메뉴로 이동합니다.]"); break;
 				default : System.out.println("메뉴에 작성된 번호만 입력해주세요. ");
 				}
@@ -144,9 +148,6 @@ private Scanner sc = new Scanner(System.in);
 	            if(board != null) {
 	            	subBoardMenu(board);
 	            }
-	             
-	             
-	             
 				
 			} else {
 				System.out.println("\n검색 결과가 없습니다.\n");
@@ -158,8 +159,6 @@ private Scanner sc = new Scanner(System.in);
 		}
 		
 	}
-	
-	
 	
 	/** 게시글 상세 조회 시 출력되는 서브메뉴
 	 * @param board(상세조회된 게시글 + 작성자 번호 + 댓글 목록)
@@ -288,7 +287,6 @@ private Scanner sc = new Scanner(System.in);
 		}
 	}
 	
-	
 	/** 내용 입력
 	 * @return content
 	 */
@@ -306,7 +304,7 @@ private Scanner sc = new Scanner(System.in);
 			if(input.equals("$exit")) {
 				if(content=="") {
 					System.out.println("내용이 입력되지 않았습니다.");
-					System.out.println("댓글 입력을 취소할까요? (Y/N) ");
+					System.out.println("입력을 취소할까요? (Y/N) ");
 					char yesOrNo = sc.next().toUpperCase().charAt(0);
 					if(yesOrNo=='Y') break; 
 					System.out.print(">");
@@ -323,7 +321,6 @@ private Scanner sc = new Scanner(System.in);
 		}
 		return content;
 	}
-	
 	
 	/** 댓글 수정
 	 * @param commentList
@@ -433,6 +430,83 @@ private Scanner sc = new Scanner(System.in);
 		}
 	}
 	
+	/** 게시글 등록
+	 * 
+	 */
+	private void insertBoard() {
+		try {
+			System.out.println("\n[게시글 등록]\n");
+			
+			System.out.print("제목 : ");
+			String boardTitle = sc.nextLine();
+
+			System.out.print("내용 : ");
+			String boardContent = inputContent();
+			
+			Board board = new Board();
+			board.setBoardTitle(boardTitle);
+			board.setBoardContent(boardContent);
+			board.setMemberNo(MainView.loginMember.getMemberNo());
+			
+			int result = bService.insertBoard(board);
+			// 결과로 0(sql처리 실패 등) 또는 게시글 번호가 반환됨
+			
+			if(result > 0) {
+				System.out.println("\n[게시글이 등록되었습니다.]\n");
+				
+				// 게시글 상세 조회 서비스 호출 후 결과 반환 받기
+				Board b = bService.selectBoard(result, MainView.loginMember.getMemberNo());
+													// 게시글번호(반환받은 결과를 활용), 로그인한 회원의 회원번호
+													//             -> 자신의 글 조회수 증가 X
+				if(b != null) {
+					System.out.printf("글번호: %d | %s"
+							+ "\n------------------------------------------------\n"
+							+ "%s               | 조회 %d"
+							+ "\n------------------------------------------------\n"
+							+ "%s"
+							+ "\n------------------------------------------------\n"
+							+ "%s",
+							b.getBoardNo(),
+							b.getBoardTitle(),
+							b.getCreateDate(),
+							b.getReadCount(),
+							b.getMemberName(),
+							b.getBoardContent());
+					
+					System.out.println(); // 줄 바꿈
+					System.out.println(); // 줄 바꿈
+					System.out.println(); // 줄 바꿈
+					System.out.println(); // 줄 바꿈
+					System.out.println("--------------------------------------------------------");
+					
+					 // 댓글 목록
+		            if(!b.getCommentList().isEmpty()) {
+		               for(Comment c : b.getCommentList()) {
+		                  System.out.printf("댓글번호: %d   작성자: %s  작성일: %s\n%s\n",
+		                        c.getCommentNo(), c.getMemberName(), c.getCreateDate(), c.getCommentContent());
+		                  System.out.println("--------------------------------------------------------");
+		               }
+		            }
+		            
+		            // 댓글 등록, 수정, 삭제
+		            // 수정/삭제 메뉴
+		            if(b != null) {
+		            	subBoardMenu(b);
+		            }
+					
+				} else {
+					System.out.println("\n검색 결과가 없습니다.\n");
+				}
+
+			} else {
+				System.out.println("\n[게시글 작성 실패!]\n");
+			}
+			
+		} catch (Exception e) {
+			System.out.println("\n<<게시글 등록 중 예외 발생>>\n");
+			e.printStackTrace();
+		}
+	}
 	
 	/** 게시글 수정
 	 * @param boardNo
@@ -465,7 +539,6 @@ private Scanner sc = new Scanner(System.in);
 			e.printStackTrace();
 		}
 	}
-	
 	
 	/** 게시글 삭제
 	 * @param boardNo
@@ -500,27 +573,54 @@ private Scanner sc = new Scanner(System.in);
 		return input;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 *  게시글 검색
+	 */
+	private void searchBoard() {
+		try {
+			System.out.println("\n[게시글 검색]\n");
+			
+			System.out.println("1) 제목");
+			System.out.println("2) 내용");
+			System.out.println("3) 제목 + 내용");
+			System.out.println("4) 작성자");
+			
+			System.out.print("검색 조건 선택 : ");
+			int condition = sc.nextInt();
+			sc.nextLine(); // 입력 버퍼에 남아있는 개행문자 제거
+			if(condition >= 1 && condition <= 4) { // 정상 입력 시
+
+				System.out.print("검색어 입력 : ");
+				String query = sc.nextLine();
+				
+				// 검색 서비스 호출 후 결과 반환 받기
+				List<Board> boardList = bService.searchBoard(condition, query);
+				
+				if(boardList.isEmpty()) {
+					System.out.println("\n[검색 결과가 없습니다. ]\n");
+
+				} else {
+					System.out.printf("%-3s|%-25s|%-5s|%-5s|%-10s\n",
+							"번호","제목", "작성자", "조회수", "작성일");
+					System.out.println("-----------------------------------------------------------");
+					for(Board b : boardList) {
+						System.out.printf("% -4d|%-1s[%d]              |%-5s|%-5d |%-10s\n",
+								b.getBoardNo(),
+								b.getBoardTitle(),
+								b.getCommentCount(),
+								b.getMemberName(),
+								b.getReadCount(),
+								b.getCreateDate());
+					}
+				}
+				
+			} else { // 비정상 입력
+				System.out.println("\n[1~4번 사이의 숫자를 입력해주세요]\n");
+			}
+			
+		} catch (Exception e) {
+			System.out.println("\n<<게시글 검색 중 예외 발생>>\n");
+			e.printStackTrace();
+		}
+	}
 }

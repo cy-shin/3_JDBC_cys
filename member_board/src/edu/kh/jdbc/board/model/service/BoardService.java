@@ -75,14 +75,44 @@ public class BoardService {
 			} else {
 				
 			}
-				
 		}
-		
 		
 		close(conn);
 				
 		return board;
 		
+	}
+	
+	/** 게시글 등록
+	 * @param board
+	 * @return
+	 * @throws Exception
+	 */
+	public int insertBoard(Board board) throws Exception {
+		Connection conn = getConnection();
+		
+		// 게시글 번호 생성
+		int boardNo = bDao.nextBoardNo(conn);
+		
+		board.setBoardNo(boardNo);
+
+		int result = bDao.insertBoard(conn, board);
+		
+		
+		if(result > 0) {
+			commit(conn);
+			// 동시에 여러 사람이 게시글을 등록했을 떄,
+			// 현재 게시글 번호를 얻어오기 위해 시퀀스의 CURRVAL 구문을 사용하면 충돌 가능성이 있음
+			// -> 게시글 작성 전, 미리 게시글 번호를 생성하는 방식으로 작성해보자
+			result = boardNo;
+			// INSERT 성공 시 생성된 게시글 번호(boardNo)를 결과로 반환함
+		}
+		else rollback(conn);
+	
+		
+		close(conn);
+				
+		return result;
 	}
 
 	/** 게시글 수정
@@ -107,7 +137,6 @@ public class BoardService {
 				
 		return result;
 	}
-
 	
 	/** 게시글 삭제
 	 * @param boardNo
@@ -130,6 +159,24 @@ public class BoardService {
 				
 		return result;
 	}
+
+	/** 게시글 검색
+	 * @param condition
+	 * @param query
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Board> searchBoard(int condition, String query) throws Exception {
+		Connection conn = getConnection();
+		
+		List<Board> boardList = bDao.searchBoard(conn, condition, query);
+		
+		close(conn);
+				
+		return boardList;
+	}
+
+
 	
 	
 }
