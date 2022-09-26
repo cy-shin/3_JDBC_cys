@@ -33,21 +33,7 @@ public class BookManageService {
 		return bookList; 
 	}
 
-	/** 3. 연체 도서 조회 서비스
-	 * @return overdueList
-	 * @throws Exception
-	 */
-	public List<Library> searchOverdue(int userNo) throws Exception {
-		Connection conn = getConnection();
-		
-		List<Library> overdueList = BMDAO.searchOverdue(conn, userNo);
-		
-		close(conn);
-		
-		return overdueList;
-	}
-
-	/** B. 책 1권 조회 서비스(by 청구기호)
+	/** 3. 상세 정보 조회 서비스
 	 * @param callNo
 	 * @return
 	 * @throws Exception
@@ -61,16 +47,37 @@ public class BookManageService {
 		
 		return bookSingle;
 	}
-
-	/** C. 1권 반납 처리
+	
+	/** 4. 도서 정보 수정
 	 * @param bookNo
-	 * @return result
+	 * @param edit
 	 * @throws Exception
 	 */
-	public int returnBook(int bookNo) throws Exception {
+	public int bookUpdate(int bookNo, int type, String edit) throws Exception  {
 		Connection conn = getConnection();
 		
-		int result = BMDAO.returnBook(conn,bookNo);
+		int result = BMDAO.bookUpdate(conn, bookNo, type, edit);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
+		
+	}
+	
+	/** 4-1. 도서 정보 전체 수정
+	 * @param book
+	 * @return
+	 * @throws Excpetion
+	 */
+	public int bookUpdateAll(Book book) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = BMDAO.bookUpdateAll(conn, book);
 		
 		if(result > 0) {
 			commit(conn);
@@ -81,8 +88,23 @@ public class BookManageService {
 		
 		return result;
 	}
+	
+	
+	/** 5. 연체 도서 조회 서비스
+	 * @return overdueList
+	 * @throws Exception
+	 */
+	public List<Library> searchOverdue(int userNo) throws Exception {
+		Connection conn = getConnection();
+		
+		List<Library> overdueList = BMDAO.searchOverdue(conn, userNo);
+		
+		close(conn);
+		
+		return overdueList;
+	}
 
-	/** D. 1권 대출 처리
+	/** 6-1. 대출 서비스
 	 * @param userNo
 	 * @param bookNo
 	 * @return
@@ -91,7 +113,47 @@ public class BookManageService {
 	public int bookLent(int userNo, int bookNo) throws Exception {
 		Connection conn = getConnection();
 		
-		int result = BMDAO.lentBook(conn, userNo, bookNo);
+		int result = BMDAO.bookLent(conn, userNo, bookNo);
+		
+		if(result >= 2) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
+	}
+	
+	/** 6-2. 반납 서비스
+	 * @param bookNo
+	 * @return result
+	 * @throws Exception
+	 */
+	public int bookReturn(int bookNo) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = BMDAO.bookReturn(conn,bookNo);
+		
+		if(result >= 2) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
+	}
+	
+	/** 7. 신규 도서 등록
+	 * @param book
+	 * @return
+	 * @throws Excpetion
+	 */
+	public int bookAdd(Book book) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = BMDAO.bookAdd(conn, book);
 		
 		if(result > 0) {
 			commit(conn);
@@ -102,8 +164,12 @@ public class BookManageService {
 		
 		return result;
 	}
+	
+	
+	
+	
 
-	/** 이용자 1명 조회
+	/** D. 이용자 1명 조회
 	 * @param userId
 	 * @return user
 	 * @throws Exception
@@ -117,4 +183,35 @@ public class BookManageService {
 		
 		return userSingle;
 	}
+	
+
+	/**
+	 *  기타1: 분류 코드
+	 *  
+	 */
+	public List<Book> topicList() throws Exception {
+		Connection conn = getConnection();
+		
+		List<Book> topicList = BMDAO.topicList(conn);
+		
+		close(conn);
+		
+		return topicList;
+	}
+
+	/**
+	 *  기타2: 위치 코드
+	 */
+	public List<Book> locList() throws Exception {
+		Connection conn = getConnection();
+		
+		List<Book> locList = BMDAO.locList(conn);
+		
+		close(conn);
+		
+		return locList;
+	}
+
+
+	
 }

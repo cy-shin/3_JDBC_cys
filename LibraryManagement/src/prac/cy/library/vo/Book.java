@@ -142,6 +142,18 @@ public class Book {
 		this.dueDate = dueDate;
 	}
 
+	public void setTopicName(String topicName) {
+		this.topicName = topicName;
+	}
+
+	public void setLocName(String locName) {
+		this.locName = locName;
+	}
+
+	public void setAvailName(String availName) {
+		this.availName = availName;
+	}
+
 	
 	
 }

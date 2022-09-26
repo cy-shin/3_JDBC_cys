@@ -14,7 +14,7 @@ public class BasicView {
 	/**
 	 *  A. 키워드로 통합 검색
 	 */
-	public void keywordSearch() {
+	public void searchKeyword() {
 		System.out.println("\n[통합 검색]\n");
 		System.out.print("검색어 입력 : ");
 		String keyword = sc.nextLine();
@@ -22,7 +22,7 @@ public class BasicView {
 		System.out.println("\n검색중...\n");
 		
 		try {
-			List<Book> bookList = basicService.keywordSearch(keyword);
+			List<Book> bookList = basicService.searchKeyword(keyword);
 			
 			if(bookList.isEmpty()) {
 				System.out.println("\n[알림] 검색 결과가 없습니다.\n");

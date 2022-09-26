@@ -47,7 +47,7 @@ public class MainView {
 					sc.nextLine();
 
 					switch(input) {
-					case 1: basicView.keywordSearch(); break;
+					case 1: basicView.searchKeyword(); break;
 					case 2: login(); break;
 					case 3: break;
 					case 0: System.out.println("\n[알림] 서비스를 종료합니다.\n"); break;

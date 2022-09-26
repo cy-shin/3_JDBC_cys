@@ -31,7 +31,7 @@ public class BookManageDAO {
 			e.printStackTrace();
 		}
 	}
-	/* 1. 키워드로 통합 검색 -> Basic
+	/* 1. 도서 검색 서비스 -> Basic
 	 * 
 	 */
 	
@@ -74,8 +74,118 @@ public class BookManageDAO {
 		return bookList;
 	}
 	
+	/** 3. 상세 조회 서비스(by 청구기호)
+	 * @param conn
+	 * @param callNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Book> bookInfo(Connection conn, String callNo) throws Exception {
+		List<Book> bookSingle = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("bookInfo");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, callNo);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				callNo = rs.getString("CALL_NO");
+				String topicName = rs.getString("TOPIC_NAME");
+				String bookName = rs.getString("BOOK_NAME");
+				String author = rs.getString("AUTHOR");
+				String publisher = rs.getString("PUBLISHER");
+				String locName = rs.getString("LOC_NAME");
+				String availName = rs.getString("AVAIL_NAME");
+				String dueDate = rs.getString("DUE_DATE");
+				
+				Book book = new Book();
+				
+				book.setCallNo(callNo);
+				book.setTopic(topicName);
+				book.setBookName(bookName);
+				book.setAuthor(author);
+				book.setPublisher(publisher);
+				book.setLoc(locName);
+				book.setAvail(availName);
+				book.setDueDate(dueDate);
+				
+				bookSingle.add(book);
 
-	/** 3. 연체 도서 조회 서비스
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return bookSingle;
+	}
+	
+	/** 4. 도서 정보 수정
+	 * @param conn
+	 * @param bookNo
+	 * @param type
+	 * @param edit
+	 * @return
+	 * @throws Exception
+	 */
+	public int bookUpdate(Connection conn, int bookNo, int type, String edit) throws Exception {
+		int result = 0;
+		
+		try {
+			String keyName = "bookUpdate" + type;
+			String sql = prop.getProperty(keyName);
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, edit);
+			pstmt.setInt(2, bookNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	/** 4-1. 도서 정보 전체 수정
+	 * @param conn
+	 * @param book
+	 * @return result
+	 * @throws Exception
+	 */
+	public int bookUpdateAll(Connection conn, Book book) throws Exception {
+		int result = 0;
+		try {
+			String sql  = prop.getProperty("bookUpdateAll");
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, book.getCallNo());
+			pstmt.setString(2, book.getTopicCode());
+			pstmt.setString(3, book.getBookName());
+			pstmt.setString(4, book.getAuthor());
+			pstmt.setString(5, book.getPublisher());
+			pstmt.setString(6, book.getLocCode());
+			pstmt.setInt(7, book.getBookNo());
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	/** 5. 연체 도서 조회 서비스
 	 * @param conn
 	 * @return
 	 * @throws Exception
@@ -124,98 +234,31 @@ public class BookManageDAO {
 		return overdueList;
 	}
 
-	/** B. 책 1권 조회 서비스(by 청구기호)
-	 * @param conn
-	 * @param callNo
-	 * @return
-	 */
-	public List<Book> bookInfo(Connection conn, String callNo) throws Exception {
-		List<Book> bookSingle = new ArrayList<>();
-		
-		try {
-			String sql = prop.getProperty("bookInfo");
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, callNo);
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				callNo = rs.getString("CALL_NO");
-				String topicName = rs.getString("TOPIC_NAME");
-				String bookName = rs.getString("BOOK_NAME");
-				String author = rs.getString("AUTHOR");
-				String publisher = rs.getString("PUBLISHER");
-				String locName = rs.getString("LOC_NAME");
-				String availName = rs.getString("AVAIL_NAME");
-				String dueDate = rs.getString("DUE_DATE");
-				
-				Book book = new Book();
-				
-				book.setCallNo(callNo);
-				book.setTopic(topicName);
-				book.setBookName(bookName);
-				book.setAuthor(author);
-				book.setPublisher(publisher);
-				book.setLoc(locName);
-				book.setAvail(availName);
-				book.setDueDate(dueDate);
-				
-				bookSingle.add(book);
-
-			}
-			
-		} finally {
-			close(rs);
-			close(pstmt);
-		}
-		
-		return bookSingle;
-	}
-
-	/** 책 하나 반납처리
-	 * @param conn
-	 * @param bookNo
-	 * @return
-	 * @throws Exception
-	 */
-	public int returnBook(Connection conn, int bookNo) throws Exception {
-		int result = 0;
-	
-		try {
-			String sql = prop.getProperty("returnBook");
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, bookNo);
-			result = pstmt.executeUpdate();
-			
-		} finally {
-			close(rs);
-			close(pstmt);
-		}
-		return result;
-	}
-
-	/** 대출처리
+	/** 6-1. 대출 서비스
 	 * @param conn
 	 * @param userNo
 	 * @param bookNo
 	 * @return result
 	 * @throws Exception
 	 */
-	public int lentBook(Connection conn, int userNo, int bookNo) throws Exception {
+	public int bookLent(Connection conn, int userNo, int bookNo) throws Exception {
 		int result = 0;
 		
 		try {
-			String sql  = prop.getProperty("lentBook");
+			String sql  = prop.getProperty("bookLent");
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bookNo);
 			pstmt.setInt(2, userNo);
 			
-			result = pstmt.executeUpdate();
+			result += pstmt.executeUpdate();
 			
+			sql  = prop.getProperty("updateAvailL");
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bookNo);
+			
+			result += pstmt.executeUpdate();
 			
 		} finally {
 			close(rs);
@@ -223,8 +266,67 @@ public class BookManageDAO {
 		}
 		return result;
 	}
+	
+	/** 6-2. 반납 서비스
+	 * @param conn
+	 * @param bookNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int bookReturn(Connection conn, int bookNo) throws Exception {
+		int result = 0;
+	
+		try {
+			String sql = prop.getProperty("bookReturn");
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bookNo);
+			result += pstmt.executeUpdate();
+			
+			sql  = prop.getProperty("updateAvailY");
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bookNo);
+			
+			result += pstmt.executeUpdate();
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	/** 7. 신간 도서 등록
+	 * @param conn
+	 * @param book
+	 * @return result
+	 * @throws Exception
+	 */
+	public int bookAdd(Connection conn, Book book) throws Exception {
+		int result = 0;
+		try {
+			String sql  = prop.getProperty("bookAdd");
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, book.getCallNo());
+			pstmt.setString(2, book.getTopicCode());
+			pstmt.setString(3, book.getBookName());
+			pstmt.setString(4, book.getAuthor());
+			pstmt.setString(5, book.getPublisher());
+			pstmt.setString(6, book.getLocCode());
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return result;
+	}
+	
 
-	/** 이용자 1명 조회 서비스
+	/** D. 이용자 조회 서비스
 	 * @param conn
 	 * @param userId
 	 * @return
@@ -276,5 +378,61 @@ public class BookManageDAO {
 		
 		return userSingle;
 	}
+	
+	/**
+	 *  기타1: 분류 코드
+	 */
+	public List<Book> topicList(Connection conn) throws Exception {
+		List<Book> topicList = new ArrayList<>();
+		try {
+			String sql = prop.getProperty("topicList");
+			
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				Book topic = new Book();
+				topic.setTopicCode(rs.getString("TOPIC_CODE"));
+				topic.setTopicName(rs.getString("TOPIC_NAME"));
+				
+				topicList.add(topic);
+			}
+			
+		} finally {
+			close(rs);
+			close(stmt);
+		}
+		return topicList;
+	}
+	
+	/**
+	 *  기타2: 위치 코드
+	 */
+	public List<Book> locList(Connection conn) throws Exception {
+		List<Book> locList = new ArrayList<>();
+		try {
+			String sql = prop.getProperty("locList");
+			
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				Book loc = new Book();
+				loc.setLocCode(rs.getString("LOC_CODE"));
+				loc.setLocName(rs.getString("LOC_NAME"));
+				
+				locList.add(loc);
+			}
+			
+		} finally {
+			close(rs);
+			close(stmt);
+		}
+		return locList;
+	}
+
+
 
 }

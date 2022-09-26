@@ -17,10 +17,10 @@ public class BasicService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Book> keywordSearch(String keyword) throws Exception {
+	public List<Book> searchKeyword(String keyword) throws Exception {
 		Connection conn = getConnection();
 		
-		List<Book> bookList = bDao.keywordSearch(conn, keyword);
+		List<Book> bookList = bDao.searchKeyword(conn, keyword);
 		
 		close(conn);
 		

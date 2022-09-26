@@ -35,11 +35,11 @@ public class BasicDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Book> keywordSearch(Connection conn, String keyword) throws Exception {
+	public List<Book> searchKeyword(Connection conn, String keyword) throws Exception {
 		List<Book> bookList = new ArrayList<>();
 		
 		try {
-			String sql = prop.getProperty("keywordSearch");
+			String sql = prop.getProperty("searchKeyword");
 			
 			pstmt = conn.prepareStatement(sql);
 			

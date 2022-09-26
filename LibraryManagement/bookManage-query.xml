@@ -11,11 +11,13 @@
 		JOIN LOCATION USING (LOC_CODE)
 		JOIN AVAILABILITY USING (AVAIL_CODE)
 		JOIN LENT_RECORD USING(BOOK_NO))
-		WHERE BOOK_NAME = ?
-		OR AUTHOR = ?
-		OR PUBLISHER = ?
+		WHERE BOOK_NAME LIKE '%' || ? || '%'
+		OR AUTHOR LIKE '%' || ? || '%'
+		OR PUBLISHER LIKE '%' || ? || '%'
+		ORDER BY BOOK.BOOK_NO DESC
 	</entry>
-	
+<!-- ==============================================================================================================================  -->	
+
 	<!--  전체 검색 -->
 	<entry key ='searchAll'>
 		SELECT BOOK.BOOK_NO, CALL_NO, TOPIC_NAME, BOOK_NAME, AUTHOR, PUBLISHER, LOC_NAME, AVAIL_NAME, NVL(TO_CHAR(DUE_DATE, 'YYYY-MM-DD'), '-') DUE_DATE
@@ -28,8 +30,11 @@
 		OR REC_NO = (SELECT MAX(REC_NO) 
 					 FROM LENT_RECORD SUB
 					 WHERE MAIN.BOOK_NO = SUB.BOOK_NO)
+		ORDER BY BOOK.BOOK_NO DESC
 		</entry>
-	
+		
+<!-- ==============================================================================================================================  -->	
+
 	<!--  연체 도서 검색 -->
 	<entry key = "searchOverdue1">
 		<![CDATA[
@@ -50,10 +55,11 @@
 	</entry>	
 	
 	<entry key = "searchOverdue3">
-			ORDER BY REC_NO DESC
+		ORDER BY REC_NO DESC
 	</entry>
 	
-	<!-- =========================================================================  -->
+<!-- ==============================================================================================================================  -->
+	
 	<!-- 청구기호로 검색 -->
 	<entry key = 'bookInfo'>
 		SELECT CALL_NO, TOPIC_NAME, BOOK_NAME, AUTHOR, PUBLISHER, LOC_NAME, AVAIL_NAME, NVL(TO_CHAR(DUE_DATE, 'YYYY-MM-DD'),'-') DUE_DATE
@@ -70,22 +76,108 @@
 		
 	</entry>
 	
+<!-- ==============================================================================================================================  -->	
 	
 	<!-- 책 반납 -->
-	<entry key = "returnLentRec">
+	<entry key = "bookReturn">
 		UPDATE LENT_RECORD
 		SET RETURN_DATE = SYSDATE,
-		DUE_DATE = NULL
+		DUE_DATE = NULL,
+		REC_FL = 'R'
 		WHERE BOOK_NO = ?
-		AND RETURN_DATE IS NOT NULL
+		AND RETURN_DATE IS NULL
 	</entry>
 	
+	<entry key = "updateAvailY">
+		UPDATE BOOK
+		SET AVAIL_CODE = 'Y'
+		WHERE BOOK_NO = ?
+	</entry>
+	
+<!-- ==============================================================================================================================  -->
+	
 	<!-- 책 대출 -->
-	<entry key = "lentBook">
+	<entry key = "bookLent">
 		INSERT INTO LENT_RECORD(REC_NO, BOOK_NO, USER_NO, DUE_DATE)
 		VALUES(SEQ_REC_NO.NEXTVAL, ?, ?, SYSDATE + 14)
 	</entry>
 	
-	<entry key =
+	<entry key = "updateAvailL">
+		UPDATE BOOK
+		SET AVAIL_CODE = 'L'
+		WHERE BOOK_NO = ?
+	</entry>
+	
+<!-- ==============================================================================================================================  -->
+	
+	<!-- 도서 등록 -->
+	<entry key = "bookAdd">
+		INSERT INTO BOOK
+		VALUES(SEQ_BOOK_NO.NEXTVAL, ?, ?, ?, ?, ?, ?, DEFAULT)
+	</entry>
+
+<!-- ==============================================================================================================================  -->
+
+	<!--  도서 전체 수정 -->
+	<entry key = "bookUpdateAll">
+		UPDATE BOOK SET
+		CALL_NO = ?,
+		TOPIC_CODE = ?,
+		BOOK_NAME = ?,
+		AUTHOR = ?,
+		PUBLISHER = ?,
+		LOC_CODE = ?
+		WHERE BOOK_NO = ?
+	</entry>
+	
+<!-- ==============================================================================================================================  -->	
+	<!-- 정보 수정 세트 -->
+	<entry key = "bookUpdate1">
+		UPDATE BOOK SET CALL_NO = ?
+		WHERE BOOK_NO = ?
+	</entry>
+	
+	<entry key = "bookUpdate2">
+		UPDATE BOOK SET TOPIC_CODE = ?
+		WHERE BOOK_NO = ?
+	</entry>
+	
+	<entry key = "bookUpdate3">
+		UPDATE BOOK SET BOOK_NAME = ?
+		WHERE BOOK_NO = ?
+	</entry>
+	
+	<entry key = "bookUpdate4">
+		UPDATE BOOK SET AUTHOR = ?
+		WHERE BOOK_NO = ?
+	</entry>
+	
+	<entry key = "bookUpdate5">
+		UPDATE BOOK SET PUBLISHER = ?
+		WHERE BOOK_NO = ?
+	</entry>
+	
+	<entry key = "bookUpdate6">
+		UPDATE BOOK SET LOC_CODE = ?
+		WHERE BOOK_NO = ?
+	</entry>
+	
+	<entry key = "bookUpdate7">
+		UPDATE BOOK SET STATUS_CODE = ?
+		WHERE BOOK_NO = ?
+	</entry>
+
+<!-- ==============================================================================================================================  -->
+	
+	<!-- 분류 코드 -->
+	<entry key = "topicList">
+		SELECT * FROM TOPIC
+	</entry>
+	
+	<!-- 위치 코드 -->
+	<entry key = "locList">
+		SELECT * FROM LOCATION
+	</entry>
+	
 	
 </properties>
