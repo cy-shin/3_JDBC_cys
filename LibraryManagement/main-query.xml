@@ -11,4 +11,13 @@
 		AND USER_PW = ?
 	</entry>
 	
+	<entry key = "signUp">
+		INSERT INTO "USER"
+		VALUES(SEQ_USER_NO.NEXTVAL, ?, ?, ?, DEFAULT, ?, ?, DEFAULT)
+	</entry>
+	
+	<entry key = 'duplicateName'>
+		SELECT USER_ID FROM "USER" WHERE USER_ID = ?
+	</entry>
+	
 </properties>

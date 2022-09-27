@@ -1,13 +1,20 @@
 package prac.cy.library.vo;
 
+/**
+ * @author user1
+ *
+ */
 public class User {
 		// TB_USER
 		private int userNo;
 		private String userId;
 		private String userPw;
 		private String userName;
+		private String userPhone;
+		private String userEmail;
 		private String identityCode;
 		private String identityName;
+		private String statusCode;
 		private String statusName;
 		private int identityLimit;
 		private int lentNum;
@@ -50,6 +57,26 @@ public class User {
 			this.userName = userName;
 		}
 
+		public String getUserPhone() {
+			return userPhone;
+		}
+
+
+		public void setUserPhone(String userPhone) {
+			this.userPhone = userPhone;
+		}
+
+
+		public String getUserEmail() {
+			return userEmail;
+		}
+
+
+		public void setUserEmail(String userEmail) {
+			this.userEmail = userEmail;
+		}
+
+
 		public String getIdentityCode() {
 			return identityCode;
 		}
@@ -64,6 +91,17 @@ public class User {
 
 		public void setIdentityName(String identityName) {
 			this.identityName = identityName;
+		}
+
+		
+
+		public String getStatusCode() {
+			return statusCode;
+		}
+
+
+		public void setStatusCode(String statusCode) {
+			this.statusCode = statusCode;
 		}
 
 

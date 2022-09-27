@@ -20,5 +20,4 @@
 		OR PUBLISHER LIKE '%' || ? || '%')
 	</entry>
 	
-
 </properties>

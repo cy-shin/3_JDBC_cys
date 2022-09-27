@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import prac.cy.library.vo.Book;
 import prac.cy.library.vo.User;
 
 public class UserManageDAO {
@@ -84,6 +85,97 @@ public class UserManageDAO {
 		
 		return userSingle;
 
+	}
+	/** 1-1. 전체 조회
+	 * @param conn
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> searchUserAll(Connection conn) throws Exception {
+		List<User> userList = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("searchUserAll");
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				User user = new User();
+				
+				int userNo = rs.getInt("USER_NO");
+				String userName = rs.getString("USER_NAME");
+				String identityName = rs.getString("IDENTITY_NAME");
+				String statusName = rs.getString("STATUS_NAME");
+				
+				user.setUserNo(userNo);
+				user.setUserName(userName);
+				user.setIdentityName(identityName);
+				user.setStatusName(statusName);
+				
+				userList.add(user);
+				
+			}
+			
+		} finally {
+			close(rs);
+			close(stmt);
+		}
+		return userList;
+	}
+	
+	/**
+	 *  기타1: 신분 코드
+	 */
+	public List<User> identityList(Connection conn) throws Exception {
+		List<User> identityList = new ArrayList<>();
+		try {
+			String sql = prop.getProperty("identityList");
+			
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				User iden = new User();
+				iden.setIdentityCode(rs.getString("IDENTITY_CODE"));
+				iden.setIdentityName(rs.getString("IDENTITY_NAME"));
+				
+				identityList.add(iden);
+			}
+			
+		} finally {
+			close(rs);
+			close(stmt);
+		}
+		return identityList;
+	}
+	
+	/**
+	 *  기타2: 상태 코드
+	 */
+	public List<User> statusList(Connection conn) throws Exception {
+		List<User> statusList = new ArrayList<>();
+		try {
+			String sql = prop.getProperty("statusList");
+			
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				User iden = new User();
+				iden.setStatusCode(rs.getString("IDENTITY_CODE"));
+				iden.setStatusName(rs.getString("IDENTITY_NAME"));
+				
+				statusList.add(iden);
+			}
+			
+		} finally {
+			close(rs);
+			close(stmt);
+		}
+		return statusList;
 	}
 
 }

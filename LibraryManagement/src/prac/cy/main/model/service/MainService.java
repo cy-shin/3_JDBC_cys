@@ -30,4 +30,45 @@ public class MainService {
 		return loginUser;
 	}
 
+	/** 3. 회원 가입
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public int signUp(User user) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = dao.signUp(conn, user);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
+	}
+	
+	/** 3-1. 아이디 중복 체크
+	 * @param userId
+	 * @return int
+	 */
+	public int duplicateName(String userId) {
+		Connection conn = getConnection();
+		int result = 0;
+		
+		try {
+			result = dao.duplicateName(conn, userId);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(conn);
+		}
+		
+		return result;
+	}
+
+
 }

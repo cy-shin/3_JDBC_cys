@@ -1,17 +1,12 @@
 package prac.cy.main.model.dao;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
-import prac.cy.library.vo.Library;
 import prac.cy.library.vo.User;
 
 import static prac.cy.common.JDBCTemplate.*;
@@ -74,5 +69,63 @@ public class MainDAO {
 		
 		return loginUser;
 	}
+	
+	/** 3. 회원 가입
+	 * @param conn
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public int signUp(Connection conn, User user) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("signUp");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, user.getUserId());
+			pstmt.setString(2, user.getUserPw());
+			pstmt.setString(3, user.getUserName());
+			pstmt.setString(4, user.getUserPhone());
+			pstmt.setString(5, user.getUserEmail());
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	/** 3.1 아이디 중복 체크
+	 * @param userId
+	 * @return int result
+	 * 	0  : 중복 없음
+	 *  1~ : 중복 있음
+	 * @throws Exception
+	 */
+	public int duplicateName(Connection conn, String userId) throws Exception {
+		int result = 0;
+		
+		try {
+			String sql = prop.getProperty("duplicateName");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result++;
+			}
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return result;
+	}
+
+
 	
 }

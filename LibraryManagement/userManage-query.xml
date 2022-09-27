@@ -18,7 +18,22 @@
 	</entry>
 	
 	
+	<!-- 이용자 전체 조회 -->
+	<entry key ='searchUserAll'>
+		SELECT USER_NO, USER_NAME, IDENTITY_NAME, STATUS_NAME
+		FROM "USER"
+		JOIN "IDENTITY" USING(IDENTITY_CODE)
+		JOIN STATUS USING(STATUS_CODE)
+		WHERE IDENTITY_NAME != '관리자'
+	</entry>
 	
+	<!-- 신분 코드 -->
+	<entry key = "identityList">
+		SELECT * FROM "IDENTITY"
+	</entry>
 	
-	
+	<!-- 상태 코드 -->
+	<entry key = "statusList">
+		SELECT * FROM "IDENTITY"
+	</entry>
 </properties>
