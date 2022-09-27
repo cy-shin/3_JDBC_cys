@@ -337,7 +337,7 @@ public class BookManageView {
 	private void bookLent(int bookNo) throws Exception {
 		System.out.print("회원 정보 입력(아이디 또는 전화번호) : ");
 		String userInput = sc.next();
-		List<User> user =UMService.userInfo(userInput);
+		List<User> user =UMService.oneUser(userInput);
 		
 		if(!(user.isEmpty())) {
 			System.out.println("\n[사용자 정보]");

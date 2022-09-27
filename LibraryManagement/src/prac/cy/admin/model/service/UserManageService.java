@@ -1,7 +1,6 @@
 package prac.cy.admin.model.service;
 
-import static prac.cy.common.JDBCTemplate.close;
-import static prac.cy.common.JDBCTemplate.getConnection;
+import static prac.cy.common.JDBCTemplate.*;
 
 import java.sql.Connection;
 import java.util.List;
@@ -19,31 +18,17 @@ public class UserManageService {
 	 * @return user
 	 * @throws Exception
 	 */
-	public List<User> userInfo(String userInput) throws Exception {
+	public List<User> oneUser(String userInput) throws Exception {
 		Connection conn = getConnection();
 		
-		List<User> userSingle = UMDAO.userInfo(conn, userInput);
+		List<User> userSingle = UMDAO.oneUser(conn, userInput);
 		
 		close(conn);
 		
 		return userSingle;
 	}
-
-	/** 1-1. 이용자 전체 조회
-	 * @return
-	 * @throws Exception
-	 */
-	public List<User> searchUserAll() throws Exception {
-		Connection conn = getConnection();
-				
-		List<User> userList = UMDAO.searchUserAll(conn);
-		
-		close(conn);
-		
-		return userList;
-	}
 	
-	/** 1-2. 사용자 조회
+	/** 1. 사용자 조회
 	 * @param userKeyword
 	 * @param identityName
 	 * @param statusName
@@ -59,6 +44,41 @@ public class UserManageService {
 		close(conn);
 		
 		return userList;
+	}
+	
+	/** sub - 1 : 상세 조회
+	 * @param userNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> searchUserDetail(int userNo) throws Exception {
+		Connection conn = getConnection();
+		
+		List<User> userList = UMDAO.searchUserDetail(conn, userNo);
+		
+		close(conn);
+		
+		return userList;
+	}
+	
+	/**
+	 * @param condition
+	 * @param userNo
+	 * @throws Exception
+	 */
+	public int updateUser(int condition, String edit, int userNo) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = UMDAO.updateUser(conn, condition, edit, userNo);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
 	}
 	
 	/**
@@ -86,6 +106,10 @@ public class UserManageService {
 		
 		return statusList;
 	}
+
+	
+
+
 
 	
 

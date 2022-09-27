@@ -46,24 +46,56 @@
 
 	<!-- 이름 옵션 -->
 	<entry key = 'searchUserOptA'>
-		AND USER_NAME = ?
+		AND USER_NAME LIKE '%' || ? || '%'
+		OR USER_ID = '%' || ? || '%'
 	</entry>
 	
 	<!-- 신분 옵션 -->
 	<entry key = 'searchUserOptB'>
 		AND IDENTITY_NAME = ?
+		OR IDENTITY_CODE = ?
 	</entry>
 
 	<!-- 상태 옵션 -->
 	<entry key = 'searchUserOptC'>
 		AND STATUS_NAME = ?
+		OR STATUS_CODE = ?
 	</entry>
 
 	<!-- 연체 옵션 -->
 	<entry key = 'searchUserOptD'>
 	</entry>
 	
+	<!-- 이용자 상세 조회 -->
+	<entry key = 'searchUserDetail'>
+		SELECT USER_NO, USER_NAME, IDENTITY_NAME, USER_PHONE, USER_EMAIL, STATUS_NAME, IDENTITY_LIMIT,
+		(SELECT COUNT(*) 
+	  	FROM LENT_RECORD SUB
+	  	WHERE SUB.USER_NO = MAIN.USER_NO AND REC_FL IS NULL) LENT_NUM,
+	  	IDENTITY_LIMIT - (SELECT COUNT(*)
+	  					  FROM LENT_RECORD SUB2 
+	  					  WHERE SUB2.USER_NO = MAIN.USER_NO AND REC_FL IS NULL) AVAIL_NUM
+	  	FROM "USER" MAIN
+		JOIN "IDENTITY" USING(IDENTITY_CODE)
+		JOIN STATUS USING(STATUS_CODE)
+		WHERE USER_NO = ?			  
+	</entry>
 	
+	<!-- 이용자 정보 수정 1 -->
+		<entry key = 'updateUserOpt1'>
+			UPDATE "USER" SET STATUS_CODE = ?
+		</entry>
+		
+	<!-- 이용자 정보 수정 2 -->
+		<entry key = 'updateUserOpt2'>
+			UPDATE "USER" SET IDENTITY_CODE = ?
+		</entry>
+		
+	<!-- 이용자 정보 수정 Main -->
+		<entry key = 'updateUser'>
+			WHERE USER_NO = ?
+		</entry>
+		
 	<!-- 신분 코드 -->
 	<entry key = "identityList">
 		SELECT * FROM "IDENTITY"

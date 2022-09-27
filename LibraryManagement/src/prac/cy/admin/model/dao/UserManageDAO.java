@@ -36,7 +36,7 @@ public class UserManageDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<User> userInfo(Connection conn, String userInput) throws Exception {
+	public List<User> oneUser(Connection conn, String userInput) throws Exception {
 		List<User> userSingle = new ArrayList<>();
 		
 		try {
@@ -84,51 +84,8 @@ public class UserManageDAO {
 		return userSingle;
 
 	}
-	/** 1-1. 전체 조회
-	 * @param conn
-	 * @return
-	 * @throws Exception
-	 */
-	public List<User> searchUserAll(Connection conn) throws Exception {
-		List<User> userList = new ArrayList<>();
-		
-		try {
-			String sql = prop.getProperty("searchUserAll");
-			stmt = conn.createStatement();
-			
-			rs = stmt.executeQuery(sql);
-			
-			while(rs.next()) {
-				User user = new User();
-				
-				if(rs.next()) {
-					int userNo = rs.getInt("USER_NO");
-					String userName = rs.getString("USER_NAME");
-					String identityName = rs.getString("IDENTITY_NAME");
-					String statusName = rs.getString("STATUS_NAME");
-					int identityLimit = rs.getInt("IDENTITY_LIMIT");
-					int lentNum = rs.getInt("LENT_NUM");
-					int availNum = rs.getInt("AVAIL_NUM");
-					
-					user.setUserNo(userNo);
-					user.setUserName(userName);
-					user.setIdentityName(identityName);
-					user.setStatusName(statusName);
-					user.setIdentityLimit(identityLimit);
-					user.setLentNum(lentNum);
-					user.setAvailNum(availNum);
-					
-					userList.add(user);
-				}
-			}
-		} finally {
-			close(rs);
-			close(stmt);
-		}
-		return userList;
-	}
 	
-	/** 1-2. 상세 조회
+	/** 1. 이용자 조회
 	 * @param conn
 	 * @return
 	 * @throws Exception
@@ -187,6 +144,97 @@ public class UserManageDAO {
 		return userList;
 	}
 
+	
+	/** sub - 1 : 상세 조회
+	 * @param conn
+	 * @param userNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> searchUserDetail(Connection conn, int userNo) throws Exception {
+		List<User> userList = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("searchUserDetail");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			
+			while(rs.next()) {
+				User user = new User();
+				
+				userNo = rs.getInt("USER_NO");
+				String userName = rs.getString("USER_NAME");
+				String identityName = rs.getString("IDENTITY_NAME");
+				String userPhone = rs.getString("USER_PHONE");
+				String userEmail = rs.getString("USER_EMAIL");
+				String statusName = rs.getString("STATUS_NAME");
+				int identityLimit = rs.getInt("IDENTITY_LIMIT");
+				int lentNum = rs.getInt("LENT_NUM");
+				int availNum = rs.getInt("AVAIL_NUM");
+				
+				user.setUserNo(userNo);
+				user.setUserName(userName);
+				user.setIdentityName(identityName);
+				user.setUserPhone(userPhone);
+				user.setUserEmail(userEmail);
+				user.setStatusName(statusName);
+				user.setIdentityLimit(identityLimit);
+				user.setLentNum(lentNum);
+				user.setAvailNum(availNum);
+				
+				userList.add(user);
+			}
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return userList;
+	}
+	
+	/** 정보 수정
+	 * @param conn
+	 * @param condition
+	 * @param userNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateUser(Connection conn, int condition, String edit, int userNo) throws Exception {
+		int result = 0;
+		String sql = "";
+
+		try {
+
+			if(condition == 1) {
+				sql = prop.getProperty("updateUserOpt1")
+					  + prop.getProperty("updateUser");
+			}
+			
+			if(condition == 2) {
+				sql = prop.getProperty("updateUserOpt2")
+					  + prop.getProperty("updateUser");
+			}
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			pstmt.setString(1, edit);
+			pstmt.setInt(2, userNo);
+			
+			result = pstmt.executeUpdate();
+			
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	
+	
+	
 	/**
 	 *  기타1: 신분 코드
 	 */
@@ -240,7 +288,7 @@ public class UserManageDAO {
 		}
 		return statusList;
 	}
-	
+
 
 }
 
