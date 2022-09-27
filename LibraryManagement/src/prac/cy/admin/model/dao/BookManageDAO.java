@@ -325,6 +325,48 @@ public class BookManageDAO {
 		return result;
 	}
 	
+	/** 특정 이용자의 대출 목록
+	 * @param conn
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Library> searchUserBookList(Connection conn, int userNo) throws Exception {
+		List<Library> lentList = new ArrayList<>();
+		
+		try {
+			String sql = null;
+			
+			sql = prop.getProperty("searchUserBookList");
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, userNo);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				int bookNo = rs.getInt("BOOK_NO");
+				String callNo = rs.getString("CALL_NO");
+				String bookName = rs.getString("BOOK_NAME");
+				userNo = rs.getInt("USER_NO");
+				String userName = rs.getString("USER_NAME");
+				String lentDate = rs.getString("LENT_DATE");
+				String dueDate = rs.getString("DUE_DATE");
+				String returnDate = rs.getString("RETURN_DATE");
+				
+				Library library = new Library(bookNo, callNo, bookName, userNo, userName, lentDate, dueDate, returnDate);
+				
+				lentList.add(library);
+			}
+			
+			
+		} finally {
+			close(rs);
+			close(stmt);
+		}
+		return lentList;
+	}
+	
 
 	/** D. 이용자 조회 서비스
 	 * @param conn

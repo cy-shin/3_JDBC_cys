@@ -168,6 +168,24 @@
 	</entry>
 
 <!-- ==============================================================================================================================  -->
+	<!--  특정 이용자의 대출 목록 -->
+	<entry key = "searchUserBookList">
+		<![CDATA[
+			SELECT REC_NO, BOOK_NO, CALL_NO, BOOK_NAME, USER_NO, USER_NAME,
+			TO_CHAR(LENT_DATE, 'YYYY-MM-DD') LENT_DATE, 
+			TO_CHAR(REC.DUE_DATE, 'YYYY-MM-DD') DUE_DATE,
+			NVL(TO_CHAR(RETURN_DATE, 'YYYY-MM-DD'), '-') RETURN_DATE
+			FROM LENT_RECORD REC
+			JOIN BOOK USING(BOOK_NO)
+			JOIN "USER" USING(USER_NO)
+			WHERE SYSDATE > REC.DUE_DATE
+			AND RETURN_DATE IS NULL
+			AND USER_NO = ?
+		]]>	
+	</entry>
+
+<!-- ==============================================================================================================================  -->
+	
 	
 	<!-- 분류 코드 -->
 	<entry key = "topicList">

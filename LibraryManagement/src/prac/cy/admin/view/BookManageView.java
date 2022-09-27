@@ -564,8 +564,6 @@ public class BookManageView {
 	}
 	
 	
-	
-	
 	/**
 	 *  기타1: 분류 코드
 	 */

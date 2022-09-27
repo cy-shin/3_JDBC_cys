@@ -165,8 +165,19 @@ public class BookManageService {
 		return result;
 	}
 	
-	
-	
+	/** 특정 이용자의 대출 목록 조회
+	 * @return overdueList
+	 * @throws Exception
+	 */
+	public List<Library> searchUserBookList(int userNo) throws Exception {
+		Connection conn = getConnection();
+		
+		List<Library> overdueList = BMDAO.searchUserBookList(conn, userNo);
+		
+		close(conn);
+		
+		return overdueList;
+	}
 	
 
 	/** D. 이용자 1명 조회

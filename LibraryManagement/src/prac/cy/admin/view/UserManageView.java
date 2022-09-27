@@ -3,15 +3,15 @@ package prac.cy.admin.view;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.locks.Condition;
 
+import prac.cy.admin.model.service.BookManageService;
 import prac.cy.admin.model.service.UserManageService;
-import prac.cy.library.vo.Book;
+import prac.cy.library.vo.Library;
 import prac.cy.library.vo.User;
 
 public class UserManageView {
 	UserManageService UMService = new UserManageService();
-	
+	BookManageService BMService = new BookManageService();
 	
 	private Scanner sc = new Scanner(System.in);
 	private int input = -1;
@@ -119,7 +119,6 @@ public class UserManageView {
 			char confirm4 = sc.nextLine().toUpperCase().charAt(0);
 			if(confirm4=='Y') {
 				delayOpt = "1";
-				userKeyword = sc.nextLine();
 			}
 		
 		}
@@ -128,11 +127,11 @@ public class UserManageView {
 		
 		if(userList.isEmpty()) {
 			System.out.println("\n[알림] 검색 결과가 없습니다.\n");
-			searchUserMenu();
+//			searchUserMenu();
 		} else {
 			printUser(userList);
 			searchUserSubMenu();
-			searchUserMenu();
+//			searchUserMenu();
 		}
 		
 	}
@@ -151,7 +150,7 @@ public class UserManageView {
 				
 				switch(input) {
 				case 1: searchUserDetail(); break;
-				case 0: input = -1; break;
+				case 0: break;
 				}
 				
 			} catch (Exception e) {
@@ -177,11 +176,14 @@ public class UserManageView {
 				System.out.println("\n[알림] 검색 결과가 없습니다.\n");
 			} else {
 				printDetailUser(userList);
-				searchUserDetailSubMenu(userList.get(0).getUserNo());
+				userNo = userList.get(0).getUserNo();
+				searchUserDetailSubMenu(userNo);
+				searchUserBookList(userNo);
 			}
 		
 		} catch (Exception e) {
 			System.out.println("\n[알림] 조회 중 오류가 발생했습니다. \n");
+			e.printStackTrace();
 		}
 	}
 	
@@ -224,6 +226,8 @@ public class UserManageView {
 						break;
 					case 2:	
 						identityList();
+						break;
+					case 0 :
 						break;
 					default : 
 						System.out.println("\n[알림] 메뉴에 있는 정보만 수정가능합니다. \n");
@@ -278,9 +282,9 @@ public class UserManageView {
 	public void printDetailUser(List<User> userList) {
 		System.out.println("----------------------------------------------------------------------------");
 		System.out.printf("회원번호 : %-5d| 이름 : %-15s| 신분 : %-6s\n",userList.get(0).getUserNo(), userList.get(0).getUserName(), userList.get(0).getIdentityName() );
-		System.out.printf("이메일 : %-15d| 전화번호 : %-15s\n",userList.get(0).getUserEmail(), userList.get(0).getUserPhone() );
+		System.out.printf("이메일 : %-15s| 전화번호 : %-15s\n",userList.get(0).getUserEmail(), userList.get(0).getUserPhone() );
 		System.out.printf("상태 : %-6s\n", userList.get(0).getStatusName());
-		System.out.printf("최대권수 : %-6s| 현재대출권수 : %-6s| 대출가능권수 : %-6s\n", userList.get(0).getIdentityLimit(), userList.get(0).getLentNum(), userList.get(0).getAvailNum());
+		System.out.printf("최대권수 : %-6d| 현재대출권수 : %-6d| 대출가능권수 : %-6d\n", userList.get(0).getIdentityLimit(), userList.get(0).getLentNum(), userList.get(0).getAvailNum());
 		System.out.println("----------------------------------------------------------------------------");
 	}
 
@@ -357,4 +361,35 @@ public class UserManageView {
 		}
 		System.out.println();
 	}
+	
+	/**
+	 * 	유저 출력 ~
+	 */
+	public void searchUserBookList(int userNo) {
+		try {
+			List<Library> lentList = BMService.searchUserBookList(userNo);
+			printOverdue(lentList);
+		} catch (Exception e) {
+			System.out.println("\n[알림] 유저 조회 중 오류가 발생했습니다. \n");
+			e.printStackTrace();
+		}
+	}
+	public void printOverdue(List<Library> overdueList) {
+		System.out.println("-------------------------------------------------------------------------------------------");
+		System.out.printf("%-5s|%-7s|%-12s|%-8s|%-8s|%-10s|%-10s|%-10s\n",
+				"번호", "청구기호", "제목", "이용자 번호", "이용자 이름", "대출일", "반납예정일", "반납일");
+		System.out.println("-------------------------------------------------------------------------------------------");
+		for(int i=0; i<overdueList.size(); i++) {
+			System.out.printf("%-5d|%-8s|%-12s|%-9s|%-8s|%-11s|%-11s|%-10s\n",
+					overdueList.get(i).getBookNo(),
+					overdueList.get(i).getCallNo(),
+					overdueList.get(i).getBookName(),
+					overdueList.get(i).getUserNo(),
+					overdueList.get(i).getUserName(),
+					overdueList.get(i).getLentDate(),
+					overdueList.get(i).getDueDate(),
+					overdueList.get(i).getReturnDate());
+		}
+	
+}
 }

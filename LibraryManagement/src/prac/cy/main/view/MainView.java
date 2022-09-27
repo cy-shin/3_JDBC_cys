@@ -283,6 +283,7 @@ public class MainView {
 							}
 						} catch (Exception e) {
 							System.out.println("\n[알림] 회원 가입 과정에서 오류가 발생했습니다. \n");
+							e.printStackTrace();
 						}
 						break MainLoop;
 					}

@@ -159,6 +159,8 @@ public class UserManageDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 			
+			pstmt.setInt(1, userNo);
+			
 			rs = pstmt.executeQuery();
 			
 			
