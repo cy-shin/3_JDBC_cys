@@ -43,7 +43,7 @@ public class UserManageService {
 		return userList;
 	}
 	
-	/** 1-2. 상세 조회
+	/** 1-2. 사용자 조회
 	 * @param userKeyword
 	 * @param identityName
 	 * @param statusName
@@ -51,10 +51,10 @@ public class UserManageService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<User> searchUserOpt(String userKeyword, String identityName, String statusName, String delayOpt) throws Exception {
+	public List<User> searchUser(String userKeyword, String identityName, String statusName, String delayOpt) throws Exception {
 		Connection conn = getConnection();
 		
-		List<User> userList = UMDAO.searchUserOpt(conn);
+		List<User> userList = UMDAO.searchUser(conn, userKeyword, identityName, statusName, delayOpt);
 		
 		close(conn);
 		

@@ -16,16 +16,53 @@
 		OR USER_NAME = ?
 		AND ROWNUM = 1
 	</entry>
-	
+
+	<!-- 이용자 정보 검색 -->
+	<entry key = 'userInfo'>
+		SELECT USER_NO, USER_ID, USER_NAME, IDENTITY_NAME, STATUS_NAME, IDENTITY_LIMIT, 
+	  	       (SELECT COUNT(*) FROM LENT_RECORD WHERE (USER_ID = ? OR USER_NAME = ?) AND REC_FL IS NULL) LENT_NUM,
+	  	       IDENTITY_LIMIT - (SELECT COUNT(*) FROM LENT_RECORD WHERE (USER_ID = ? OR USER_NAME = ?) AND REC_FL IS NULL) AVAIL_NUM	
+		FROM "USER"
+		JOIN "IDENTITY" USING(IDENTITY_CODE)
+		JOIN STATUS USING(STATUS_CODE);
+		WHERE USER_ID = ?
+		OR USER_NAME = ?
+	</entry>
 	
 	<!-- 이용자 전체 조회 -->
-	<entry key ='searchUserAll'>
-		SELECT USER_NO, USER_NAME, IDENTITY_NAME, STATUS_NAME
-		FROM "USER"
+	<entry key ='searchUser'>
+		SELECT USER_NO, USER_ID, USER_NAME, IDENTITY_NAME, STATUS_NAME, IDENTITY_LIMIT, 
+	 	(SELECT COUNT(*) 
+	  	FROM LENT_RECORD SUB
+	  	WHERE SUB.USER_NO = MAIN.USER_NO AND REC_FL IS NULL) LENT_NUM,
+	  	IDENTITY_LIMIT - (SELECT COUNT(*)
+	  					  FROM LENT_RECORD SUB2 
+	  					  WHERE SUB2.USER_NO = MAIN.USER_NO AND REC_FL IS NULL) AVAIL_NUM	
+	 	FROM "USER" MAIN
 		JOIN "IDENTITY" USING(IDENTITY_CODE)
 		JOIN STATUS USING(STATUS_CODE)
 		WHERE IDENTITY_NAME != '관리자'
 	</entry>
+
+	<!-- 이름 옵션 -->
+	<entry key = 'searchUserOptA'>
+		AND USER_NAME = ?
+	</entry>
+	
+	<!-- 신분 옵션 -->
+	<entry key = 'searchUserOptB'>
+		AND IDENTITY_NAME = ?
+	</entry>
+
+	<!-- 상태 옵션 -->
+	<entry key = 'searchUserOptC'>
+		AND STATUS_NAME = ?
+	</entry>
+
+	<!-- 연체 옵션 -->
+	<entry key = 'searchUserOptD'>
+	</entry>
+	
 	
 	<!-- 신분 코드 -->
 	<entry key = "identityList">

@@ -30,7 +30,7 @@ public class UserManageView {
 				sc.nextLine();
 				
 				switch(input) {
-				case 1: searchUser(); break;
+				case 1: searchUserMenu(); break;
 				case 2: break;
 				case 3: break;
 				case 9: break;
@@ -51,7 +51,7 @@ public class UserManageView {
 	/**
 	 *  1. 이용자 조회
 	 */
-	private void searchUser() {
+	private void searchUserMenu() {
 		int condition = -1;
 		
 		do {
@@ -65,14 +65,15 @@ public class UserManageView {
 				sc.nextLine();
 				
 				switch(condition) {
-				case 1: searchUserAll(); break;
-				case 2: searchUserOpt(); break;
+				case 1: searchUser(condition); break;
+				case 2: searchUser(condition); break;
 				case 0: break;
 				default : System.out.println("\n[알림] 잘못된 선택입니다.\n");	
 				}
 				
 			} catch (Exception e) {
 				System.out.println("\n[알림] 이용자 조회 중 오류가 발생했습니다. \n");
+				e.printStackTrace();
 			}
 		} while(condition != 0);
 	}
@@ -95,47 +96,54 @@ public class UserManageView {
 		
 	}
 
-	/** 1-2. 상세 조회
+	/** 1-2. 사용자 조회
+	 * @param condition
+	 *   1 : 전체 조회
+	 *   2 : 상세 조회
 	 * @throws Exception
 	 */
-	private void searchUserOpt() throws Exception {
+	private void searchUser(int condition) throws Exception {
 		String userKeyword = "0";
 		String identityName = "0";
 		String statusName = "0";
 		String delayOpt = "0";
 		
-		System.out.println("\n[검색 옵션]\n");
-		System.out.print("이름 또는 아이디 옵션(Y/N) : ");
-		char confirm1 = sc.nextLine().toUpperCase().charAt(0);
-		if(confirm1=='Y') {
-			System.out.print("이름 또는 아이디 입력 : ");
-			userKeyword = sc.nextLine();
+		if(condition == 2) {
+		
+			System.out.println("\n[검색 옵션]\n");
+			System.out.print("이름 또는 아이디 옵션(Y/N) : ");
+			char confirm1 = sc.nextLine().toUpperCase().charAt(0);
+			if(confirm1=='Y') {
+				System.out.print("이름 또는 아이디 입력 : ");
+				userKeyword = sc.nextLine();
+			}
+
+			System.out.print("신분 옵션 사용 (Y/N) : ");
+			char confirm2 = sc.nextLine().toUpperCase().charAt(0);
+			if(confirm2=='Y') {
+				identityList();
+				System.out.print("신분 입력 : ");
+				identityName = sc.nextLine();
+			}
+
+			System.out.print("상태 옵션 사용 (Y/N) : ");
+			char confirm3 = sc.nextLine().toUpperCase().charAt(0);
+			if(confirm3=='Y') {
+				statusList();
+				System.out.print("상태 입력 : ");
+				statusName = sc.nextLine();
+			}
+
+			System.out.print("연체 여부 옵션 사용(Y/N) : ");
+			char confirm4 = sc.nextLine().toUpperCase().charAt(0);
+			if(confirm4=='Y') {
+				delayOpt = "1";
+				userKeyword = sc.nextLine();
+			}
+		
 		}
 		
-		System.out.print("신분 옵션 사용 (Y/N) : ");
-		char confirm2 = sc.nextLine().toUpperCase().charAt(0);
-		if(confirm2=='Y') {
-			identityList();
-			System.out.print("신분 입력 : ");
-			identityName = sc.nextLine();
-		}
-		
-		System.out.print("상태 옵션 사용 (Y/N) : ");
-		char confirm3 = sc.nextLine().toUpperCase().charAt(0);
-		if(confirm3=='Y') {
-			statusList();
-			System.out.print("상태 입력 : ");
-			statusName = sc.nextLine();
-		}
-		
-		System.out.print("연체 여부 옵션 사용(Y/N) : ");
-		char confirm4 = sc.nextLine().toUpperCase().charAt(0);
-		if(confirm4=='Y') {
-			delayOpt = "1";
-			userKeyword = sc.nextLine();
-		}
-		
-		List<User> userList = UMService.searchUserOpt(userKeyword, identityName, statusName, delayOpt);
+		List<User> userList = UMService.searchUser(userKeyword, identityName, statusName, delayOpt);
 		
 		if(userList.isEmpty()) {
 			System.out.println("\n[알림] 검색 결과가 없습니다.\n");
@@ -144,36 +152,18 @@ public class UserManageView {
 		}
 	}
 	
+	
 	/** A. 이용자 리스트 출력
 	 * @param userList
 	 */
 	public void printUser(List<User> userList) {
 		System.out.println();
-		System.out.printf("%-5s|%-6s|%-6s|%-6s\n",
-				"번호","이름","신분","상태");
+		System.out.printf("%-5s|%-6s|%-6s|%-6s|%-6s|%-6s|%-6s\n",
+				"번호","이름","신분","상태","최대권수","대출권수","잔여권수");
 		System.out.println("----------------------------------------------------------------------------------------------");
 		for(int i=0; i<userList.size(); i++) {
-			System.out.printf("%-5d|%-6s|%-6s|%-6s\n",
+			System.out.printf("%-5d|%-6s|%-6s|%-6s|%-6d|%-6d|%-6d\n",
 					userList.get(i).getUserNo(),
-					userList.get(i).getUserName(),
-					userList.get(i).getIdentityName(),
-					userList.get(i).getStatusName());
-		}
-		System.out.println();
-	}
-
-	/** C. 이용자 리스트 출력
-	 * @param userList
-	 */
-	public void printUserOld(List<User> userList) {
-		System.out.println();
-		System.out.printf("%-5s|%-15s|%-6s|%-6s|%-6s|%-6s|%-6s|%-6s\n",
-				"번호","아이디","이름","신분","상태","최대권수","대출권수","잔여권수");
-		System.out.println("----------------------------------------------------------------------------------------------");
-		for(int i=0; i<userList.size(); i++) {
-			System.out.printf("%-5d|%-15s|%-6s|%-6s|%-6s|%-6d|%-6d|%-6d\n",
-					userList.get(i).getUserNo(),
-					userList.get(i).getUserId(),
 					userList.get(i).getUserName(),
 					userList.get(i).getIdentityName(),
 					userList.get(i).getStatusName(),
@@ -231,5 +221,28 @@ public class UserManageView {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	/** C. 이용자 리스트 출력
+	 * @param userList
+	 */
+	public void printUserOld(List<User> userList) {
+		System.out.println();
+		System.out.printf("%-5s|%-15s|%-6s|%-6s|%-6s|%-6s|%-6s|%-6s\n",
+				"번호","아이디","이름","신분","상태","최대권수","대출권수","잔여권수");
+		System.out.println("----------------------------------------------------------------------------------------------");
+		for(int i=0; i<userList.size(); i++) {
+			System.out.printf("%-5d|%-15s|%-6s|%-6s|%-6s|%-6d|%-6d|%-6d\n",
+					userList.get(i).getUserNo(),
+					userList.get(i).getUserId(),
+					userList.get(i).getUserName(),
+					userList.get(i).getIdentityName(),
+					userList.get(i).getStatusName(),
+					userList.get(i).getIdentityLimit(),
+					userList.get(i).getLentNum(),
+					userList.get(i).getAvailNum());
+		}
+		System.out.println();
 	}
 }

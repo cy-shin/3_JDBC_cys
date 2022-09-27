@@ -30,7 +30,7 @@ public class UserManageDAO {
 			e.printStackTrace();
 		}
 	}
-	/** 이용자 1명 조회 서비스
+	/** 이용자 1명 조회 서비스 for BookManager
 	 * @param conn
 	 * @param userId
 	 * @return
@@ -55,7 +55,6 @@ public class UserManageDAO {
 			
 			if(rs.next()) {
 				int userNo = rs.getInt("USER_NO");
-				String userId = rs.getString("USER_ID");
 				String userName = rs.getString("USER_NAME");
 				String identityName = rs.getString("IDENTITY_NAME");
 				String statusName = rs.getString("STATUS_NAME");
@@ -66,7 +65,6 @@ public class UserManageDAO {
 				User user = new User();
 				
 				user.setUserNo(userNo);
-				user.setUserId(userId);
 				user.setUserName(userName);
 				user.setIdentityName(identityName);
 				user.setStatusName(statusName);
@@ -103,20 +101,26 @@ public class UserManageDAO {
 			while(rs.next()) {
 				User user = new User();
 				
-				int userNo = rs.getInt("USER_NO");
-				String userName = rs.getString("USER_NAME");
-				String identityName = rs.getString("IDENTITY_NAME");
-				String statusName = rs.getString("STATUS_NAME");
-				
-				user.setUserNo(userNo);
-				user.setUserName(userName);
-				user.setIdentityName(identityName);
-				user.setStatusName(statusName);
-				
-				userList.add(user);
-				
+				if(rs.next()) {
+					int userNo = rs.getInt("USER_NO");
+					String userName = rs.getString("USER_NAME");
+					String identityName = rs.getString("IDENTITY_NAME");
+					String statusName = rs.getString("STATUS_NAME");
+					int identityLimit = rs.getInt("IDENTITY_LIMIT");
+					int lentNum = rs.getInt("LENT_NUM");
+					int availNum = rs.getInt("AVAIL_NUM");
+					
+					user.setUserNo(userNo);
+					user.setUserName(userName);
+					user.setIdentityName(identityName);
+					user.setStatusName(statusName);
+					user.setIdentityLimit(identityLimit);
+					user.setLentNum(lentNum);
+					user.setAvailNum(availNum);
+					
+					userList.add(user);
+				}
 			}
-			
 		} finally {
 			close(rs);
 			close(stmt);
@@ -124,6 +128,65 @@ public class UserManageDAO {
 		return userList;
 	}
 	
+	/** 1-2. 상세 조회
+	 * @param conn
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> searchUser(Connection conn, String userKeyword, String identityName, String statusName, String delayOpt) throws Exception {
+		List<User> userList = new ArrayList<>();
+		try {
+			String sql = prop.getProperty("searchUser");
+			if(!(userKeyword.equals("0"))) 	sql += prop.getProperty("searchUserOptA");
+			if(!(identityName.equals("0"))) sql += prop.getProperty("searchUserOptB");
+			if(!(statusName.equals("0"))) 	sql += prop.getProperty("searchUserOptC");
+			if(!(delayOpt.equals("0"))) 	sql += prop.getProperty("searchUserOptD");
+			
+			int idx = 0;
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			if(!(userKeyword.equals("0"))) {
+				pstmt.setString(++idx, userKeyword);
+				pstmt.setString(++idx, userKeyword);
+			}
+			
+			if(!(identityName.equals("0"))) pstmt.setString(++idx, identityName);
+			if(!(statusName.equals("0"))) pstmt.setString(++idx, statusName);
+			
+			
+			rs = pstmt.executeQuery();
+			
+			
+			while(rs.next()) {
+				User user = new User();
+				
+				int userNo = rs.getInt("USER_NO");
+				String userName = rs.getString("USER_NAME");
+				identityName = rs.getString("IDENTITY_NAME");
+				statusName = rs.getString("STATUS_NAME");
+				int identityLimit = rs.getInt("IDENTITY_LIMIT");
+				int lentNum = rs.getInt("LENT_NUM");
+				int availNum = rs.getInt("AVAIL_NUM");
+				
+				user.setUserNo(userNo);
+				user.setUserName(userName);
+				user.setIdentityName(identityName);
+				user.setStatusName(statusName);
+				user.setIdentityLimit(identityLimit);
+				user.setLentNum(lentNum);
+				user.setAvailNum(availNum);
+				
+				userList.add(user);
+			}
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return userList;
+	}
+
 	/**
 	 *  기타1: 신분 코드
 	 */
@@ -177,6 +240,7 @@ public class UserManageDAO {
 		}
 		return statusList;
 	}
+	
 
 }
 
