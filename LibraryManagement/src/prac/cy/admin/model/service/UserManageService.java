@@ -13,22 +13,9 @@ public class UserManageService {
 
 	UserManageDAO UMDAO = new UserManageDAO();
 	
-	/** 이용자 1명 조회
-	 * @param userId
-	 * @return user
-	 * @throws Exception
-	 */
-	public List<User> oneUser(String userInput) throws Exception {
-		Connection conn = getConnection();
-		
-		List<User> userSingle = UMDAO.oneUser(conn, userInput);
-		
-		close(conn);
-		
-		return userSingle;
-	}
 	
-	/** 1. 사용자 조회
+	
+	/** 1. 이용자 조회
 	 * @param userKeyword
 	 * @param identityName
 	 * @param statusName
@@ -46,7 +33,7 @@ public class UserManageService {
 		return userList;
 	}
 	
-	/** sub - 1 : 상세 조회
+	/** 2. 상세 조회
 	 * @param userNo
 	 * @return
 	 * @throws Exception
@@ -61,7 +48,7 @@ public class UserManageService {
 		return userList;
 	}
 	
-	/**
+	/** 3. 정보 수정
 	 * @param condition
 	 * @param userNo
 	 * @throws Exception
@@ -107,7 +94,20 @@ public class UserManageService {
 		return statusList;
 	}
 
-	
+	/** 기타3 : 이용자 1명 조회
+	 * @param userId
+	 * @return user
+	 * @throws Exception
+	 */
+	public List<User> oneUser(String userInput) throws Exception {
+		Connection conn = getConnection();
+		
+		List<User> userSingle = UMDAO.oneUser(conn, userInput);
+		
+		close(conn);
+		
+		return userSingle;
+	}
 
 
 

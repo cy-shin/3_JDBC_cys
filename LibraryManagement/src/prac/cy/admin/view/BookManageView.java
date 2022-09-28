@@ -31,7 +31,7 @@ public class BookManageView {
 		do {
 			input = -1;
 			try {
-				System.out.println("-------------------------------------------------------------------------------------------");
+				System.out.print("-------------------------------------------------------------------------------------------");
 				System.out.printf("\n| %-15s| %-5s|\n", "도서 관리 메뉴", myName);
 				System.out.println("----------------------------");
 				System.out.println("1. 도서 검색");
@@ -79,7 +79,9 @@ public class BookManageView {
 		}
 	}
 	
-	// 1. 도서 검색 서비스
+	/**
+	 *  1. 도서 검색 서비스
+	 */
 	private void searchKeyword() {
 		basicView.searchKeyword();
 		BookManageSubMenu();
@@ -148,43 +150,52 @@ public class BookManageView {
 	 *  4. 도서 정보 수정
 	 */
 	private void bookUpdate(int bookNo, String callNo) throws Exception {
-		System.out.println("\n[도서 정보 수정]\n");
-		System.out.println("---------------------");
-		System.out.println("1. 청구기호");
-		System.out.println("2. 분류기호");
-		System.out.println("3. 제목");
-		System.out.println("4. 저자");
-		System.out.println("5. 출판사");
-		System.out.println("6. 위치");
-		System.out.println("7. 상태");
-		System.out.println("8. 전체수정");
-		System.out.println("0. 뒤로가기");
-		System.out.println("---------------------");
-		System.out.print("변경할 정보 선택 : ");
-		int type = sc.nextInt();
-		sc.nextLine();
-		
-		switch(type) {
-		case 1: case 2: case 3: case 4: case 5: case 6: case 7:
-			System.out.print("내용 입력 : ");
-			String edit = sc.nextLine();
-			int result = BMService.bookUpdate(bookNo, type, edit);
-			if(result > 0) {
-				System.out.println("\n[알림] 도서 정보가 수정되었습니다. \n");
-				System.out.println();
-				searchDetail(callNo);
-			} else {
-				System.out.println("\n[알림] 청구기호, 분류코드, 위치코드를 확인해주세요. \n");
-			}
-			break;
-
-		case 8:
-			bookUpdateAll(bookNo);
-
-			break;
+		try {
 			
-		case 0: break;
-		default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+
+			System.out.println("\n[도서 정보 수정]\n");
+			System.out.println("---------------------");
+			System.out.println("1. 청구기호");
+			System.out.println("2. 분류기호");
+			System.out.println("3. 제목");
+			System.out.println("4. 저자");
+			System.out.println("5. 출판사");
+			System.out.println("6. 위치");
+			System.out.println("7. 상태");
+			System.out.println("8. 전체수정");
+			System.out.println("0. 뒤로가기");
+			System.out.println("---------------------");
+			System.out.print("변경할 정보 선택 : ");
+			int type = sc.nextInt();
+			sc.nextLine();
+
+			switch(type) {
+			case 7:
+				availList();
+			case 1: case 2: case 3: case 4: case 5: case 6:
+				System.out.print("내용 입력 : ");
+				String edit = sc.nextLine();
+				int result = BMService.bookUpdate(bookNo, type, edit);
+				if(result > 0) {
+					System.out.println("\n[알림] 도서 정보가 수정되었습니다. \n");
+					System.out.println();
+					searchDetail(callNo);
+				} else {
+					System.out.println("\n[알림] 청구기호, 분류코드, 위치코드를 확인해주세요. \n");
+				}
+				break;
+
+			case 8:
+				bookUpdateAll(bookNo);
+
+				break;
+
+			case 0: break;
+			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+			}
+		} catch (InputMismatchException e) {
+			System.out.println("\n[알림] 메뉴 목록에 있는 숫자만 입력해주세요. \n");
+			sc.nextLine();
 		}
 		
 	}
@@ -335,7 +346,7 @@ public class BookManageView {
 	 * @throws Exception
 	 */
 	private void bookLent(int bookNo) throws Exception {
-		System.out.print("회원 정보 입력(아이디 또는 전화번호) : ");
+		System.out.print("회원 정보 입력(아이디) : ");
 		String userInput = sc.next();
 		List<User> user =UMService.oneUser(userInput);
 		
@@ -356,7 +367,7 @@ public class BookManageView {
 				System.out.println("\n[알림] 대출 불가 - 사유 : 회원 상태 확인\n");
 				flag = false;
 			}
-			if(!(user.get(0).getAvailNum() > 0)) {
+			if((user.get(0).getAvailNum() <= 0)) {
 				System.out.println("\n[알림] 대출 불가 - 사유 : 도서 대출 권수 초과\n"); 
 				flag = false;
 			}
@@ -408,17 +419,18 @@ public class BookManageView {
 					continue;
 				}
 				if(confirm == 'Y') { // 반납처리
-					bookReturn(bookNo);
+					BMService.bookReturn(bookNo);
+					break;
 				}
 				if(confirm == 'N') { // 취소
 				System.out.println("\n[알림] 작업이 취소되었습니다. \n");
+				break;
 				}
 				
-				break;
 			}
 			int result = BMService.bookReturn(bookNo);
 			
-			if(result >= 2) {
+			if(result > 0) {
 				System.out.println("\n[알림] 반납 처리되었습니다.\n");
 			} else {
 				System.out.println("\n[알림] 반납 처리 중 문제가 발생했습니다. 다시 시도해주세요. \n");
@@ -601,6 +613,28 @@ public class BookManageView {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
+	}
+	
+	/**
+	 *  기타3: 상태 코드
+	 */
+	private void availList() {
+		try {
+			List<Book> availList = BMService.availList();
+			System.out.printf("\n%-3s| %s\n", "기호", "상태명");
+			System.out.println("------------");
+			for(Book b : availList) {
+				System.out.printf("%-3s | %s\n",
+						b.getAvailCode(),
+						b.getAvailName());
+			}
+			System.out.println("------------");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
 	}
 	
 }

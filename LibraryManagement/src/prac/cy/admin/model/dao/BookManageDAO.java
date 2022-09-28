@@ -93,6 +93,7 @@ public class BookManageDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
+				int bookNo = rs.getInt("BOOK_NO");
 				callNo = rs.getString("CALL_NO");
 				String topicName = rs.getString("TOPIC_NAME");
 				String bookName = rs.getString("BOOK_NAME");
@@ -104,6 +105,7 @@ public class BookManageDAO {
 				
 				Book book = new Book();
 				
+				book.setBookNo(bookNo);
 				book.setCallNo(callNo);
 				book.setTopic(topicName);
 				book.setBookName(bookName);
@@ -475,6 +477,32 @@ public class BookManageDAO {
 		return locList;
 	}
 
+	/**
+	 *  기타3: 상태 코드
+	 */
+	public List<Book> availList(Connection conn) throws Exception {
+		List<Book> availList = new ArrayList<>();
+		try {
+			String sql = prop.getProperty("availList");
+			
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				Book loc = new Book();
+				loc.setAvailCode(rs.getString("AVAIL_CODE"));
+				loc.setAvailName(rs.getString("AVAIL_NAME"));
+				
+				availList.add(loc);
+			}
+			
+		} finally {
+			close(rs);
+			close(stmt);
+		}
+		return availList;
+	}
 
 
 }

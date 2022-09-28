@@ -3,4 +3,78 @@
 <properties>
 	<comment>user-query.xml file</comment>
 	
+	<!-- 3(1). 내 정보 출력 -->
+	<entry key = "printMyInfo">
+		SELECT USER_NO, USER_NAME, IDENTITY_NAME, USER_PHONE, USER_EMAIL, STATUS_NAME, IDENTITY_LIMIT,
+		(SELECT COUNT(*) 
+	  	FROM LENT_RECORD SUB
+	  	WHERE SUB.USER_NO = MAIN.USER_NO AND REC_FL IS NULL) LENT_NUM,
+	  	IDENTITY_LIMIT - (SELECT COUNT(*)
+	  					  FROM LENT_RECORD SUB2 
+	  					  WHERE SUB2.USER_NO = MAIN.USER_NO AND REC_FL IS NULL) AVAIL_NUM
+	  	FROM "USER" MAIN
+		JOIN "IDENTITY" USING(IDENTITY_CODE)
+		JOIN STATUS USING(STATUS_CODE)
+		WHERE USER_NO = ?
+	</entry>
+	
+	
+	
+	<!-- 3-1. 내 정보 수정 -->
+	<entry key = "updateMyName">
+		UPDATE "USER" SET USER_NAME = ? 
+	</entry>
+
+	<entry key = "updateMyPhone">
+		UPDATE "USER" SET USER_PHONE = ? 
+	</entry>
+
+	<entry key = "updateMyEmail">
+		UPDATE "USER" SET USER_EMAIL = ? 
+	</entry>
+	
+	<entry key = "updateMyAll">
+		UPDATE "USER" SET USER_NAME = ?,
+						  USER_PHONE = ?,
+						  USER_EMAIL = ? 
+	</entry>
+	
+	<entry key = "updateMyInfo">
+		WHERE USER_NO = ?
+	</entry>
+	
+	
+	
+	<!-- 3-2. 내 대출 목록 -->
+	<entry key = "printMyLentList">
+		<![CDATA[
+			SELECT REC_NO, BOOK_NO, CALL_NO, BOOK_NAME, USER_NO, USER_NAME,
+			TO_CHAR(LENT_DATE, 'YYYY-MM-DD') LENT_DATE, 
+			TO_CHAR(REC.DUE_DATE, 'YYYY-MM-DD') DUE_DATE,
+			NVL(TO_CHAR(RETURN_DATE, 'YYYY-MM-DD'), '-') RETURN_DATE
+			FROM LENT_RECORD REC
+			JOIN BOOK USING(BOOK_NO)
+			JOIN "USER" USING(USER_NO)
+			WHERE USER_NO = ?
+		]]>	
+	</entry>
+	
+	
+	
+	
+	<!-- 3-3. 회원 탈퇴 -->
+	<entry key = "deleteMe">
+		UPDATE "USER" SET STATUS_CODE = 'F'
+		WHERE USER_NO = ?
+	</entry>
+	
+	<!-- 3-3. 회원 탈퇴 중 비밀번호 확인 -->
+	<entry key = "pwCheck">
+		SELECT USER_NO
+		FROM "USER"
+		WHERE USER_NO = ?
+		AND USER_PW = ?
+	</entry>
+	
+	
 </properties>

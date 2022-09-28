@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import prac.cy.library.vo.Book;
 import prac.cy.library.vo.User;
 
 public class UserManageDAO {
@@ -21,6 +20,10 @@ public class UserManageDAO {
 	
 	private Properties prop;
 	
+	
+	/** Properties
+	 * 
+	 */
 	public UserManageDAO() {
 		try {
 			prop = new Properties();
@@ -30,60 +33,7 @@ public class UserManageDAO {
 			e.printStackTrace();
 		}
 	}
-	/** 이용자 1명 조회 서비스 for BookManager
-	 * @param conn
-	 * @param userId
-	 * @return
-	 * @throws Exception
-	 */
-	public List<User> oneUser(Connection conn, String userInput) throws Exception {
-		List<User> userSingle = new ArrayList<>();
-		
-		try {
-			String sql = prop.getProperty("userInfo");
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, userInput);
-			pstmt.setString(2, userInput);
-			pstmt.setString(3, userInput);
-			pstmt.setString(4, userInput);
-			pstmt.setString(5, userInput);
-			pstmt.setString(6, userInput);
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				int userNo = rs.getInt("USER_NO");
-				String userName = rs.getString("USER_NAME");
-				String identityName = rs.getString("IDENTITY_NAME");
-				String statusName = rs.getString("STATUS_NAME");
-				int identityLimit = rs.getInt("IDENTITY_LIMIT");
-				int lentNum = rs.getInt("LENT_NUM");
-				int availNum = rs.getInt("AVAIL_NUM");
-				
-				User user = new User();
-				
-				user.setUserNo(userNo);
-				user.setUserName(userName);
-				user.setIdentityName(identityName);
-				user.setStatusName(statusName);
-				user.setIdentityLimit(identityLimit);
-				user.setLentNum(lentNum);
-				user.setAvailNum(availNum);
-				
-				userSingle.add(user);
-
-			}
-			
-		} finally {
-			close(rs);
-			close(pstmt);
-		}
-		
-		return userSingle;
-
-	}
+	
 	
 	/** 1. 이용자 조회
 	 * @param conn
@@ -145,7 +95,7 @@ public class UserManageDAO {
 	}
 
 	
-	/** sub - 1 : 상세 조회
+	/** 2. 상세 조회
 	 * @param conn
 	 * @param userNo
 	 * @return
@@ -196,7 +146,7 @@ public class UserManageDAO {
 		return userList;
 	}
 	
-	/** 정보 수정
+	/** 3. 정보 수정
 	 * @param conn
 	 * @param condition
 	 * @param userNo
@@ -233,8 +183,6 @@ public class UserManageDAO {
 		}
 		return result;
 	}
-	
-	
 	
 	
 	/**
@@ -278,8 +226,8 @@ public class UserManageDAO {
 			
 			while(rs.next()) {
 				User iden = new User();
-				iden.setStatusCode(rs.getString("IDENTITY_CODE"));
-				iden.setStatusName(rs.getString("IDENTITY_NAME"));
+				iden.setStatusCode(rs.getString("STATUS_CODE"));
+				iden.setStatusName(rs.getString("STATUS_NAME"));
 				
 				statusList.add(iden);
 			}
@@ -291,7 +239,63 @@ public class UserManageDAO {
 		return statusList;
 	}
 
+	/** 기타3 : 이용자 1명 조회
+	 * @param conn
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> oneUser(Connection conn, String userInput) throws Exception {
+		List<User> userSingle = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("userInfo");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userInput);
+//			pstmt.setString(2, userInput);
+//			pstmt.setString(3, userInput);
+//			pstmt.setString(4, userInput);
+//			pstmt.setString(5, userInput);
+////			pstmt.setString(6, userInput);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				int userNo = rs.getInt("USER_NO");
+				String userName = rs.getString("USER_NAME");
+				String identityName = rs.getString("IDENTITY_NAME");
+				String statusName = rs.getString("STATUS_NAME");
+				String userPhone = rs.getString("USER_PHONE");
+				String userEmail = rs.getString("USER_EMAIL");
+				int identityLimit = rs.getInt("IDENTITY_LIMIT");
+				int lentNum = rs.getInt("LENT_NUM");
+				int availNum = rs.getInt("AVAIL_NUM");
+				
+				User user = new User();
+				
+				user.setUserNo(userNo);
+				user.setUserName(userName);
+				user.setIdentityName(identityName);
+				user.setStatusName(statusName);
+				user.setUserEmail(userEmail);
+				user.setUserPhone(userPhone);
+				user.setIdentityLimit(identityLimit);
+				user.setLentNum(lentNum);
+				user.setAvailNum(availNum);
+				
+				userSingle.add(user);
 
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return userSingle;
+	}
 }
 
 

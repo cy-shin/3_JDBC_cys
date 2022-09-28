@@ -4,11 +4,12 @@
 	<comment>main-query.xml file</comment>
 	
 	<entry key = 'login'>
-		SELECT USER_ID, USER_NAME, IDENTITY_NAME
+		SELECT USER_NO, USER_ID, USER_NAME, IDENTITY_NAME
 		FROM "USER"
 		JOIN "IDENTITY" USING(IDENTITY_CODE)
 		WHERE USER_ID = ?
 		AND USER_PW = ?
+		AND STATUS_CODE != 'F'
 	</entry>
 	
 	<entry key = "signUp">

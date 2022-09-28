@@ -172,11 +172,11 @@ public class BookManageService {
 	public List<Library> searchUserBookList(int userNo) throws Exception {
 		Connection conn = getConnection();
 		
-		List<Library> overdueList = BMDAO.searchUserBookList(conn, userNo);
+		List<Library> lentList = BMDAO.searchUserBookList(conn, userNo);
 		
 		close(conn);
 		
-		return overdueList;
+		return lentList;
 	}
 	
 
@@ -223,6 +223,18 @@ public class BookManageService {
 		return locList;
 	}
 
+	/**
+	 *  기타3: 상태 코드
+	 */
+	public List<Book> availList() throws Exception {
+		Connection conn = getConnection();
+		
+		List<Book> availList = BMDAO.availList(conn);
+		
+		close(conn);
+		
+		return availList;
+	}
 
 	
 }

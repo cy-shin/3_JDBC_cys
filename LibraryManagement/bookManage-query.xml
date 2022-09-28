@@ -62,7 +62,7 @@
 	
 	<!-- 청구기호로 검색 -->
 	<entry key = 'bookInfo'>
-		SELECT CALL_NO, TOPIC_NAME, BOOK_NAME, AUTHOR, PUBLISHER, LOC_NAME, AVAIL_NAME, NVL(TO_CHAR(DUE_DATE, 'YYYY-MM-DD'),'-') DUE_DATE
+		SELECT BOOK.BOOK_NO, CALL_NO, TOPIC_NAME, BOOK_NAME, AUTHOR, PUBLISHER, LOC_NAME, AVAIL_NAME, NVL(TO_CHAR(DUE_DATE, 'YYYY-MM-DD'),'-') DUE_DATE
 		FROM LENT_RECORD MAIN
 		RIGHT JOIN BOOK BOOK ON (MAIN.BOOK_NO = BOOK.BOOK_NO)
 		JOIN TOPIC USING(TOPIC_CODE)
@@ -163,7 +163,7 @@
 	</entry>
 	
 	<entry key = "bookUpdate7">
-		UPDATE BOOK SET STATUS_CODE = ?
+		UPDATE BOOK SET AVAIL_CODE = ?
 		WHERE BOOK_NO = ?
 	</entry>
 
@@ -197,5 +197,9 @@
 		SELECT * FROM LOCATION
 	</entry>
 	
+	<!-- 상태 코드 -->
+	<entry key = "availList">
+		SELECT * FROM AVAILABILITY
+	</entry>
 	
 </properties>

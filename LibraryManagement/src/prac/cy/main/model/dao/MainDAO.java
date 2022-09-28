@@ -55,12 +55,15 @@ public class MainDAO {
 			if(rs.next()) {
 				loginUser = new User();
 				
+				int userNo = rs.getInt("USER_NO");
 				String userName = rs.getString("USER_NAME");
 				String identityName = rs.getString("IDENTITY_NAME");
 				
+				loginUser.setUserNo(userNo);
 				loginUser.setUserId(userId);
 				loginUser.setUserName(userName);
 				loginUser.setIdentityName(identityName);
+				
 			}
 		} finally {
 			close(rs);

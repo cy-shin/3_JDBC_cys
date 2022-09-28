@@ -23,28 +23,29 @@ public class AdminView {
 	private int input = -1;
 	private Scanner sc = new Scanner(System.in);
 			
-	/**
-	 * 관리자 메뉴
+	/** 관리자 메뉴
+	 * 
 	 */
 	public void adminMenu() {
 		do {
 			try {
 				String myName = MainView.loginUser.getUserName();
 				
+				System.out.print("----------------------------");
 				System.out.printf("\n| %-15s| %-5s|\n", "관리자 메뉴", myName);
 				System.out.println("----------------------------");
-				System.out.println("1. 공지사항");
-				System.out.println("2. 도서 관리");
-				System.out.println("3. 이용자 관리");
+//				System.out.println("1. 공지사항");
+				System.out.println("1. 도서 관리");
+				System.out.println("2. 이용자 관리");
 				System.out.println("0. 로그아웃");
 				System.out.print("\n메뉴 선택 > ");
 				input = sc.nextInt();
 				sc.nextLine();
 				
 				switch(input) {
-				case 1: break;
-				case 2: BMView.BookManageMenu(myName); break;
-				case 3: UMView.userManageMenu(myName); break;
+//				case 1: break;
+				case 1: BMView.BookManageMenu(myName); break;
+				case 2: UMView.userManageMenu(myName); break;
 				case 0:
 					MainView.loginUser = null;
 					MainView.userFlag = false;

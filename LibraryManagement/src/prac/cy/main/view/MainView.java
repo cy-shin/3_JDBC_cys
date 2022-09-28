@@ -57,6 +57,9 @@ public class MainView {
 				if(loginUser != null && userFlag == true) {
 					adminView.adminMenu();
 				}
+				if(loginUser != null && userFlag == false) {
+					userView.userMenu();
+				}
 			} catch (InputMismatchException e) {
 				System.out.println("\n[알림] 메뉴 목록에 있는 숫자만 입력해주세요. \n ");
 				sc.nextLine();
@@ -84,8 +87,8 @@ public class MainView {
 		
 		try {
 		loginUser = mainService.login(userId, userPw);
-		
-		if(loginUser != null) {
+
+		if(loginUser != null ) {
 			if(loginUser.getIdentityName().equals("관리자")) {
 				userFlag = true;
 			}
@@ -96,6 +99,7 @@ public class MainView {
 		} catch (Exception e) {
 			System.out.println("\n[알림] 로그인 중 문제가 발생했습니다.");
 			System.out.println("\n       해당 문제가 지속될 경우 담당자에게 문의해주세요.\n");
+			e.printStackTrace();
 		}
 	}
 	
@@ -276,7 +280,7 @@ public class MainView {
 								System.out.printf("\n%s님, 환영합니다. \n", userName);
 								System.out.print("\n현재 회원님의 신분은 '일반회원'입니다.\n");
 								System.out.print("\n학생 / 교수자 인증을 원하시는 경우\n"
-										+ "로그인 후 [내 정보 수정 - 신분 인증] 메뉴를 이용하시거나\n"
+//										+ "로그인 후 [내 정보 수정 - 신분 인증] 메뉴를 이용하시거나\n"
 										+ "도서관으로 문의해주세요.\n\n");
 							} else {
 								System.out.println("\n[알림] 회원 가입 정보를 확인해주세요. \n");
