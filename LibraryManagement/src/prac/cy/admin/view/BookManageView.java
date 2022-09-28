@@ -14,6 +14,7 @@ import prac.cy.library.vo.User;
 
 public class BookManageView {
 	private int input = -1;
+	private int input2 = -1;
 	private Scanner sc = new Scanner(System.in);
 	
 	BasicView basicView = new BasicView();
@@ -83,8 +84,10 @@ public class BookManageView {
 	 *  1. 도서 검색 서비스
 	 */
 	private void searchKeyword() {
-		basicView.searchKeyword();
-		BookManageSubMenu();
+		int result = basicView.searchKeyword();
+		if(result > 0) {
+			BookManageSubMenu();
+		}
 		
 	}
 	/**
@@ -115,6 +118,7 @@ public class BookManageView {
 	 *  3. 도서 상세 조회 서비스
 	 */
 	private void searchDetail(String callNo) {
+		input2 = -1;
 		if(callNo.equals("-1")) {
 			System.out.print("청구기호 입력 : ");
 			callNo = sc.nextLine();
@@ -128,17 +132,21 @@ public class BookManageView {
 				
 			} else {
 				printBookDetail(book);
-				System.out.println("1. 정보수정");
-				System.out.println("0. 뒤로가기");
-				System.out.print("메뉴 선택 : ");
-				input = sc.nextInt();
-				sc.nextLine();
-				switch(input) {
-				case 1: bookUpdate(book.get(0).getBookNo(), book.get(0).getCallNo()); break;
-				case 0: break;
-				default : System.out.println("\n[알림] 잘못된 선택입니다.\n");	
-				}
+				do {
+					System.out.println("1. 정보수정");
+					System.out.println("0. 뒤로가기");
+					System.out.print("메뉴 선택 : ");
+					input2 = sc.nextInt();
+					sc.nextLine();
+					switch(input2) {
+					case 1: bookUpdate(book.get(0).getBookNo(), book.get(0).getCallNo()); break;
+					case 0: break;
+					default : System.out.println("\n[알림] 잘못된 선택입니다.\n");	
+					}
+				} while(input2 != 0);
 			}
+			
+			
 			
 		} catch (Exception e) {
 			System.out.println("\n[알림] 상세 조회 중 오류가 발생했습니다.\n");
@@ -247,6 +255,9 @@ public class BookManageView {
 						if(result > 0) {
 							System.out.println("\n[알림] 도서가 수정되었습니다. \n");
 							System.out.println();
+							/////////////
+							input2 = 0;
+							//////////////
 							searchDetail(callNo);
 							
 						} else {
@@ -487,13 +498,12 @@ public class BookManageView {
 							searchDetail(callNo);
 							
 						} else {
-							System.out.println("\n[알림] 청구기호, 분류코드, 위치코드를 확인해주세요. \n");
+							System.out.println("\n[알림] 등록 작업 중 문제가 발생했습니다. 다시 시도해주세요. \n");
 						}
 						
 						
 					} catch (Exception e) {
-						System.out.println("\n[알림] 등록 작업 중 문제가 발생했습니다. 다시 시도해주세요. \n");
-						e.printStackTrace();
+						System.out.println("\n[알림] 청구기호, 분류코드, 위치코드를 확인해주세요. \n");
 					}
 					
 					break MainLoop;
@@ -572,6 +582,7 @@ public class BookManageView {
 						overdueList.get(i).getDueDate(),
 						overdueList.get(i).getReturnDate());
 			}
+			System.out.println("-------------------------------------------------------------------------------------------");
 		
 	}
 	

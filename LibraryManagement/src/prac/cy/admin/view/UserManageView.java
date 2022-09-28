@@ -177,13 +177,13 @@ public class UserManageView {
 			List<User> userList = UMService.searchUserDetail(userNo);
 
 
-			if(userList.isEmpty()) {
+			if(userList.isEmpty() || (userList.get(0).getIdentityName().equals("관리자"))) {
 				System.out.println("\n[알림] 검색 결과가 없습니다.\n");
 			} else {
-				printDetailUser(userList);
-				userNo = userList.get(0).getUserNo();
-				searchUserBookList(userNo);
-				searchUserDetailSubMenu(userNo);
+					printDetailUser(userList);
+					userNo = userList.get(0).getUserNo();
+					searchUserBookList(userNo);
+					searchUserDetailSubMenu(userList);
 			}
 		
 		} catch (Exception e) {
@@ -195,7 +195,7 @@ public class UserManageView {
 	/** 2-A. 상세 조회 화면 서브 메뉴
 	 * 
 	 */
-	private void searchUserDetailSubMenu(int userNo) {
+	private void searchUserDetailSubMenu(List<User> userList) {
 		try {
 			do {
 				System.out.println("-------------");
@@ -207,7 +207,7 @@ public class UserManageView {
 				sc.nextLine();
 
 				switch(input) {
-				case 1: updateUser(userNo); break;
+				case 1: updateUser(userList); break;
 				case 0: break;
 				}
 
@@ -224,7 +224,7 @@ public class UserManageView {
 	public void searchUserBookList(int userNo) {
 		try {
 			List<Library> lentList = BMService.searchUserBookList(userNo);
-			printOverdue(lentList);
+			printlentList(lentList);
 		} catch (Exception e) {
 			System.out.println("\n[알림] 유저 조회 중 오류가 발생했습니다.\n");
 			e.printStackTrace();
@@ -235,7 +235,7 @@ public class UserManageView {
 	/** 2-B(1) . 상세 조회 중 특정 이용자의 대출 목록 출력
 	 * @param lentList
 	 */
-	public void printOverdue(List<Library> lentList) {
+	public void printlentList(List<Library> lentList) {
 		System.out.println("-------------------------------------------------------------------------------------------");
 		System.out.printf("%-5s|%-7s|%-12s|%-8s|%-8s|%-10s|%-10s|%-10s\n",
 				"번호", "청구기호", "제목", "이용자 번호", "이용자 이름", "대출일", "반납예정일", "반납일");
@@ -257,7 +257,7 @@ public class UserManageView {
 	/**
 	 *  3. 정보 수정 메뉴
 	 */
-	private void updateUser(int userNo) {
+	private void updateUser(List<User> userList) {
 		int condition = 0;
 		MainLoop : do {
 			try {
@@ -289,10 +289,12 @@ public class UserManageView {
 				System.out.print("수정할 값 입력 : ");
 				String edit = sc.nextLine();
 				try {
-					int result = UMService.updateUser(condition, edit, userNo);
+					int result = UMService.updateUser(condition, edit, userList.get(0).getUserNo());
 					if(result > 0) {
 						System.out.println("\n[알림] 정보가 수정되었습니다. \n");
-						continue MainLoop;
+						userList = UMService.searchUserDetail(userList.get(0).getUserNo());
+						printDetailUser(userList);//
+						break MainLoop;
 					} else {
 						System.out.println("\n[알림] 상태 코드 또는 신분 코드를 확인해주세요.\n");
 					}

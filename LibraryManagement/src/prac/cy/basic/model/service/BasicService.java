@@ -26,4 +26,19 @@ public class BasicService {
 		
 		return bookList;
 	}
+	
+	/** 2. 상세 정보 조회 서비스
+	 * @param callNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Book> searchDetail(String callNo) throws Exception {
+		Connection conn = getConnection();
+		
+		List<Book> bookDetail = bDao.searchDetail(conn, callNo);
+		
+		close(conn);
+		
+		return bookDetail;
+	}
 }

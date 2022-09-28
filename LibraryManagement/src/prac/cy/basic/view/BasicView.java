@@ -14,7 +14,9 @@ public class BasicView {
 	/**
 	 *  A. 키워드로 통합 검색
 	 */
-	public void searchKeyword() {
+	public int searchKeyword() {
+		int result = 0;
+		
 		System.out.println("\n[통합 검색]\n");
 		System.out.print("검색어 입력 : ");
 		String keyword = sc.nextLine();
@@ -28,6 +30,7 @@ public class BasicView {
 				System.out.println("\n[알림] 검색 결과가 없습니다.\n");
 			} else {
 				print(bookList);
+				result = 1;
 				
 			}
 			
@@ -36,10 +39,33 @@ public class BasicView {
 			System.out.println("\n       문제가 지속될 경우 담당자에게 문의해주세요.\n");
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 	
 	/**
-	 *  B. 목록 조회 
+	 *  B. 도서 정보 상세 조회
+	 */
+	public void searchDetail() {
+			System.out.print("청구기호 입력 : ");
+			String callNo = sc.nextLine();
+		
+		try {
+			List<Book> book = basicService.searchDetail(callNo);
+			
+			if(book.isEmpty()) {
+				System.out.println("\n[알림] 검색 결과가 없습니다. \n");
+			} else {
+				printBookDetail(book);
+			}
+		} catch (Exception e) {
+			System.out.println("\n[알림] 상세 조회 중 오류가 발생했습니다.\n");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 *  C. 목록 조회 
 	 */
 	public void print(List<Book> bookList) {
 		System.out.println();
@@ -58,5 +84,24 @@ public class BasicView {
 					bookList.get(i).getDueDate());
 		}
 		System.out.println();
+	}
+	
+	/** D. 상세 정보 출력
+	 *  @param bookList
+	 */
+	private void printBookDetail(List<Book> bookList) {
+		System.out.println("----------------------------------------------------------------------------------------------");
+		System.out.printf("관리번호 : %-13s\n청구기호 : %-13s\n분류 : %-15s\n제목 : %-14s | 저자 : %-10s | "
+				+ "출판사 : %-10s \n위치 : %-14s\n상태 : %-14s\n반납예정일 : %-13s\n",
+					bookList.get(0).getBookNo(),
+					bookList.get(0).getCallNo(),
+					bookList.get(0).getTopicName(),
+					bookList.get(0).getBookName(),
+					bookList.get(0).getAuthor(),
+					bookList.get(0).getPublisher(),
+					bookList.get(0).getLocName(),
+					bookList.get(0).getAvailName(),
+					bookList.get(0).getDueDate());
+		System.out.println("----------------------------------------------------------------------------------------------\n");
 	}
 }

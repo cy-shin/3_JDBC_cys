@@ -336,9 +336,8 @@ public class BookManageDAO {
 		List<Library> lentList = new ArrayList<>();
 		
 		try {
-			String sql = null;
 			
-			sql = prop.getProperty("searchUserBookList");
+			String sql = prop.getProperty("searchUserBookList");
 
 			pstmt = conn.prepareStatement(sql);
 			

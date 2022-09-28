@@ -47,7 +47,7 @@ public class MainView {
 					sc.nextLine();
 
 					switch(input) {
-					case 1: basicView.searchKeyword(); break;
+					case 1: searchKeyword(); break;
 					case 2: login(); break;
 					case 3: signUp(); break;
 					case 0: System.out.println("\n[알림] 서비스를 종료합니다.\n"); break;
@@ -72,6 +72,25 @@ public class MainView {
 	/**
 	 *  1. 도서 검색 서비스 -> Basic
 	 */
+	private void searchKeyword() {
+		int input2 = -1;
+		
+		basicView.searchKeyword();
+		do {
+			System.out.println("-------------------");
+			System.out.println("1. 상세조회");
+			System.out.println("0. 돌아가기");
+			System.out.println("-------------------");
+			System.out.print("메뉴 선택 > ");
+			input2 = sc.nextInt();
+			sc.nextLine();
+			switch(input2) {
+			case 1: basicView.searchDetail(); continue;
+			case 0: break;
+			default : 
+			}
+		} while(input2!=0);
+	}
 	
 	/**
 	 *  2. 로그인

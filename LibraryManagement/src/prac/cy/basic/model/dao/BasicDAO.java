@@ -72,4 +72,57 @@ public class BasicDAO {
 		
 		return bookList;
 	}
+	
+	/** 2. 상세 조회 서비스(by 청구기호)
+	 * @param conn
+	 * @param callNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Book> searchDetail(Connection conn, String callNo) throws Exception {
+		List<Book> bookDetail = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("searchDetail");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, callNo);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				int bookNo = rs.getInt("BOOK_NO");
+				callNo = rs.getString("CALL_NO");
+				String topicName = rs.getString("TOPIC_NAME");
+				String bookName = rs.getString("BOOK_NAME");
+				String author = rs.getString("AUTHOR");
+				String publisher = rs.getString("PUBLISHER");
+				String locName = rs.getString("LOC_NAME");
+				String availName = rs.getString("AVAIL_NAME");
+				String dueDate = rs.getString("DUE_DATE");
+				
+				Book book = new Book();
+				
+				book.setBookNo(bookNo);
+				book.setCallNo(callNo);
+				book.setTopic(topicName);
+				book.setBookName(bookName);
+				book.setAuthor(author);
+				book.setPublisher(publisher);
+				book.setLoc(locName);
+				book.setAvail(availName);
+				book.setDueDate(dueDate);
+				
+				bookDetail.add(book);
+
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return bookDetail;
+	}
 }

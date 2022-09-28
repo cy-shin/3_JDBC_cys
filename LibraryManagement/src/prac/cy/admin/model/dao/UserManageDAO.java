@@ -49,6 +49,8 @@ public class UserManageDAO {
 			if(!(statusName.equals("0"))) 	sql += prop.getProperty("searchUserOptC");
 			if(!(delayOpt.equals("0"))) 	sql += prop.getProperty("searchUserOptD");
 			
+			sql += prop.getProperty("searchUserOrder");
+			
 			int idx = 0;
 			
 			pstmt = conn.prepareStatement(sql);
