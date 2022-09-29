@@ -10,5 +10,8 @@ public class Temp {
 		char nine = '9'; // 57
 		
 		System.out.println((int)nine);
+		
+		int ran = (int)(Math.random() * 90000) + 10000;
+		System.out.println(ran);
 	}
 }

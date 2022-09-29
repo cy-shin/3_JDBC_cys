@@ -3,7 +3,7 @@ package prac.cy.main.view;
 import java.util.Scanner;
 
 import prac.cy.main.model.service.MainService;
-import prac.cy.user.UserView;
+import prac.cy.user.view.UserView;
 
 public class MainView {
 	
@@ -56,6 +56,7 @@ public class MainView {
 			String userId = "";
 			String userPw = "";
 			String userName = "";
+			String userNo = "";
 			
 			System.out.println("\n[회원가입]");
 			System.out.println("--------------");
@@ -81,7 +82,7 @@ public class MainView {
 			userPw = sc.nextLine();
 			System.out.print("비밀번호 확인 : ");
 			String userPw2 = sc.nextLine();
-			if(userPw != userPw2) {
+			if(!(userPw.equals(userPw2))) {
 				System.out.println("비밀번호가 일치하지 않습니다. ");
 				continue LoopPw;
 			}
@@ -106,18 +107,35 @@ public class MainView {
 		
 		System.out.println("\n[입력한 정보 확인]");
 		System.out.println("---------------------");
-		System.out.printf("아이디 : %s", userId);
-		System.out.printf("이름 : %s", userName);
+		System.out.printf("아이디 : %s\n", userId);
+		System.out.printf("이름 : %s\n", userName);
 		
 		LoopYN : while(true) {
 			System.out.print("회원 가입 진행[Y/N] : ");
 			char agree = sc.nextLine().toUpperCase().charAt(0);
 			if(agree == 'Y') {
-					int checkResult = service.checkDuplicate(userName, userId);
-					if(checkResult == 0) {
+					int idNameCheck = service.checkDuplicate(userName, userId);
+					if(idNameCheck == 9) {
 						System.out.println("중복되는 아이디가 있습니다.");
+					} else {
+						while(true) {
+							int temp = (int)(Math.random() * 90000) + 10000;
+							String ran = temp + "";
+							int noCheck = service.makeUserNo(ran);
+							if(noCheck > 0)	{
+								userNo = ran;
+								break;
+							}
+						}
+						int signUpResult = service.signUp(userNo, userName, userPw, userId);
+						
+						if(signUpResult > 0) {
+							System.out.println("\n[알림] 회원가입이 완료되었습니다. \n");
+						} else {
+							System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+							System.out.println("\n[위치] 회원가입 과정 \n");
+						}
 					}
-					int signUpResult = service.signUp(userName, userPw, userId);
 				break;
 			}
 			if(agree == 'N') {

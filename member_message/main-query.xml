@@ -3,26 +3,27 @@
 <properties>
 	<comment>main-query.xml file</comment>
 	
-	<!-- 중복 확인1 -->
-	<entry key = "checkDuplicateId">
-		SELECT USER_ID FROM "USER"
-		WHERE USER_ID = ?
+	<!-- 중복 확인 -->
+	<entry key = 'checkDuplicate'>
+		SELECT USER_FL FROM "USER"
+		WHERE USER_NAME = ? OR USER_ID = ?
 	</entry>
 	
-	<!-- 중복 확인2 -->
-	<entry key = "checkDuplicateName">
-		SELECT USER_NAME FROM "USER"
-		WHERE USER_NAME = ?
+	<!-- 번호 부여 -->
+	<entry key = 'makeUserNo'>
+		SELECT USER_FL FROM "USER"
+		WHERE USER_NO = ?
 	</entry>
+	
 	
 	<!-- 생성1 -->
-	<entry key = "createUser">
-		UPDATE TABLE "USER" VALUES(?, ?, ?, ?, NULL)
+	<entry key = 'createUser'>
+		UPDATE TABLE "USER" VALUES(?, ?, ?, ?, NULL, DEFAULT)
 	</entry>
 	
 	
 	<!-- 생성2 -->
-	<entry key ="createBoxSend">
+	<entry key ='createBoxSend'>
 		CREATE TABLE ? (
 			NO NUMBER PRIMARY KEY,
 			USER_NAME VARCHAR2(30),
@@ -32,7 +33,7 @@
 	
 
 	<!-- 생성3 -->
-	<entry key ="createBoxReceived">
+	<entry key ='createBoxReceived'>
 		CREATE TABLE ? (
 			NO NUMBER PRIMARY KEY,
 			USER_NAME VARCHAR2(30),
@@ -41,7 +42,7 @@
 	</entry>
 
 	<!-- 생성4 -->
-	<entry key = "createFriend">
+	<entry key = 'createFriend'>
 		CREATE TABLE ? (
 			NO NUMBER PRIMARY KEY,
 			USER_NO VARCHAR2(10) REFERENCES "USER",

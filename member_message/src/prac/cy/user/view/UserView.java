@@ -1,4 +1,4 @@
-package prac.cy.user;
+package prac.cy.user.view;
 
 public class UserView {
 
