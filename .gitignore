@@ -139,3 +139,4 @@ member_board/driver.xml
 JDBC2/driver.xml
 BookPractice/src/driver.xml
 LibraryManagement/driver.xml
+member_message/driver.xml
