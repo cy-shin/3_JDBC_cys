@@ -53,7 +53,7 @@ public class MainService {
 		return idNameCheck;
 	}
 
-	/** 2. 유저 번호 부여
+	/** 2. 유저 번호 중복 체크
 	 * @param ran
 	 * @return
 	 *    0  : 중복
@@ -63,10 +63,8 @@ public class MainService {
 	public int makeUserNo(String ran) throws Exception {
 		Connection conn = getConnection();
 		
-		int noCheck1 = dao.makeUserNo(conn, ran); 
-		int noCheck2 = dao.createBoxSend(conn, ran); 
+		int noCheck = dao.makeUserNo(conn, ran); 
 		
-		int noCheck = noCheck1 + noCheck2;
 		close(conn);
 		
 		return noCheck;

@@ -60,7 +60,6 @@ public class MainView {
 			
 			System.out.println("\n[회원가입]");
 			System.out.println("--------------");
-			
 		LoopId : while(true) { // 아이디 작성
 				boolean flag = true;
 				System.out.print("아이디 : ");
@@ -113,13 +112,14 @@ public class MainView {
 		LoopYN : while(true) {
 			System.out.print("회원 가입 진행[Y/N] : ");
 			char agree = sc.nextLine().toUpperCase().charAt(0);
+			System.out.println("---------------------");
 			if(agree == 'Y') {
 					int idNameCheck = service.checkDuplicate(userName, userId);
-					if(idNameCheck == 9) {
-						System.out.println("중복되는 아이디가 있습니다.");
+					if(idNameCheck == 0) {
+						System.out.println("중복되는 아이디 또는 이름이 있습니다.");
 					} else {
 						while(true) {
-							int temp = (int)(Math.random() * 90000) + 10000;
+							int temp = (int)(Math.random() * 9000000) + 1000000;
 							String ran = temp + "";
 							int noCheck = service.makeUserNo(ran);
 							if(noCheck > 0)	{

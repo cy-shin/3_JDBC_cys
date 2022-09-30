@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import prac.cy.temp.Temp;
@@ -66,33 +68,6 @@ public class MainDAO {
 		return signUpResult;
 	}
 	
-	/** userNo + "S"
-	 * @param conn
-	 * @param userName
-	 * @param userPw
-	 * @param userId
-	 * @return signUpResult
-	 *    0   :  중복
-	 *    1   :  성공
-	 * @throws Exception
-	 */
-	public int createBoxSend(Connection conn, String userNo) throws Exception {
-		int boxSendResult = 0;
-		try {
-			String sql = prop.getProperty("createBoxSend");
-			
-			String temp = "S" + userNo;
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, temp);
-			
-			boxSendResult = pstmt.executeUpdate();
-		} finally {
-			close(pstmt);
-		}
-		return boxSendResult;
-	}
-	
 	
 
 	/** 2. 회원가입 전 아이디 / 이름 중복 체크
@@ -106,19 +81,27 @@ public class MainDAO {
 	 */
 	public int checkDuplicate(Connection conn, String userName, String userId) throws Exception {
 		int idNameCheck = 0;
+		List<User> tempList = new ArrayList<>();
 		
 		try {
 			String sql = prop.getProperty("checkDuplicate");
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, userName);
-			pstmt.setString(2, userId);
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userName);
 			
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				idNameCheck++;
+				User temp = new User();
+				temp.setUserFl(rs.getString("USER_FL"));
+				
+				tempList.add(temp);
+				
+			}
+			if(tempList.isEmpty()) {
+				idNameCheck = 1;
 			}
 			
 		} finally {
@@ -137,8 +120,8 @@ public class MainDAO {
 	 * @throws Exception
 	 */
 	public int makeUserNo(Connection conn, String ran) throws Exception {
-		int noCheck = 1;
-		User temp = new User();
+		int noCheck = 0;
+		List<User> tempList = new ArrayList<>();
 		
 		try {
 			String sql = prop.getProperty("makeUserNo");
@@ -150,12 +133,16 @@ public class MainDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
+				User temp = new User();
 				temp.setUserFl(rs.getString("USER_FL"));
+				
+				tempList.add(temp);
+				
+			}
+			if(tempList.isEmpty()) {
+				noCheck = 1;
 			}
 			
-			if(temp != null) {
-				noCheck = -1;
-			}
 		} finally {
 			close(rs);
 			close(pstmt);

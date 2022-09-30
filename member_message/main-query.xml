@@ -3,53 +3,26 @@
 <properties>
 	<comment>main-query.xml file</comment>
 	
-	<!-- 중복 확인 -->
+	<!-- 이름/아이디 중복 확인 -->
 	<entry key = 'checkDuplicate'>
 		SELECT USER_FL FROM "USER"
-		WHERE USER_NAME = ? OR USER_ID = ?
+		WHERE USER_ID = ? OR USER_NAME = ? 
 	</entry>
 	
-	<!-- 번호 부여 -->
+	<!-- 번호 중복 확인 -->
 	<entry key = 'makeUserNo'>
 		SELECT USER_FL FROM "USER"
-		WHERE USER_NO = ?
+		WHERE USER_NO = ? 
 	</entry>
 	
 	
-	<!-- 생성1 -->
-	<entry key = 'createUser'>
-		UPDATE TABLE "USER" VALUES(?, ?, ?, ?, NULL, DEFAULT)
+	<!-- 계정 생성 -->
+	<entry key = "createUser">
+		INSERT INTO "USER"(USER_NO, USER_ID, USER_PW, USER_NAME) 
+		VALUES(?, ?, ?, ?)
 	</entry>
 	
 	
-	<!-- 생성2 -->
-	<entry key ='createBoxSend'>
-		CREATE TABLE ? (
-			NO NUMBER PRIMARY KEY,
-			USER_NAME VARCHAR2(30),
-			CONTENT VARCHAR2(4000)
-		)
-	</entry>
-	
-
-	<!-- 생성3 -->
-	<entry key ='createBoxReceived'>
-		CREATE TABLE ? (
-			NO NUMBER PRIMARY KEY,
-			USER_NAME VARCHAR2(30),
-			CONTENT VARCHAR2(4000)
-		)
-	</entry>
-
-	<!-- 생성4 -->
-	<entry key = 'createFriend'>
-		CREATE TABLE ? (
-			NO NUMBER PRIMARY KEY,
-			USER_NO VARCHAR2(10) REFERENCES "USER",
-			USER_NAME VARCHAR2(30) REFERENCES "USER"(USER_NAME),
-			USER_NICKNAME VARCHAR2(30)
-		)
-	</entry>
 	
 	
 
