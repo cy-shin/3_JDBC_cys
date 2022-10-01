@@ -4,12 +4,14 @@ import java.util.Scanner;
 
 import prac.cy.main.model.service.MainService;
 import prac.cy.user.view.UserView;
+import prac.cy.user.vo.User;
 
 public class MainView {
 	
 	MainService service = new MainService();
 	UserView view = new UserView();
 	
+	private User loginUser;
 	private Scanner sc = new Scanner(System.in);
 	private int input = -1;
 	
@@ -45,7 +47,34 @@ public class MainView {
 	 *  Main 1. 로그인
 	 */
 	private void login() {
-		System.out.println("없음");
+		try {
+			String userId;
+			String userPw;
+			LoopLogin : while(true) {
+				System.out.println("\n[로그인]");
+				System.out.println("아이디 : ");
+				userId = sc.nextLine();
+				
+				System.out.println("비밀번호 : ");
+				userPw = sc.nextLine();
+				
+				User user = service.login(userId, userPw);
+				
+				if(user!=null) {
+					loginUser.setUserId(user.getUserId());
+					loginUser.setUserPw(user.getUserPw());
+					System.out.printf("%s님, 환영합니다.", user.getUserPw());
+					break;
+				}
+				if(user==null) {
+					System.out.println("\n[알림] 아이디 또는 비밀번호가 일치하지 않습니다. \n");
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

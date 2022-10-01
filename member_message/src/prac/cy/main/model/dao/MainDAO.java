@@ -38,6 +38,29 @@ public class MainDAO {
 		}
 	}	
 	
+	
+	public User login(Connection conn, String userId, String userPw)) {
+		User user = null;
+		try {
+			String sql = prop.getProperty("login");
+			
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userPw);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				String userNo = rs.getString("USER_NO");
+				String userId = rs.getString("USER_ID");
+				
+				
+			}
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+	}
+	
 	/** 2. 회원가입
 	 * @param conn
 	 * @param userName

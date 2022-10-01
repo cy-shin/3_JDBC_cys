@@ -4,11 +4,23 @@ import static prac.cy.common.JDBCTemplate.*;
 
 import java.sql.Connection;
 
+import oracle.jdbc.OracleConnectionStringBuilder.ConnectInfo;
 import prac.cy.main.model.dao.MainDAO;
+import prac.cy.user.vo.User;
 
 public class MainService {
 
 	MainDAO dao = new MainDAO();
+	
+	public User login(String userId, String userPw) throws Exception {
+		Connection conn = getConnection();
+		
+		User user = dao.login(conn, userId, userPw);
+		
+		close(conn);
+		
+		return user;
+	}
 	
 	/** 2. 회원가입
 	 * @param userName
