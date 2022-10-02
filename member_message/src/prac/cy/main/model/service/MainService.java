@@ -12,6 +12,12 @@ public class MainService {
 
 	MainDAO dao = new MainDAO();
 	
+	/** 1. 로그인
+	 * @param userId
+	 * @param userPw
+	 * @return user
+	 * @throws Exception
+	 */
 	public User login(String userId, String userPw) throws Exception {
 		Connection conn = getConnection();
 		
@@ -20,6 +26,18 @@ public class MainService {
 		close(conn);
 		
 		return user;
+	}
+	
+	public void loginDate(String userNo) throws Exception {
+		Connection conn = getConnection();
+		
+		int result = dao.loginDate(conn, userNo);
+		
+		if(result > 0)  commit(conn);
+		if(result <= 0) rollback(conn);
+		
+		close(conn);
+		
 	}
 	
 	/** 2. 회원가입

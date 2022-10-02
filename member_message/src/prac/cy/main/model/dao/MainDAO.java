@@ -39,10 +39,21 @@ public class MainDAO {
 	}	
 	
 	
-	public User login(Connection conn, String userId, String userPw)) {
+	/** 1. 로그인
+	 * @param conn
+	 * @param userId
+	 * @param userPw
+	 * @return user
+	 * @throws Exception
+	 */
+	public User login(Connection conn, String userId, String userPw) throws Exception {
 		User user = null;
+//		User user = new User(); user 객체를 생성한 후, user 객체를 참조변수 user에 저장함
+//								이러면 참조변수 user 내의 멤버변수들이 null일 뿐 참조변수 user 자체는 null이 아님!
 		try {
 			String sql = prop.getProperty("login");
+			
+			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, userId);
 			pstmt.setString(2, userPw);
@@ -50,15 +61,43 @@ public class MainDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
+				user = new User();
+				
 				String userNo = rs.getString("USER_NO");
-				String userId = rs.getString("USER_ID");
+				String userName = rs.getString("USER_NAME");
 				
-				
+				user.setUserId(userNo); // 유저 번호
+				user.setUserId(userId); // 유저 아이디
+				user.setUserName(userName); // 유저 이름
 			}
+			
 		} finally {
 			close(rs);
 			close(pstmt);
 		}
+		return user;
+	}
+	
+	/** 1. 로그인시간 업데이트
+	 * @param conn
+	 * @param userNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int loginDate(Connection conn, String userNo) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("loginDate");
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,userNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
 	}
 	
 	/** 2. 회원가입

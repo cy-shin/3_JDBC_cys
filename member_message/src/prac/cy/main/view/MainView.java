@@ -21,21 +21,25 @@ public class MainView {
 	public void mainMenu() {
 		try {
 			do {
-				
-				System.out.println("-----------");
-				System.out.println("1. 로그인");
-				System.out.println("2. 회원가입");
-				System.out.println("0. 종료");
-				System.out.println("-----------");
-				System.out.print("선택 > ");
-				input = sc.nextInt();
-				sc.nextLine();
-				
-				switch(input) {
-				case 1: login(); break;
-				case 2: signUp(); break;
-				case 0: System.out.println("\n[알림] 종료합니다.\n");break;
-				default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+				if(loginUser==null) {
+					System.out.println("-----------");
+					System.out.println("1. 로그인");
+					System.out.println("2. 회원가입");
+					System.out.println("0. 종료");
+					System.out.println("-----------");
+					System.out.print("선택 > ");
+					input = sc.nextInt();
+					sc.nextLine();
+					
+					switch(input) {
+					case 1: login(); break;
+					case 2: signUp(); break;
+					case 0: System.out.println("\n[알림] 종료합니다.\n");break;
+					default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+					}
+				}
+				if(loginUser!=null) {
+					view.userMenu();
 				}
 			} while (input != 0);
 		} catch (Exception e) {
@@ -47,32 +51,43 @@ public class MainView {
 	 *  Main 1. 로그인
 	 */
 	private void login() {
+		boolean flag = true;
 		try {
 			String userId;
 			String userPw;
-			LoopLogin : while(true) {
+			while(flag) { // LoopLogin
 				System.out.println("\n[로그인]");
-				System.out.println("아이디 : ");
+				System.out.print("아이디 : ");
 				userId = sc.nextLine();
 				
-				System.out.println("비밀번호 : ");
+				System.out.print("비밀번호 : ");
 				userPw = sc.nextLine();
 				
-				User user = service.login(userId, userPw);
-				
+				User user = service.login(userId, userPw); // 유저 정보를 얻어옴
+			
+			
 				if(user!=null) {
-					loginUser.setUserId(user.getUserId());
-					loginUser.setUserPw(user.getUserPw());
-					System.out.printf("%s님, 환영합니다.", user.getUserPw());
-					break;
+					service.loginDate(user.getUserNo()); // 유저 시간 업데이트
+					loginUser = new User();
+					
+					loginUser.setUserNo(user.getUserNo());
+					loginUser.setUserName(user.getUserName());
+					System.out.printf("%s님, 환영합니다.", user.getUserName());
+					flag = false;
+					
 				}
-				if(user==null) {
+				if(flag) {
 					System.out.println("\n[알림] 아이디 또는 비밀번호가 일치하지 않습니다. \n");
 				}
 				
+//				loginUser = service.login(userId, userPw);
+//				if(loginUser!=null) flag = false;
+//				if(loginUser==null) System.out.println("실패");
 			}
 			
 		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 로그인 과정 \n");
 			e.printStackTrace();
 		}
 	}
@@ -105,7 +120,6 @@ public class MainView {
 			}
 
 		LoopPw : while(true) { // 비밀번호 작성
-			boolean flag = true;
 			System.out.print("비밀번호 : ");
 			userPw = sc.nextLine();
 			System.out.print("비밀번호 확인 : ");
@@ -138,7 +152,7 @@ public class MainView {
 		System.out.printf("아이디 : %s\n", userId);
 		System.out.printf("이름 : %s\n", userName);
 		
-		LoopYN : while(true) {
+		while(true) { // LoopYN
 			System.out.print("회원 가입 진행[Y/N] : ");
 			char agree = sc.nextLine().toUpperCase().charAt(0);
 			System.out.println("---------------------");
