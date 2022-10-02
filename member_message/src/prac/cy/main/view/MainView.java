@@ -10,7 +10,6 @@ public class MainView {
 	
 	MainService service = new MainService();
 	UserView view = new UserView();
-	
 	private User loginUser;
 	private Scanner sc = new Scanner(System.in);
 	private int input = -1;
@@ -19,10 +18,10 @@ public class MainView {
 	 *  Main
 	 */
 	public void mainMenu() {
-		try {
-			do {
-				if(loginUser==null) {
-					System.out.println("-----------");
+		do {
+			try {
+				if(loginUser == null) {
+					System.out.println("\n-----------");
 					System.out.println("1. 로그인");
 					System.out.println("2. 회원가입");
 					System.out.println("0. 종료");
@@ -30,7 +29,7 @@ public class MainView {
 					System.out.print("선택 > ");
 					input = sc.nextInt();
 					sc.nextLine();
-					
+
 					switch(input) {
 					case 1: login(); break;
 					case 2: signUp(); break;
@@ -38,24 +37,24 @@ public class MainView {
 					default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
 					}
 				}
-				if(loginUser!=null) {
-					view.userMenu();
+				if(loginUser != null) {
+					loginUser = view.userMenu(loginUser);
 				}
-			} while (input != 0);
-		} catch (Exception e) {
-			System.out.println("종료하시려면 0을 입력해주세요");
-		}
+			} catch (Exception e) {
+				System.out.println("종료하시려면 0을 입력해주세요");
+			}
+		} while (input != 0);
 	}
 	
 	/** 
 	 *  Main 1. 로그인
 	 */
 	private void login() {
-		boolean flag = true;
+		boolean loopFL = true;
 		try {
 			String userId;
 			String userPw;
-			while(flag) { // LoopLogin
+			while(loopFL) { // LoopLogin
 				System.out.println("\n[로그인]");
 				System.out.print("아이디 : ");
 				userId = sc.nextLine();
@@ -72,11 +71,11 @@ public class MainView {
 					
 					loginUser.setUserNo(user.getUserNo());
 					loginUser.setUserName(user.getUserName());
-					System.out.printf("%s님, 환영합니다.", user.getUserName());
-					flag = false;
+					System.out.printf("\n%s님, 환영합니다.\n", user.getUserName());
+					loopFL = false;
 					
 				}
-				if(flag) {
+				if(loopFL) {
 					System.out.println("\n[알림] 아이디 또는 비밀번호가 일치하지 않습니다. \n");
 				}
 				
