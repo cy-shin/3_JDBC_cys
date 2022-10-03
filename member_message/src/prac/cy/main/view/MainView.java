@@ -54,7 +54,6 @@ public class MainView {
 		try {
 			String userId;
 			String userPw;
-			while(loopFL) { // LoopLogin
 				System.out.println("\n[로그인]");
 				System.out.print("아이디 : ");
 				userId = sc.nextLine();
@@ -79,10 +78,6 @@ public class MainView {
 					System.out.println("\n[알림] 아이디 또는 비밀번호가 일치하지 않습니다. \n");
 				}
 				
-//				loginUser = service.login(userId, userPw);
-//				if(loginUser!=null) flag = false;
-//				if(loginUser==null) System.out.println("실패");
-			}
 			
 		} catch (Exception e) {
 			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");

@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-<comment>box-query.xml file</comment>
+
+	<comment>box-query.xml file</comment>
+	
+	<!-- 유저 확인  -->
+	<entry key = "msgUserCheck">
+		SELECT USER_NO FROM "USER" 
+		WHERE USER_NAME = ?
+	</entry>
+	
+	<!-- 메세지 번호 생성 -->
+	<entry key = "makeMsgNo">
+		SELECT MSG_NO FROM MSG_BOX
+		WHERE MSG_NO = ?
+	</entry>
+	
+	<!-- 메세지 저장 -->
+	<entry key = "insertMsgBox">
+		INSERT INTO MSG_BOX 
+		VALUES(?, ?, ?)
+	</entry>
+	
+	<!-- 메세지 전송기록 -->
+	<entry key = "insertMsgSend">
+		INSERT INTO MSG_SEND
+		VALUES(?, ?, DEFAULT, DEFAULT)
+	</entry>
+	
+	<!-- 메세지 수신기록 -->
+	<entry key = "insertMsgRecd">
+		INSERT INTO MSG_RECD
+		VALUES(?, ?, DEFAULT, DEFAULT, DEFAULT)
+	</entry>
+	
 </properties>

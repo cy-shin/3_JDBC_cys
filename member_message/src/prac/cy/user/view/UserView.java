@@ -25,7 +25,7 @@ public class UserView {
 			System.out.println("0. 로그아웃 ");
 			System.out.println("-----------");
 			System.out.print("선택 > ");
-			int input = sc.nextInt();
+			input = sc.nextInt();
 			sc.nextLine();
 			
 			switch(input) {
@@ -36,7 +36,6 @@ public class UserView {
 			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
 			}
 		} while(input != 0);
-		
 		return loginUser;
 	}
 	

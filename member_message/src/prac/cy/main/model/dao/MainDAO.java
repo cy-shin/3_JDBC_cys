@@ -66,7 +66,7 @@ public class MainDAO {
 				String userNo = rs.getString("USER_NO");
 				String userName = rs.getString("USER_NAME");
 				
-				user.setUserId(userNo); // 유저 번호
+				user.setUserNo(userNo); // 유저 번호
 				user.setUserId(userId); // 유저 아이디
 				user.setUserName(userName); // 유저 이름
 			}
