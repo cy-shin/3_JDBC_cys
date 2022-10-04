@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import prac.cy.user.vo.MsgBox;
 import prac.cy.user.vo.User;
 
 public class MsgDAO {
@@ -174,6 +175,17 @@ public class MsgDAO {
 			close(pstmt);
 		}
 		return result;
+	}
+
+	/**
+	 * @param conn
+	 * @param myNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MsgBox> msgBoxRecd(Connection conn, String myNo) throws Exception {
+		
+		return null;
 	}
 	
 	

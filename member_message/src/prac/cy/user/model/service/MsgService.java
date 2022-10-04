@@ -3,8 +3,10 @@ package prac.cy.user.model.service;
 import static prac.cy.common.JDBCTemplate.*;
 
 import java.sql.Connection;
+import java.util.List;
 
 import prac.cy.user.model.dao.MsgDAO;
+import prac.cy.user.vo.MsgBox;
 
 public class MsgService {
 	MsgDAO dao = new MsgDAO();
@@ -60,5 +62,20 @@ public class MsgService {
 		if(result < 3) rollback(conn);
 
 		return result;
+	}
+
+	/** 2. 받은 메세지 리스트
+	 * @param myNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MsgBox> msgBoxRecd(String myNo) throws Exception {
+		Connection conn = getConnection();
+		
+		List<MsgBox> boxList = dao.msgBoxRecd(conn, myNo);
+		
+		close(conn);
+		
+		return boxList;
 	}
 }

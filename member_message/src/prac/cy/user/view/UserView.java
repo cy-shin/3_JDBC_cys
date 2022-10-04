@@ -20,8 +20,9 @@ public class UserView {
 		do {
 			System.out.println("\n-----------");
 			System.out.println("1. 메세지 작성 ");
-			System.out.println("2. 메세지 보관함 ");
-			System.out.println("3. 내 정보 ");
+			System.out.println("2. 받은 메세지");
+			System.out.println("3. 보낸 메세지");
+			System.out.println("4. 내 정보 ");
 			System.out.println("0. 로그아웃 ");
 			System.out.println("-----------");
 			System.out.print("선택 > ");

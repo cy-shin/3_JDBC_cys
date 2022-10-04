@@ -14,7 +14,7 @@
 	
 	<!-- 1. 로그인(2). 로그인시간 업데이트 -->
 	<entry key = "loginDate">
-		UPDATE "USER" SET LAST_LOGIN = SYSDATE 
+		UPDATE "USER" SET LAST_DATE = SYSDATE 
 		WHERE USER_NO = ?
 	</entry>
 	

@@ -19,13 +19,13 @@
 	<!-- 메세지 저장 -->
 	<entry key = "insertMsgBox">
 		INSERT INTO MSG_BOX 
-		VALUES(?, ?, ?)
+		VALUES(?, DEFAULT, ?, ?)
 	</entry>
 	
 	<!-- 메세지 전송기록 -->
 	<entry key = "insertMsgSend">
 		INSERT INTO MSG_SEND
-		VALUES(?, ?, DEFAULT, DEFAULT)
+		VALUES(?, ?, DEFAULT)
 	</entry>
 	
 	<!-- 메세지 수신기록 -->
