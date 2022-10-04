@@ -182,17 +182,44 @@ public class MsgView {
 
 	/** 2. 받은 메세지함
 	 * @param myNo
-	 * @param myName
 	 */
-	private void msgBoxRecd(String myNo, String myName) {
-		System.out.println("\n-----------");
-		System.out.println("\n[받은 메세지]");
-		System.out.println("\n-----------");
-		
-		List<MsgBox> boxList = service.msgBoxRecd(myNo);
-		
-		if(!(boxList.isEmpty())) msgBoxPrint(boxList);
-		if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
+	private void msgBoxRecd(String myNo) {
+		try {
+			System.out.println("\n-----------");
+			System.out.println("\n[받은 메세지]");
+			System.out.println("\n-----------");
+			
+			List<MsgBox> boxList = service.msgBoxRecd(myNo);
+			
+			if(!(boxList.isEmpty())) msgBoxPrint(boxList);
+			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
+			
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 받은 메세지 조회 \n");
+			e.printStackTrace();
+		}
+	}
+	
+	/** 3. 보낸 메세지함
+	 * @param myNo
+	 */
+	private void msgBoxSend(String myNo) {
+		try {
+			System.out.println("\n-----------");
+			System.out.println("\n[보낸 메세지]");
+			System.out.println("\n-----------");
+			
+			List<MsgBox> boxList = service.msgBoxSend(myNo);
+			
+			if(!(boxList.isEmpty())) msgBoxPrint(boxList);
+			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
+			
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 보낸 메세지 조회 \n");
+			e.printStackTrace();
+		}
 	}
 	
 	/** A.메세지 리스트 출력

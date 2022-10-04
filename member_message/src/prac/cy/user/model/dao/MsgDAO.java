@@ -177,16 +177,89 @@ public class MsgDAO {
 		return result;
 	}
 
-	/**
+	
+	/** 2. 받은 메세지 목록 불러오기
 	 * @param conn
 	 * @param myNo
 	 * @return
 	 * @throws Exception
 	 */
 	public List<MsgBox> msgBoxRecd(Connection conn, String myNo) throws Exception {
+		List<MsgBox> boxList = new ArrayList<>();
 		
-		return null;
+		try {
+			String sql = prop.getProperty("msgBoxRecd");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, myNo);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				MsgBox msg = new MsgBox();
+				
+				String userName = rs.getString("USER_NAME"); 
+				String title = rs.getString("TITLE"); 
+				String msgDate = rs.getString("MSG_DATE"); 
+				String readFl = rs.getString("READ_FL"); 
+				
+				msg.setUserName(userName);
+				msg.setTitle(title);
+				msg.setMsgDate(msgDate);
+				msg.setReadFl(readFl);
+				
+				boxList.add(msg);
+				
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return boxList;
 	}
 	
+	/** 2. 보낸 메세지 목록 불러오기
+	 * @param conn
+	 * @param myNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MsgBox> msgBoxSend(Connection conn, String myNo) throws Exception {
+		List<MsgBox> boxList = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("msgBoxSend");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, myNo);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				MsgBox msg = new MsgBox();
+				
+				String userName = rs.getString("USER_NAME"); 
+				String title = rs.getString("TITLE"); 
+				String msgDate = rs.getString("MSG_DATE"); 
+				
+				msg.setUserName(userName);
+				msg.setTitle(title);
+				msg.setMsgDate(msgDate);
+				
+				boxList.add(msg);
+				
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return boxList;
+	}
 	
 }

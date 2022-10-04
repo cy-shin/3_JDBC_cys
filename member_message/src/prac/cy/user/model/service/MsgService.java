@@ -78,4 +78,19 @@ public class MsgService {
 		
 		return boxList;
 	}
+	
+	/** 2. 보낸 메세지 리스트
+	 * @param myNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MsgBox> msgBoxSend(String myNo) throws Exception {
+		Connection conn = getConnection();
+		
+		List<MsgBox> boxList = dao.msgBoxSend(conn, myNo);
+		
+		close(conn);
+		
+		return boxList;
+	}
 }
