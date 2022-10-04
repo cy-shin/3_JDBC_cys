@@ -31,8 +31,9 @@ public class UserView {
 			
 			switch(input) {
 			case 1: write(1, myNo, myName); break;
-			case 2: box(2, myNo, myName); break;
-			case 3: myInfo(myNo, myName); break;
+			case 2: boxRecd(2, myNo, myName); break;
+			case 3: boxSend(3, myNo, myName); break;
+			case 4: myInfo(4, myNo, myName); break;
 			case 0: loginUser = logout(loginUser); break;
 			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
 			}
@@ -49,20 +50,28 @@ public class UserView {
 		msg.msgMenu(select, myNo, myName);
 	}
 	
-	/** 2. 메세지 보관함 보기
+	/** 2. 받은 메세지
 	 * @param myNo
 	 * @param myName
 	 */
-	private void box(int select, String myNo, String myName) {
+	private void boxRecd(int select, String myNo, String myName) {
 		msg.msgMenu(select, myNo, myName);
 	}
 	
-	/** 3. 내 정보 확인
+	/** 3. 받은 메세지
 	 * @param myNo
 	 * @param myName
 	 */
-	private void myInfo(String myNo, String myName) {
-		System.out.println("준비중");
+	private void boxSend(int select, String myNo, String myName) {
+		msg.msgMenu(select, myNo, myName);
+	}
+	
+	/** 4. 내 정보 확인
+	 * @param myNo
+	 * @param myName
+	 */
+	private void myInfo(int select, String myNo, String myName) {
+		msg.msgMenu(select, myNo, myName);
 	}
 	
 	/** 0. 로그아웃

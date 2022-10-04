@@ -15,7 +15,8 @@ public class MsgView {
 	public void msgMenu(int select, String myNo, String myName) {
 		switch(select) {
 		case 1: msgWrite(myNo, myName); break;
-		case 2: msgBoxRecd(myNo, myName); break;
+		case 2: msgBoxRecd(myNo); break;
+		case 3: msgBoxSend(myNo); break;
 		}
 		
 	}
@@ -191,7 +192,7 @@ public class MsgView {
 			
 			List<MsgBox> boxList = service.msgBoxRecd(myNo);
 			
-			if(!(boxList.isEmpty())) msgBoxPrint(boxList);
+			if(!(boxList.isEmpty())) boxRecdPrint(boxList);
 			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
 			
 		} catch (Exception e) {
@@ -212,7 +213,7 @@ public class MsgView {
 			
 			List<MsgBox> boxList = service.msgBoxSend(myNo);
 			
-			if(!(boxList.isEmpty())) msgBoxPrint(boxList);
+			if(!(boxList.isEmpty())) boxSendPrint(boxList);
 			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
 			
 		} catch (Exception e) {
@@ -225,7 +226,7 @@ public class MsgView {
 	/** A.메세지 리스트 출력
 	 * @param boxList
 	 */
-	private void msgBoxPrint(List<MsgBox> boxList) {
+	private void boxRecdPrint(List<MsgBox> boxList) {
 		int idx = 1;
 		System.out.printf("번호|보낸사람|제목|날짜|확인\n");
 		System.out.println("--------------------------------------------");
@@ -236,6 +237,24 @@ public class MsgView {
 					b.getTitle(),
 					b.getMsgDate(),
 					b.getReadFl()
+					);
+		}
+		System.out.println("--------------------------------------------");
+	}
+	
+	/** B.메세지 리스트 출력
+	 * @param boxList
+	 */
+	private void boxSendPrint(List<MsgBox> boxList) {
+		int idx = 1;
+		System.out.printf("번호|보낸사람|제목|날짜\n");
+		System.out.println("--------------------------------------------");
+		for(MsgBox b : boxList) {
+			System.out.printf("%d|%s|%s|%s\n",
+					idx++,
+					b.getUserName(),
+					b.getTitle(),
+					b.getMsgDate()
 					);
 		}
 		System.out.println("--------------------------------------------");
