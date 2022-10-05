@@ -178,7 +178,7 @@ public class MsgDAO {
 	}
 
 	
-	/** 2. 받은 메세지 목록 불러오기
+	/** 받은 메세지 목록
 	 * @param conn
 	 * @param myNo
 	 * @return
@@ -221,7 +221,7 @@ public class MsgDAO {
 		return boxList;
 	}
 	
-	/** 2. 보낸 메세지 목록 불러오기
+	/** 보낸 메세지 목록
 	 * @param conn
 	 * @param myNo
 	 * @return
@@ -263,7 +263,53 @@ public class MsgDAO {
 		
 		return boxList;
 	}
-
+	
+	/** 전체 메세지 목록
+	 * @param conn
+	 * @param myNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MsgBox> msgBoxAll(Connection conn, String myNo) throws Exception {
+		List<MsgBox> boxList = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("msgBoxAll");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, myNo);
+			pstmt.setString(2, myNo);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				MsgBox msg = new MsgBox();
+				
+				String msgNo = rs.getString("MSG_NO"); 
+				String userName = rs.getString("USER_NAME"); 
+				String title = rs.getString("TITLE"); 
+				String msgDate = rs.getString("MSG_DATE"); 
+				String boxType = rs.getString("BOX_TYPE");
+				
+				msg.setMsgNo(msgNo);
+				msg.setUserName(userName);
+				msg.setTitle(title);
+				msg.setMsgDate(msgDate);
+				msg.setBoxType(boxType);
+				
+				boxList.add(msg);
+				
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return boxList;
+	}
+	
 	/**
 	 * @param conn
 	 * @param msgNo
@@ -294,5 +340,7 @@ public class MsgDAO {
 		
 		return content;
 	}
+
+	
 	
 }

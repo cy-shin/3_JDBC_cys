@@ -3,13 +3,13 @@ package prac.cy.main.view;
 import java.util.Scanner;
 
 import prac.cy.main.model.service.MainService;
-import prac.cy.user.view.UserView;
+import prac.cy.user.view.MsgView;
 import prac.cy.user.vo.User;
 
 public class MainView {
 	
 	MainService service = new MainService();
-	UserView view = new UserView();
+	MsgView view = new MsgView();
 	private User loginUser;
 	private Scanner sc = new Scanner(System.in);
 	private int input = -1;
@@ -38,7 +38,7 @@ public class MainView {
 					}
 				}
 				if(loginUser != null) {
-					loginUser = view.userMenu(loginUser);
+					loginUser = view.msgMenu(loginUser);
 				}
 			} catch (Exception e) {
 				System.out.println("종료하시려면 0을 입력해주세요");

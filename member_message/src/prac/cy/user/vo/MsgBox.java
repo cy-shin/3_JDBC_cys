@@ -9,6 +9,7 @@ public class MsgBox {
 	private String sDelFl;
 	private String readFl;
 	private String rDelFl;
+	private String boxType;
 	
 	public MsgBox() {}
 	
@@ -38,8 +39,6 @@ public class MsgBox {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
-	
 
 	public String getMsgDate() {
 		return msgDate;
@@ -67,5 +66,14 @@ public class MsgBox {
 	public void setrDelFl(String rDelFl) {
 		this.rDelFl = rDelFl;
 	}
+
+	public String getBoxType() {
+		return boxType;
+	}
+
+	public void setBoxType(String boxType) {
+		this.boxType = boxType;
+	}
+	
 	
 }

@@ -64,7 +64,7 @@ public class MsgService {
 		return result;
 	}
 
-	/** 2. 받은 메세지 리스트
+	/** 받은 메세지 목록
 	 * @param myNo
 	 * @return
 	 * @throws Exception
@@ -79,7 +79,8 @@ public class MsgService {
 		return boxList;
 	}
 	
-	/** 3. 보낸 메세지 리스트
+	
+	/** 보낸 메세지 목록
 	 * @param myNo
 	 * @return
 	 * @throws Exception
@@ -88,6 +89,21 @@ public class MsgService {
 		Connection conn = getConnection();
 		
 		List<MsgBox> boxList = dao.msgBoxSend(conn, myNo);
+		
+		close(conn);
+		
+		return boxList;
+	}
+	
+	/** 모든 메세지 목록
+	 * @param myNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MsgBox> msgBoxAll(String myNo) throws Exception{
+		Connection conn = getConnection();
+		
+		List<MsgBox> boxList = dao.msgBoxAll(conn, myNo);
 		
 		close(conn);
 		
@@ -107,6 +123,8 @@ public class MsgService {
 		
 		return content;
 	}
+
+	
 	
 	
 }

@@ -1,25 +1,114 @@
 package prac.cy.user.view;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import prac.cy.user.model.service.MsgService;
 import prac.cy.user.vo.MsgBox;
+import prac.cy.user.vo.User;
 
 public class MsgView {
 	
 	MsgService service = new MsgService();
 	
 	private Scanner sc = new Scanner(System.in);
+	private String input = "-1";
 	
-	public void msgMenu(int select, String myNo, String myName) {
-		switch(select) {
-		case 1: msgWrite(myNo, myName); break;
-		case 2: msgBoxRecd(myNo); break;
-		case 3: msgBoxSend(myNo); break;
-		}
+	/* boxAllList
+	 * boxList(Send, Recd)
+	 * 
+	 * 
+	 */
+	
+	/** 3. 받은 메세지함
+	 * @param myNo
+	 * @return result
+	 *    0  : 결과 없음
+	 *    1  : 결과 있음
+	 */
+	public User msgMenu(User loginUser) {
+		String myNo = loginUser.getUserNo();
+		String myName = loginUser.getUserName();
+		List<MsgBox> boxAllList = msgBoxAll(myNo);
+		System.out.println();
 		
+		try {
+			System.out.println("\n-----------");
+			System.out.println("\n[받은 메세지]");
+			System.out.println("\n-----------");
+			
+			List<MsgBox> boxList = service.msgBoxRecd(myNo);
+			
+			if(!(boxList.isEmpty())) {
+				boxRecdPrint(boxList);
+				System.out.println("a. 상세보기");
+			}
+			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
+			
+			do {
+				System.out.println("\n-----------");
+				System.out.println("1. 메세지 작성 ");
+				System.out.println("2. 전체 메세지");
+				System.out.println("3. 받은 메세지"); // 기본값
+				System.out.println("4. 보낸 메세지");
+				System.out.println("5. 내 정보 ");
+				System.out.println("0. 로그아웃 ");
+				System.out.println("-----------");
+				System.out.print("선택 > ");
+				input = sc.nextLine();
+				
+				switch(input) {
+				case "1": msgWrite  (myNo, myName); break;
+//				case "2": msgBoxAll(myNo); break;
+				case "3": continue;
+				case "4": msgBoxSend(myNo); break;
+//				case "5": msgMyInfo (myNo); break;
+				case "a": msgDetailMenu(boxList); break;
+				case "0": loginUser = logout(loginUser); break;
+				default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+				}
+			} while(!(input.equals("0")));
+			
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 받은 메세지 조회 \n");
+			e.printStackTrace();
+		}
+		return loginUser;
 	}
+	
+	
+//	public User msgMenu(User loginUser) {
+//		String myNo = loginUser.getUserNo();
+//		String myName = loginUser.getUserName();
+//		
+//		do {
+//			msgBoxRecd(myNo);
+//			
+//			System.out.println("\n-----------");
+//			System.out.println("1. 메세지 작성 ");
+//			System.out.println("2. 전체 메세지");
+//			System.out.println("3. 받은 메세지"); // 기본값
+//			System.out.println("4. 보낸 메세지");
+//			System.out.println("5. 내 정보 ");
+//			System.out.println("0. 로그아웃 ");
+//			System.out.println("-----------");
+//			System.out.print("선택 > ");
+//			input = sc.nextLine();
+//			
+//			switch(input) {
+//			case "1": msgWrite  (myNo, myName); break;
+////			case "2": msgBoxAll(myNo); break;
+//			case "3": msgBoxRecd(myNo); break;
+//			case "4": msgBoxSend(myNo); break;
+////			case "5": msgMyInfo (myNo); break;
+//			case "0": loginUser = logout(loginUser); break;
+//			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+//			}
+//		} while(!(input.equals("0")));
+//		return loginUser;
+//	}
 	
 	/** 1. 메세지 작성
 	 * @param myNo
@@ -181,10 +270,14 @@ public class MsgView {
 		}
 	}
 
-	/** 2. 받은 메세지함
+	/** A. 받은 메세지함
 	 * @param myNo
+	 * @return result
+	 *    0  : 결과 없음
+	 *    1  : 결과 있음
 	 */
 	private void msgBoxRecd(String myNo) {
+		
 		try {
 			System.out.println("\n-----------");
 			System.out.println("\n[받은 메세지]");
@@ -192,17 +285,24 @@ public class MsgView {
 			
 			List<MsgBox> boxList = service.msgBoxRecd(myNo);
 			
-			if(!(boxList.isEmpty())) boxRecdPrint(boxList);
+			if(!(boxList.isEmpty())) {
+				boxRecdPrint(boxList);
+				System.out.println("a. 상세보기");
+			}
 			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
+			
+			msgDetailMenu(boxList);
+			
 			
 		} catch (Exception e) {
 			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
 			System.out.println("\n[위치] 받은 메세지 조회 \n");
 			e.printStackTrace();
 		}
+		
 	}
 	
-	/** 3. 보낸 메세지함
+	/** B. 보낸 메세지함
 	 * @param myNo
 	 */
 	private void msgBoxSend(String myNo) {
@@ -225,36 +325,60 @@ public class MsgView {
 		}
 	}
 	
+	/** C. 전체 메세지함
+	 * @param myNo
+	 */
+	private List<MsgBox> msgBoxAll(String myNo) {
+		List<MsgBox> boxAllList = new ArrayList<>();
+		
+		try {
+			boxAllList = service.msgBoxAll(myNo);
+			
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 보낸 메세지 조회 \n");
+			e.printStackTrace();
+		}
+		return boxAllList;
+	}
+	
+	/** 0. 로그아웃
+	 * @param loginUser
+	 */
+	private User logout(User loginUser) {
+		loginUser = null;
+		System.out.println("\n[알림] 로그아웃되었습니다.");
+		return loginUser;
+	}
+	
 	/** 메세지 리스트 하위 메뉴
 	 * @param boxList
 	 */
 	private void msgDetailMenu(List<MsgBox> boxList) {
-		System.out.println("--------------");
-		System.out.println("1. 상세조회");
-		System.out.println("0. 뒤로가기");
-		System.out.println("--------------");
-		System.out.print("선택 > ");
-		int input = sc.nextInt();
-		sc.nextLine();
-		switch(input) {
-		case 1: 
-			System.out.print("번호 선택 > ");
-			int idx = sc.nextInt();
-			sc.nextLine();
-			msgDetail(idx, boxList);
-			
-			System.out.println("--------------");
-			System.out.println("1. 전달하기");
-			System.out.println("0. 뒤로가기");
-			System.out.println("--------------");
+		if(!(boxList.isEmpty())) {
 			System.out.print("선택 > ");
-		case 0: break;
-		default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+			int input = sc.nextInt();
+			sc.nextLine();
+			switch(input) {
+			case 1: 
+				System.out.print("선택 > ");
+				int idx = sc.nextInt();
+				sc.nextLine();
+				msgDetail(idx, boxList);
+				
+				System.out.println("--------------");
+				System.out.println("1. 전달하기");
+				System.out.println("0. 뒤로가기");
+				System.out.println("--------------");
+				System.out.print("선택 > ");
+			case 0: break;
+			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+			}
 		}
 	}
 	
 	/**
-	 *  수신 메세지 상세보기
+	 *  메세지 상세보기
 	 */
 	public void msgDetail(int idx, List<MsgBox> boxList) {
 		// ---------------
@@ -265,6 +389,7 @@ public class MsgView {
 		// 내용
 		//
 		// ---------------
+		idx--;
 		String msgNo = boxList.get(idx).getMsgNo();
 		String title = boxList.get(idx).getTitle();
 		String userName = boxList.get(idx).getUserName();
@@ -291,10 +416,53 @@ public class MsgView {
 			}
 		}
 		System.out.println("\n------------------------------------------------------");
-		
 	}
 	
-	/** A.메세지 리스트 출력
+	/** 기본 메세지 리스트 출력
+	 * @param boxList
+	 */
+	private void boxListPrint(List<MsgBox> boxList) {
+		int idx = 1;
+		System.out.printf("번호|보낸사람|제목|날짜\n");
+		System.out.println("--------------------------------------------");
+		for(MsgBox b : boxList) {
+			System.out.printf("%d|%s|%s|%s\n",
+					idx++,
+					b.getUserName(),
+					b.getTitle(),
+					b.getMsgDate()
+					);
+		}
+		System.out.println("--------------------------------------------");
+	}
+	
+	/** 전체 메세지 목록 출력
+	 * @param boxList
+	 */
+	private void boxAllListPrint(List<MsgBox> boxAllList) {
+		int idx = 1;
+		System.out.printf("번호|보낸사람|제목|날짜\n");
+		System.out.println("--------------------------------------------");
+		for(MsgBox b : boxAllList) {
+			String temp = b.getBoxType();
+			String type = "";
+			switch(temp) {
+			case "S": type = "보낸메세지";
+			case "R": type = "받은메세지";
+			}
+			System.out.printf("%d|%s|%s|%s|%s\n",
+					idx++,
+					b.getUserName(),
+					b.getTitle(),
+					b.getMsgDate(),
+					type
+					);
+		}
+		System.out.println("--------------------------------------------");
+	}
+	
+	
+	/** 받은 메세지 목록 출력
 	 * @param boxList
 	 */
 	private void boxRecdPrint(List<MsgBox> boxList) {
@@ -313,7 +481,7 @@ public class MsgView {
 		System.out.println("--------------------------------------------");
 	}
 	
-	/** B.메세지 리스트 출력
+	/** 보낸 메세지 목록 출력
 	 * @param boxList
 	 */
 	private void boxSendPrint(List<MsgBox> boxList) {
@@ -330,5 +498,7 @@ public class MsgView {
 		}
 		System.out.println("--------------------------------------------");
 	}
+	
+
 	
 }
