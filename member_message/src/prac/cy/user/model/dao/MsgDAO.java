@@ -242,10 +242,12 @@ public class MsgDAO {
 			while(rs.next()) {
 				MsgBox msg = new MsgBox();
 				
+				String msgNo = rs.getString("MSG_NO"); 
 				String userName = rs.getString("USER_NAME"); 
 				String title = rs.getString("TITLE"); 
 				String msgDate = rs.getString("MSG_DATE"); 
 				
+				msg.setMsgNo(msgNo);
 				msg.setUserName(userName);
 				msg.setTitle(title);
 				msg.setMsgDate(msgDate);
@@ -260,6 +262,37 @@ public class MsgDAO {
 		}
 		
 		return boxList;
+	}
+
+	/**
+	 * @param conn
+	 * @param msgNo
+	 * @return
+	 */
+	public String msgDetail(Connection conn, String msgNo) throws Exception {
+		String content = "";
+		
+		try {
+			String sql = prop.getProperty("msgDetail");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, msgNo);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				String temp = rs.getString("CONTENT");
+				
+				content = temp;
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return content;
 	}
 	
 }

@@ -216,11 +216,82 @@ public class MsgView {
 			if(!(boxList.isEmpty())) boxSendPrint(boxList);
 			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
 			
+			msgDetailMenu(boxList);
+			
 		} catch (Exception e) {
 			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
 			System.out.println("\n[위치] 보낸 메세지 조회 \n");
 			e.printStackTrace();
 		}
+	}
+	
+	/** 메세지 리스트 하위 메뉴
+	 * @param boxList
+	 */
+	private void msgDetailMenu(List<MsgBox> boxList) {
+		System.out.println("--------------");
+		System.out.println("1. 상세조회");
+		System.out.println("0. 뒤로가기");
+		System.out.println("--------------");
+		System.out.print("선택 > ");
+		int input = sc.nextInt();
+		sc.nextLine();
+		switch(input) {
+		case 1: 
+			System.out.print("번호 선택 > ");
+			int idx = sc.nextInt();
+			sc.nextLine();
+			msgDetail(idx, boxList);
+			
+			System.out.println("--------------");
+			System.out.println("1. 전달하기");
+			System.out.println("0. 뒤로가기");
+			System.out.println("--------------");
+			System.out.print("선택 > ");
+		case 0: break;
+		default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+		}
+	}
+	
+	/**
+	 *  수신 메세지 상세보기
+	 */
+	public void msgDetail(int idx, List<MsgBox> boxList) {
+		// ---------------
+		// 제목
+		// ---------------
+		// 보낸사람 | 날짜
+		// ---------------
+		// 내용
+		//
+		// ---------------
+		String msgNo = boxList.get(idx).getMsgNo();
+		String title = boxList.get(idx).getTitle();
+		String userName = boxList.get(idx).getUserName();
+		String msgDate = boxList.get(idx).getMsgDate();
+		
+		String content = "";
+		
+		try {
+			content = service.msgDetail(msgNo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("------------------------------------------------------");
+		System.out.printf(" %s\n", title);
+		System.out.println("------------------------------------------------------");
+		System.out.printf(" 보낸사람 : %-15s | %s\n", userName, msgDate);
+		System.out.println("------------------------------------------------------");
+		for(int i=0; i<content.length(); i++) {
+			char letter = content.charAt(i);
+			System.out.print(letter);
+			if(i!=0 && i%30==0) {
+				System.out.println(); // 30자마다 줄바꿈
+			}
+		}
+		System.out.println("\n------------------------------------------------------");
+		
 	}
 	
 	/** A.메세지 리스트 출력

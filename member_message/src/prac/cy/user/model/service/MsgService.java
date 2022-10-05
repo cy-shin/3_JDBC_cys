@@ -79,7 +79,7 @@ public class MsgService {
 		return boxList;
 	}
 	
-	/** 2. 보낸 메세지 리스트
+	/** 3. 보낸 메세지 리스트
 	 * @param myNo
 	 * @return
 	 * @throws Exception
@@ -93,4 +93,20 @@ public class MsgService {
 		
 		return boxList;
 	}
+
+	/** 메세지 내용 상세보기
+	 * @param msgNo
+	 * @return
+	 */
+	public String msgDetail(String msgNo) throws Exception {
+		Connection conn = getConnection();
+		
+		String content = dao.msgDetail(conn, msgNo);
+		
+		close(conn);
+		
+		return content;
+	}
+	
+	
 }
