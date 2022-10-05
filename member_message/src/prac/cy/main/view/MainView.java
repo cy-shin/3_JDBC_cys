@@ -38,7 +38,7 @@ public class MainView {
 					}
 				}
 				if(loginUser != null) {
-					loginUser = view.msgMenu(loginUser);
+					loginUser = view.msgMenu(3, loginUser);
 				}
 			} catch (Exception e) {
 				System.out.println("종료하시려면 0을 입력해주세요");

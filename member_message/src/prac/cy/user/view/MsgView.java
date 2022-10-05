@@ -13,102 +13,60 @@ public class MsgView {
 	MsgService service = new MsgService();
 	
 	private Scanner sc = new Scanner(System.in);
-	private String input = "-1";
+	private List<MsgBox> boxList = new ArrayList<>();
+	public MsgView() {}
 	
-	/* boxAllList
-	 * boxList(Send, Recd)
-	 * 
-	 * 
-	 */
-	
-	/** 3. 받은 메세지함
-	 * @param myNo
-	 * @return result
-	 *    0  : 결과 없음
-	 *    1  : 결과 있음
-	 */
-	public User msgMenu(User loginUser) {
+	public User msgMenu(int select, User loginUser) {
 		String myNo = loginUser.getUserNo();
 		String myName = loginUser.getUserName();
-		List<MsgBox> boxAllList = msgBoxAll(myNo);
-		System.out.println();
 		
-		try {
-			System.out.println("\n-----------");
-			System.out.println("\n[받은 메세지]");
-			System.out.println("\n-----------");
+		do {
 			
-			List<MsgBox> boxList = service.msgBoxRecd(myNo);
-			
-			if(!(boxList.isEmpty())) {
-				boxRecdPrint(boxList);
-				System.out.println("a. 상세보기");
-			}
-			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
-			
-			do {
-				System.out.println("\n-----------");
-				System.out.println("1. 메세지 작성 ");
-				System.out.println("2. 전체 메세지");
-				System.out.println("3. 받은 메세지"); // 기본값
-				System.out.println("4. 보낸 메세지");
-				System.out.println("5. 내 정보 ");
-				System.out.println("0. 로그아웃 ");
-				System.out.println("-----------");
-				System.out.print("선택 > ");
-				input = sc.nextLine();
-				
-				switch(input) {
-				case "1": msgWrite  (myNo, myName); break;
-//				case "2": msgBoxAll(myNo); break;
-				case "3": continue;
-				case "4": msgBoxSend(myNo); break;
-//				case "5": msgMyInfo (myNo); break;
-				case "a": msgDetailMenu(boxList); break;
-				case "0": loginUser = logout(loginUser); break;
-				default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+			switch(select) {
+			case 0: 
+				if(!(boxList.isEmpty())) {
+					msgDetailMenu(boxList);
 				}
-			} while(!(input.equals("0")));
+				break;
+			case 1: 
+				msgWrite(myNo, myName);
+				break;
+			case 2: 
+				boxList = boxAll(myNo);
+				boxPrinter( select, boxList );
+				break;
+			case 3: 
+				boxList = boxRecd(myNo);
+				boxPrinter( select, boxList );
+				break;
+			case 4: 
+				boxList = boxSend(myNo);
+				boxPrinter( select, boxList );
+				break;
+//			case 5: msgMyInfo (myNo); break;
+			case 9:
+				loginUser = logout(loginUser);
+				break;
+			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+			}
 			
-		} catch (Exception e) {
-			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
-			System.out.println("\n[위치] 받은 메세지 조회 \n");
-			e.printStackTrace();
-		}
+			System.out.println("\n-----------");
+			System.out.println("1. 메세지 작성 ");
+			System.out.println("2. 전체 메세지");
+			System.out.println("3. 받은 메세지"); // 기본값
+			System.out.println("4. 보낸 메세지");
+			System.out.println("5. 내 정보 ");
+			System.out.println("9. 로그아웃 ");
+			System.out.println("-----------");
+			System.out.print("선택 > ");
+			select = sc.nextInt();
+			sc.nextLine();
+			
+		} while(select!=9);
+		
 		return loginUser;
 	}
 	
-	
-//	public User msgMenu(User loginUser) {
-//		String myNo = loginUser.getUserNo();
-//		String myName = loginUser.getUserName();
-//		
-//		do {
-//			msgBoxRecd(myNo);
-//			
-//			System.out.println("\n-----------");
-//			System.out.println("1. 메세지 작성 ");
-//			System.out.println("2. 전체 메세지");
-//			System.out.println("3. 받은 메세지"); // 기본값
-//			System.out.println("4. 보낸 메세지");
-//			System.out.println("5. 내 정보 ");
-//			System.out.println("0. 로그아웃 ");
-//			System.out.println("-----------");
-//			System.out.print("선택 > ");
-//			input = sc.nextLine();
-//			
-//			switch(input) {
-//			case "1": msgWrite  (myNo, myName); break;
-////			case "2": msgBoxAll(myNo); break;
-//			case "3": msgBoxRecd(myNo); break;
-//			case "4": msgBoxSend(myNo); break;
-////			case "5": msgMyInfo (myNo); break;
-//			case "0": loginUser = logout(loginUser); break;
-//			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
-//			}
-//		} while(!(input.equals("0")));
-//		return loginUser;
-//	}
 	
 	/** 1. 메세지 작성
 	 * @param myNo
@@ -269,66 +227,36 @@ public class MsgView {
 			} // loopFL end
 		}
 	}
+	
+	/** 0. 로그아웃
+	 * @param loginUser
+	 */
+	private User logout(User loginUser) {
+		loginUser = null;
+		System.out.println("\n[알림] 로그아웃되었습니다.");
+		return loginUser;
+	}
 
-	/** A. 받은 메세지함
-	 * @param myNo
-	 * @return result
-	 *    0  : 결과 없음
-	 *    1  : 결과 있음
+	/** 박스 프린터
+	 * @param select
+	 * @param boxList
 	 */
-	private void msgBoxRecd(String myNo) {
-		
-		try {
-			System.out.println("\n-----------");
-			System.out.println("\n[받은 메세지]");
-			System.out.println("\n-----------");
-			
-			List<MsgBox> boxList = service.msgBoxRecd(myNo);
-			
-			if(!(boxList.isEmpty())) {
-				boxRecdPrint(boxList);
-				System.out.println("a. 상세보기");
+	private void boxPrinter(int select, List<MsgBox> boxList) {
+		if(!(boxList.isEmpty())) {
+			switch(select) {
+			case 2: boxAllPrint(boxList); break;
+			case 3: boxRecdPrint(boxList); break;
+			case 4: boxSendPrint(boxList); break;
 			}
-			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
-			
-			msgDetailMenu(boxList);
-			
-			
-		} catch (Exception e) {
-			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
-			System.out.println("\n[위치] 받은 메세지 조회 \n");
-			e.printStackTrace();
+			System.out.print("0. 상세보기");
 		}
+		if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
 		
 	}
-	
-	/** B. 보낸 메세지함
+	/** A. 전체 메세지함
 	 * @param myNo
 	 */
-	private void msgBoxSend(String myNo) {
-		try {
-			System.out.println("\n-----------");
-			System.out.println("\n[보낸 메세지]");
-			System.out.println("\n-----------");
-			
-			List<MsgBox> boxList = service.msgBoxSend(myNo);
-			
-			if(!(boxList.isEmpty())) boxSendPrint(boxList);
-			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
-			
-			msgDetailMenu(boxList);
-			
-		} catch (Exception e) {
-			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
-			System.out.println("\n[위치] 보낸 메세지 조회 \n");
-			e.printStackTrace();
-		}
-	}
-	
-	/** C. 전체 메세지함
-	 * @param myNo
-	 */
-	private List<MsgBox> msgBoxAll(String myNo) {
+	private List<MsgBox> boxAll(String myNo) {
 		List<MsgBox> boxAllList = new ArrayList<>();
 		
 		try {
@@ -342,13 +270,118 @@ public class MsgView {
 		return boxAllList;
 	}
 	
-	/** 0. 로그아웃
-	 * @param loginUser
+	/** a. 전체 메세지 목록 출력
+	 * @param boxList
 	 */
-	private User logout(User loginUser) {
-		loginUser = null;
-		System.out.println("\n[알림] 로그아웃되었습니다.");
-		return loginUser;
+	private void boxAllPrint(List<MsgBox> boxAllList) {
+		int idx = 1;
+		System.out.printf("번호|보낸사람|제목|날짜\n");
+		System.out.println("--------------------------------------------");
+		for(MsgBox b : boxAllList) {
+			String temp = b.getBoxType();
+			String type = "";
+			switch(temp) {
+			case "S": type = "보낸메세지";
+			case "R": type = "받은메세지";
+			}
+			System.out.printf("%d|%s|%s|%s|%s\n",
+					idx++,
+					b.getUserName(),
+					b.getTitle(),
+					b.getMsgDate(),
+					type
+					);
+		}
+		System.out.println("--------------------------------------------");
+	}
+	
+	/** B. 받은 메세지함
+	 * @param myNo
+	 * @return result
+	 *    0  : 결과 없음
+	 *    1  : 결과 있음
+	 */
+	private List<MsgBox> boxRecd(String myNo) {
+		List<MsgBox> boxList = null;
+		
+		try {
+			System.out.println("\n-----------");
+			System.out.println("\n[받은 메세지]");
+			System.out.println("\n-----------");
+			
+			boxList = service.msgBoxRecd(myNo);
+			
+			msgDetailMenu(boxList);
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 받은 메세지 조회 \n");
+			e.printStackTrace();
+		}
+		
+		return boxList;
+	}
+	
+	/** b. 받은 메세지 목록 출력
+	 * @param boxList
+	 */
+	private void boxRecdPrint(List<MsgBox> boxList) {
+		int idx = 1;
+		System.out.printf("번호|보낸사람|제목|날짜|확인\n");
+		System.out.println("--------------------------------------------");
+		for(MsgBox b : boxList) {
+			System.out.printf("%d|%s|%s|%s|%s\n",
+					idx++,
+					b.getUserName(),
+					b.getTitle(),
+					b.getMsgDate(),
+					b.getReadFl()
+					);
+		}
+		System.out.println("--------------------------------------------");
+	}
+	
+	/** C. 보낸 메세지함
+	 * @param myNo
+	 */
+	private List<MsgBox> boxSend(String myNo) {
+		List<MsgBox> boxList = null;
+		
+		try {
+			System.out.println("\n-----------");
+			System.out.println("\n[보낸 메세지]");
+			System.out.println("\n-----------");
+			
+			boxList = service.msgBoxSend(myNo);
+			
+//			if(!(boxList.isEmpty())) boxSendPrint(boxList);
+//			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
+//			
+//			msgDetailMenu(boxList);
+			
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 보낸 메세지 조회 \n");
+			e.printStackTrace();
+		}
+		return boxList;
+	}
+	
+	/** c. 보낸 메세지 목록 출력
+	 * @param boxList
+	 */
+	private void boxSendPrint(List<MsgBox> boxList) {
+		int idx = 1;
+		System.out.printf("번호|보낸사람|제목|날짜\n");
+		System.out.println("--------------------------------------------");
+		for(MsgBox b : boxList) {
+			System.out.printf("%d|%s|%s|%s\n",
+					idx++,
+					b.getUserName(),
+					b.getTitle(),
+					b.getMsgDate()
+					);
+		}
+		System.out.println("--------------------------------------------");
 	}
 	
 	/** 메세지 리스트 하위 메뉴
@@ -418,86 +451,15 @@ public class MsgView {
 		System.out.println("\n------------------------------------------------------");
 	}
 	
-	/** 기본 메세지 리스트 출력
-	 * @param boxList
-	 */
-	private void boxListPrint(List<MsgBox> boxList) {
-		int idx = 1;
-		System.out.printf("번호|보낸사람|제목|날짜\n");
-		System.out.println("--------------------------------------------");
-		for(MsgBox b : boxList) {
-			System.out.printf("%d|%s|%s|%s\n",
-					idx++,
-					b.getUserName(),
-					b.getTitle(),
-					b.getMsgDate()
-					);
-		}
-		System.out.println("--------------------------------------------");
-	}
-	
-	/** 전체 메세지 목록 출력
-	 * @param boxList
-	 */
-	private void boxAllListPrint(List<MsgBox> boxAllList) {
-		int idx = 1;
-		System.out.printf("번호|보낸사람|제목|날짜\n");
-		System.out.println("--------------------------------------------");
-		for(MsgBox b : boxAllList) {
-			String temp = b.getBoxType();
-			String type = "";
-			switch(temp) {
-			case "S": type = "보낸메세지";
-			case "R": type = "받은메세지";
-			}
-			System.out.printf("%d|%s|%s|%s|%s\n",
-					idx++,
-					b.getUserName(),
-					b.getTitle(),
-					b.getMsgDate(),
-					type
-					);
-		}
-		System.out.println("--------------------------------------------");
-	}
 	
 	
-	/** 받은 메세지 목록 출력
-	 * @param boxList
-	 */
-	private void boxRecdPrint(List<MsgBox> boxList) {
-		int idx = 1;
-		System.out.printf("번호|보낸사람|제목|날짜|확인\n");
-		System.out.println("--------------------------------------------");
-		for(MsgBox b : boxList) {
-			System.out.printf("%d|%s|%s|%s|%s\n",
-					idx++,
-					b.getUserName(),
-					b.getTitle(),
-					b.getMsgDate(),
-					b.getReadFl()
-					);
-		}
-		System.out.println("--------------------------------------------");
-	}
 	
-	/** 보낸 메세지 목록 출력
-	 * @param boxList
-	 */
-	private void boxSendPrint(List<MsgBox> boxList) {
-		int idx = 1;
-		System.out.printf("번호|보낸사람|제목|날짜\n");
-		System.out.println("--------------------------------------------");
-		for(MsgBox b : boxList) {
-			System.out.printf("%d|%s|%s|%s\n",
-					idx++,
-					b.getUserName(),
-					b.getTitle(),
-					b.getMsgDate()
-					);
-		}
-		System.out.println("--------------------------------------------");
-	}
+	
+	
+	
+	
+	
+	
 	
 
 	
