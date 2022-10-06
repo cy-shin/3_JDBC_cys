@@ -199,11 +199,13 @@ public class MsgDAO {
 			while(rs.next()) {
 				MsgBox msg = new MsgBox();
 				
+				String msgNo = rs.getString("MSG_NO");
 				String userName = rs.getString("USER_NAME"); 
 				String title = rs.getString("TITLE"); 
 				String msgDate = rs.getString("MSG_DATE"); 
 				String readFl = rs.getString("READ_FL"); 
 				
+				msg.setMsgNo(msgNo);
 				msg.setUserName(userName);
 				msg.setTitle(title);
 				msg.setMsgDate(msgDate);

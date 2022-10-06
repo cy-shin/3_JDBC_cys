@@ -29,7 +29,7 @@ public class MsgView {
 				}
 				break;
 			case 1: 
-				msgWrite(myNo, myName);
+				msgWrite(myNo, myName, "");
 				break;
 			case 2: 
 				boxList = boxAll(myNo);
@@ -44,9 +44,6 @@ public class MsgView {
 				boxPrinter( select, boxList );
 				break;
 //			case 5: msgMyInfo (myNo); break;
-			case 9:
-				loginUser = logout(loginUser);
-				break;
 			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
 			}
 			
@@ -62,6 +59,10 @@ public class MsgView {
 			select = sc.nextInt();
 			sc.nextLine();
 			
+			if(select==9) {
+				loginUser = logout(loginUser);
+			}
+			
 		} while(select!=9);
 		
 		return loginUser;
@@ -72,8 +73,7 @@ public class MsgView {
 	 * @param myNo
 	 * @param myName
 	 */
-	private void msgWrite(String myNo, String myName) {
-		String userName ="";
+	private void msgWrite(String myNo, String myName, String userName) {
 		String title;
 		String text ="";
 		String content ="";
@@ -89,6 +89,16 @@ public class MsgView {
 		System.out.println("\n[메세지 작성]");
 		System.out.println("\n-----------");
 		
+		if(!(userName.equals(""))) {
+			try {
+				userNo = service.msgUserCheck(userName);
+			} catch (Exception e) {
+				System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+				System.out.println("\n[위치] 메세지 수신 회원번호 확인 과정 \n");
+				e.printStackTrace();
+			}
+			userCheckFL = true;
+		}
 		
 		LoopMain : while(!loopMainFL) { // 전체 반복문
 			char agree;
@@ -228,7 +238,7 @@ public class MsgView {
 		}
 	}
 	
-	/** 0. 로그아웃
+	/** 9. 로그아웃
 	 * @param loginUser
 	 */
 	private User logout(User loginUser) {
@@ -237,7 +247,7 @@ public class MsgView {
 		return loginUser;
 	}
 
-	/** 박스 프린터
+	/** a to c : 박스 프린터
 	 * @param select
 	 * @param boxList
 	 */
@@ -260,6 +270,10 @@ public class MsgView {
 		List<MsgBox> boxAllList = new ArrayList<>();
 		
 		try {
+			System.out.println("\n-----------");
+			System.out.println("\n[전체 메세지]");
+			System.out.println("\n-----------");
+			
 			boxAllList = service.msgBoxAll(myNo);
 			
 		} catch (Exception e) {
@@ -311,7 +325,6 @@ public class MsgView {
 			
 			boxList = service.msgBoxRecd(myNo);
 			
-			msgDetailMenu(boxList);
 		} catch (Exception e) {
 			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
 			System.out.println("\n[위치] 받은 메세지 조회 \n");
@@ -353,11 +366,6 @@ public class MsgView {
 			
 			boxList = service.msgBoxSend(myNo);
 			
-//			if(!(boxList.isEmpty())) boxSendPrint(boxList);
-//			if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
-//			
-//			msgDetailMenu(boxList);
-			
 		} catch (Exception e) {
 			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
 			System.out.println("\n[위치] 보낸 메세지 조회 \n");
@@ -384,34 +392,39 @@ public class MsgView {
 		System.out.println("--------------------------------------------");
 	}
 	
-	/** 메세지 리스트 하위 메뉴
+	/** Sub : 메세지함 하위 메뉴
 	 * @param boxList
 	 */
 	private void msgDetailMenu(List<MsgBox> boxList) {
 		if(!(boxList.isEmpty())) {
-			System.out.print("선택 > ");
-			int input = sc.nextInt();
-			sc.nextLine();
-			switch(input) {
-			case 1: 
-				System.out.print("선택 > ");
+				System.out.print("메세지 선택 > ");
 				int idx = sc.nextInt();
 				sc.nextLine();
 				msgDetail(idx, boxList);
 				
 				System.out.println("--------------");
 				System.out.println("1. 전달하기");
-				System.out.println("0. 뒤로가기");
+				System.out.println("2. 삭제하기");
+				System.out.println("9. 뒤로가기");
 				System.out.println("--------------");
 				System.out.print("선택 > ");
-			case 0: break;
-			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
-			}
+				int input = sc.nextInt();
+				sc.nextLine();
+				switch(input) {
+				case 1: 
+//					String myNo =
+//					String myName =
+					String userName = boxList.get(idx).getUserName();
+					msgWrite(myNo, myName, userName); break;
+//				case 2: msgDel(); break; 
+				case 9: break;
+				default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
+				}
 		}
 	}
 	
 	/**
-	 *  메세지 상세보기
+	 *  Sub : 메세지 상세보기
 	 */
 	public void msgDetail(int idx, List<MsgBox> boxList) {
 		// ---------------
@@ -435,6 +448,7 @@ public class MsgView {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(content);
 		
 		System.out.println("------------------------------------------------------");
 		System.out.printf(" %s\n", title);
