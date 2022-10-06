@@ -79,6 +79,19 @@ public class MsgService {
 		return boxList;
 	}
 	
+	/** 받은 메세지 열람
+	 * @param msgNo
+	 */
+	public void msgReaded(String msgNo) throws Exception {
+		Connection conn = getConnection();
+
+		int result = dao.msgReaded(conn, msgNo);
+		
+		if(result > 0) commit(conn);
+		if(result <= 0) rollback(conn);
+
+	}
+	
 	
 	/** 보낸 메세지 목록
 	 * @param myNo
@@ -109,6 +122,21 @@ public class MsgService {
 		
 		return boxList;
 	}
+	
+	/** 휴지통 목록
+	 * @param myNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MsgBox> boxBin(String myNo) throws Exception {
+		Connection conn = getConnection();
+		
+		List<MsgBox> boxList = dao.boxBin(conn, myNo);
+		
+		close(conn);
+		
+		return boxList;
+	}
 
 	/** 메세지 내용 상세보기
 	 * @param msgNo
@@ -123,6 +151,43 @@ public class MsgService {
 		
 		return content;
 	}
+
+	/** Sub : 메세지를 휴지통으로(임시삭제)
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int sendToBin(String msgNo) throws Exception {
+		Connection conn = getConnection();
+		int result = 0;
+
+		result = dao.sendToBin(conn, msgNo);
+		
+		if(result > 0) commit(conn);
+		if(result <= 0) rollback(conn);
+
+		return result;
+	}
+
+	/** Sub : 메세지를 휴지통으로(임시삭제)
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int recdToBin(String msgNo) throws Exception {
+		Connection conn = getConnection();
+		int result = 0;
+
+		result = dao.recdToBin(conn, msgNo);
+		
+		if(result > 0) commit(conn);
+		if(result <= 0) rollback(conn);
+
+		return result;
+	}
+
+	
+
 
 	
 	

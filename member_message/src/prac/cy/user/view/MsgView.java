@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Scanner;
 
 import prac.cy.user.model.service.MsgService;
+import prac.cy.user.model.service.UserService;
 import prac.cy.user.vo.MsgBox;
 import prac.cy.user.vo.User;
 
 public class MsgView {
 	
 	MsgService service = new MsgService();
+	UserView userView = new UserView();
 	
 	private Scanner sc = new Scanner(System.in);
 	private List<MsgBox> boxList = new ArrayList<>();
@@ -19,17 +21,17 @@ public class MsgView {
 	public User msgMenu(int select, User loginUser) {
 		String myNo = loginUser.getUserNo();
 		String myName = loginUser.getUserName();
+		String myId = loginUser.getUserId();
 		
 		do {
-			
 			switch(select) {
-			case 0: 
-				if(!(boxList.isEmpty())) {
-					msgDetailMenu(boxList);
-				}
-				break;
+//			case 0: 
+//				if(!(boxList.isEmpty())) {
+//					msgDetailMenu(myNo, myName, boxList);
+//				}
+//				break;
 			case 1: 
-				msgWrite(myNo, myName, "");
+				msgWrite(myNo, myName, "", "");
 				break;
 			case 2: 
 				boxList = boxAll(myNo);
@@ -43,7 +45,11 @@ public class MsgView {
 				boxList = boxSend(myNo);
 				boxPrinter( select, boxList );
 				break;
-//			case 5: msgMyInfo (myNo); break;
+			case 5:
+				boxList = boxBin(myNo);
+				boxPrinter( select, boxList );
+				break;
+			case 8: myInfo(myId, myName); break;
 			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
 			}
 			
@@ -52,12 +58,23 @@ public class MsgView {
 			System.out.println("2. 전체 메세지");
 			System.out.println("3. 받은 메세지"); // 기본값
 			System.out.println("4. 보낸 메세지");
-			System.out.println("5. 내 정보 ");
+			System.out.println("5. 휴지통");
+			System.out.println("8. 내 정보 ");
 			System.out.println("9. 로그아웃 ");
 			System.out.println("-----------");
 			System.out.print("선택 > ");
-			select = sc.nextInt();
+			int temp = sc.nextInt();
 			sc.nextLine();
+			
+			if(temp==0 && select!=5) { // 휴지통이 아닌 경우
+				if(!(boxList.isEmpty())) {
+					msgDetailMenu(myNo, myName, boxList);
+				}
+				break;
+			}
+			if(temp!=0) { // 상세 내용 조회가 아닌 경우
+				select = temp;
+			}
 			
 			if(select==9) {
 				loginUser = logout(loginUser);
@@ -73,10 +90,9 @@ public class MsgView {
 	 * @param myNo
 	 * @param myName
 	 */
-	private void msgWrite(String myNo, String myName, String userName) {
+	private void msgWrite(String myNo, String myName, String userName, String content) {
 		String title;
 		String text ="";
-		String content ="";
 		String userNo ="";
 		String msgNo ="";
 		
@@ -89,7 +105,7 @@ public class MsgView {
 		System.out.println("\n[메세지 작성]");
 		System.out.println("\n-----------");
 		
-		if(!(userName.equals(""))) {
+		if(!(userName.equals(""))) { // 답장하는 경우
 			try {
 				userNo = service.msgUserCheck(userName);
 			} catch (Exception e) {
@@ -98,6 +114,10 @@ public class MsgView {
 				e.printStackTrace();
 			}
 			userCheckFL = true;
+		}
+		
+		if(!(content.equals(""))) { // 전달하는 경우
+			loopFillFL = true;
 		}
 		
 		LoopMain : while(!loopMainFL) { // 전체 반복문
@@ -238,6 +258,16 @@ public class MsgView {
 		}
 	}
 	
+	
+	/** 8. 내 정보
+	 * @param myNo
+	 */
+	private void myInfo(String myId, String myName) {
+		
+		System.out.printf("이름 : %s\n", myName);
+		System.out.printf("아이디 : %s\n", myId);
+	}
+	
 	/** 9. 로그아웃
 	 * @param loginUser
 	 */
@@ -342,12 +372,20 @@ public class MsgView {
 		System.out.printf("번호|보낸사람|제목|날짜|확인\n");
 		System.out.println("--------------------------------------------");
 		for(MsgBox b : boxList) {
+			String readFl = "";
+			
+			if(b.getReadFl().equals("Y")) {
+				readFl = "읽음";
+			}
+			if(b.getReadFl().equals("F")) {
+				readFl = "읽지않음";
+			}
 			System.out.printf("%d|%s|%s|%s|%s\n",
 					idx++,
 					b.getUserName(),
 					b.getTitle(),
 					b.getMsgDate(),
-					b.getReadFl()
+					readFl
 					);
 		}
 		System.out.println("--------------------------------------------");
@@ -392,10 +430,37 @@ public class MsgView {
 		System.out.println("--------------------------------------------");
 	}
 	
+	/** B. 휴지통
+	 * @param myNo
+	 * @return result
+	 *    0  : 결과 없음
+	 *    1  : 결과 있음
+	 */
+	private List<MsgBox> boxBin(String myNo) {
+		List<MsgBox> boxList = null;
+		
+		try {
+			System.out.println("\n-----------");
+			System.out.println("\n[휴지통]");
+			System.out.println("\n-----------");
+			
+			boxList = service.boxBin(myNo);
+			boxAllPrint(boxList);
+			// 완전삭제/ 복원
+			
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 휴지통 조회 \n");
+			e.printStackTrace();
+		}
+		
+		return boxList;
+	}
+	
 	/** Sub : 메세지함 하위 메뉴
 	 * @param boxList
 	 */
-	private void msgDetailMenu(List<MsgBox> boxList) {
+	private void msgDetailMenu(String myNo, String myName, List<MsgBox> boxList) {
 		if(!(boxList.isEmpty())) {
 				System.out.print("메세지 선택 > ");
 				int idx = sc.nextInt();
@@ -403,8 +468,9 @@ public class MsgView {
 				msgDetail(idx, boxList);
 				
 				System.out.println("--------------");
-				System.out.println("1. 전달하기");
-				System.out.println("2. 삭제하기");
+				System.out.println("1. 삭제하기");
+				System.out.println("2. 전달하기");
+				System.out.println("3. 답장하기");
 				System.out.println("9. 뒤로가기");
 				System.out.println("--------------");
 				System.out.print("선택 > ");
@@ -412,11 +478,14 @@ public class MsgView {
 				sc.nextLine();
 				switch(input) {
 				case 1: 
-//					String myNo =
-//					String myName =
+					msgPutInBin(boxList.get(idx).getBoxType(), boxList.get(idx).getMsgNo());
+					break;
+				case 2:
+					String content = boxList.get(idx).getContent();
+					msgWrite(myNo, myName, "", content); break;
+				case 3: 
 					String userName = boxList.get(idx).getUserName();
-					msgWrite(myNo, myName, userName); break;
-//				case 2: msgDel(); break; 
+					msgWrite(myNo, myName, userName, ""); break;
 				case 9: break;
 				default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
 				}
@@ -444,7 +513,12 @@ public class MsgView {
 		String content = "";
 		
 		try {
-			content = service.msgDetail(msgNo);
+			content = service.msgDetail(msgNo); // content 불러오기
+			
+			if(boxList.get(idx).getBoxType().equals("R")) { // 읽었다고 표시하기
+				service.msgReaded(msgNo);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -465,7 +539,28 @@ public class MsgView {
 		System.out.println("\n------------------------------------------------------");
 	}
 	
-	
+	/**
+	 *  Sub : 메세지를 휴지통으로(임시삭제)
+	 */
+	public void msgPutInBin(String boxType, String msgNo) {
+		int result = 0;
+		try {
+			if(boxType.equals("S")) {
+				result = service.sendToBin(msgNo);
+			}
+			if(boxType.equals("R")) {
+				result = service.recdToBin(msgNo);
+			}
+			
+			if(result > 0) {
+				System.out.println("\n[알림]메세지가 휴지통으로 이동되었습니다.");
+			}
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 메세지 휴지통으로 이동 \n");
+			e.printStackTrace();
+		}
+	}
 	
 	
 	

@@ -204,12 +204,14 @@ public class MsgDAO {
 				String title = rs.getString("TITLE"); 
 				String msgDate = rs.getString("MSG_DATE"); 
 				String readFl = rs.getString("READ_FL"); 
+				String boxType = rs.getString("BOX_TYPE");
 				
 				msg.setMsgNo(msgNo);
 				msg.setUserName(userName);
 				msg.setTitle(title);
 				msg.setMsgDate(msgDate);
 				msg.setReadFl(readFl);
+				msg.setBoxType(boxType);
 				
 				boxList.add(msg);
 				
@@ -221,6 +223,29 @@ public class MsgDAO {
 		}
 		
 		return boxList;
+	}
+
+	/** 받은 메세지 열람
+	 * @param conn
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int msgReaded(Connection conn, String msgNo) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("msgReaded");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, msgNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
 	}
 	
 	/** 보낸 메세지 목록
@@ -248,11 +273,13 @@ public class MsgDAO {
 				String userName = rs.getString("USER_NAME"); 
 				String title = rs.getString("TITLE"); 
 				String msgDate = rs.getString("MSG_DATE"); 
+				String boxType = rs.getString("BOX_TYPE");
 				
 				msg.setMsgNo(msgNo);
 				msg.setUserName(userName);
 				msg.setTitle(title);
 				msg.setMsgDate(msgDate);
+				msg.setBoxType(boxType);
 				
 				boxList.add(msg);
 				
@@ -312,7 +339,52 @@ public class MsgDAO {
 		return boxList;
 	}
 	
-	/**
+	/** 휴지통 목록
+	 * @param conn
+	 * @param myNo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MsgBox> boxBin(Connection conn, String myNo) throws Exception {
+		List<MsgBox> boxList = new ArrayList<>();
+		
+		try {
+			String sql = prop.getProperty("boxBin");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, myNo);
+			pstmt.setString(2, myNo);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				MsgBox msg = new MsgBox();
+				
+				String msgNo = rs.getString("MSG_NO"); 
+				String userName = rs.getString("USER_NAME"); 
+				String title = rs.getString("TITLE"); 
+				String msgDate = rs.getString("MSG_DATE"); 
+				String boxType = rs.getString("BOX_TYPE");
+				
+				msg.setMsgNo(msgNo);
+				msg.setUserName(userName);
+				msg.setTitle(title);
+				msg.setMsgDate(msgDate);
+				msg.setBoxType(boxType);
+				
+				boxList.add(msg);
+			}
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return boxList;
+	}
+
+	
+	/** 메세지 상세내용 조회
 	 * @param conn
 	 * @param msgNo
 	 * @return
@@ -342,6 +414,53 @@ public class MsgDAO {
 		
 		return content;
 	}
+
+	/** Sub : 메세지를 휴지통으로(임시삭제)
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int sendToBin(Connection conn, String msgNo) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("sendToBin");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, msgNo);
+
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	/** Sub : 메세지를 휴지통으로(임시삭제)
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int recdToBin(Connection conn, String msgNo) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("recdToBin");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, msgNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	
+	
 
 	
 	
