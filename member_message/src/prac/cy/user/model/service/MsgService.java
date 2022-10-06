@@ -186,6 +186,73 @@ public class MsgService {
 		return result;
 	}
 
+	/** 메세지 완전 삭제
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int sendDel(String msgNo) throws Exception {
+		Connection conn = getConnection();
+		int result = 0;
+
+		result = dao.sendDel(conn, msgNo);
+		
+		if(result > 0) commit(conn);
+		if(result <= 0) rollback(conn);
+
+		return result;
+	}
+
+	/** 메세지 완전 삭제
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int recdDel(String msgNo) throws Exception {
+		Connection conn = getConnection();
+		int result = 0;
+		
+		result = dao.recdDel(conn, msgNo);
+		
+		if(result > 0) commit(conn);
+		if(result <= 0) rollback(conn);
+		
+		return result;
+	}
+	
+	/** 보낸 메세지 복원
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int binToSend(String msgNo) throws Exception {
+		Connection conn = getConnection();
+		int result = 0;
+
+		result = dao.binToSend(conn, msgNo);
+		
+		if(result > 0) commit(conn);
+		if(result <= 0) rollback(conn);
+
+		return result;
+	}
+
+	/** 받은 메세지 복원
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int binToRecd(String msgNo) throws Exception {
+		Connection conn = getConnection();
+		int result = 0;
+		
+		result = dao.binToRecd(conn, msgNo);
+		
+		if(result > 0) commit(conn);
+		if(result <= 0) rollback(conn);
+		
+		return result;
+	}
 	
 
 

@@ -459,6 +459,97 @@ public class MsgDAO {
 		return result;
 	}
 
+	/** 메세지 완전 삭제
+	 * @param conn
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int sendDel(Connection conn, String msgNo) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("sendDel");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, msgNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	/** 메세지 완전 삭제
+	 * @param conn
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int recdDel(Connection conn, String msgNo) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("recdDel");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, msgNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	/** 보낸 메세지 복원
+	 * @param conn
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int binToSend(Connection conn, String msgNo) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("binToSend");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, msgNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	/** 받은 메세지 복원
+	 * @param conn
+	 * @param msgNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int binToRecd(Connection conn, String msgNo) throws Exception {
+		int result = 0;
+		try {
+			String sql = prop.getProperty("binToRecd");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, msgNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
 	
 	
 

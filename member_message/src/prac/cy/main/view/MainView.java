@@ -1,5 +1,6 @@
 package prac.cy.main.view;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import prac.cy.main.model.service.MainService;
@@ -40,8 +41,9 @@ public class MainView {
 				if(loginUser != null) {
 					loginUser = view.msgMenu(3, loginUser);
 				}
-			} catch (Exception e) {
+			} catch (InputMismatchException e) {
 				System.out.println("종료하시려면 0을 입력해주세요");
+				sc.nextLine();
 			}
 		} while (input != 0);
 	}

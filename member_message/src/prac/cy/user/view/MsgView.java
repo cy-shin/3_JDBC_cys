@@ -47,7 +47,7 @@ public class MsgView {
 				break;
 			case 5:
 				boxList = boxBin(myNo);
-				boxPrinter( select, boxList );
+//				boxPrinter( select, boxList );
 				break;
 			case 8: myInfo(myId, myName); break;
 			default : System.out.println("\n[알림] 잘못된 선택입니다.\n");
@@ -282,15 +282,19 @@ public class MsgView {
 	 * @param boxList
 	 */
 	private void boxPrinter(int select, List<MsgBox> boxList) {
+		if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
+
 		if(!(boxList.isEmpty())) {
 			switch(select) {
 			case 2: boxAllPrint(boxList); break;
 			case 3: boxRecdPrint(boxList); break;
 			case 4: boxSendPrint(boxList); break;
 			}
-			System.out.print("0. 상세보기");
+			if(!(boxList.isEmpty())) {
+				System.out.print("0. 상세보기");
+			}
 		}
-		if(boxList.isEmpty()) System.out.println("\n메세지가 없습니다.\n");
+		
 		
 	}
 	/** A. 전체 메세지함
@@ -438,6 +442,8 @@ public class MsgView {
 	 */
 	private List<MsgBox> boxBin(String myNo) {
 		List<MsgBox> boxList = null;
+		String boxType = "";
+		String msgNo = "";
 		
 		try {
 			System.out.println("\n-----------");
@@ -446,8 +452,33 @@ public class MsgView {
 			
 			boxList = service.boxBin(myNo);
 			boxAllPrint(boxList);
-			// 완전삭제/ 복원
-			
+			if(!(boxList.isEmpty())) {
+				System.out.println("1. 영구삭제");
+				System.out.println("2. 복원하기");
+				System.out.println("9. 돌아가기");
+				int input = sc.nextInt();
+				if(input==1 || input==2) {
+					System.out.print("번호 선택 > ");
+					int idx = sc.nextInt();
+					sc.nextLine();
+					
+					idx--;
+					
+					boxType = boxList.get(idx).getBoxType();
+					msgNo = boxList.get(idx).getMsgNo();
+				}
+				switch(input) {
+				case 1: 
+					msgDel(boxType, msgNo);
+					boxList = new ArrayList<>();
+					break;
+				case 2: 
+					binToBox(boxType, msgNo);
+					boxList = new ArrayList<>();
+					break;
+				case 9: break;
+				}
+			}
 		} catch (Exception e) {
 			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
 			System.out.println("\n[위치] 휴지통 조회 \n");
@@ -476,6 +507,8 @@ public class MsgView {
 				System.out.print("선택 > ");
 				int input = sc.nextInt();
 				sc.nextLine();
+				
+				idx--;
 				switch(input) {
 				case 1: 
 					msgPutInBin(boxList.get(idx).getBoxType(), boxList.get(idx).getMsgNo());
@@ -522,8 +555,6 @@ public class MsgView {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(content);
-		
 		System.out.println("------------------------------------------------------");
 		System.out.printf(" %s\n", title);
 		System.out.println("------------------------------------------------------");
@@ -562,8 +593,53 @@ public class MsgView {
 		}
 	}
 	
+	/** 메세지 완전 삭제
+	 * @param boxType
+	 * @param msgNo
+	 */
+	public void msgDel(String boxType, String msgNo) {
+		int result = 0;
+		try {
+			if(boxType.equals("S")) {
+				result = service.sendDel(msgNo);
+			}
+			if(boxType.equals("R")) {
+				result = service.recdDel(msgNo);
+			}
+			
+			if(result > 0) {
+				System.out.println("\n[알림]메세지가 삭제되었습니다.");
+			}
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 메세지 삭제 과정 \n");
+			e.printStackTrace();
+		}
+	}
 	
-	
+	/** 메세지 복원
+	 * @param boxType
+	 * @param msgNo
+	 */
+	public void binToBox(String boxType, String msgNo) {
+		int result = 0;
+		try {
+			if(boxType.equals("S")) {
+				result = service.binToSend(msgNo);
+			}
+			if(boxType.equals("R")) {
+				result = service.binToRecd(msgNo);
+			}
+			
+			if(result > 0) {
+				System.out.println("\n[알림]메세지가 복원되었습니다.");
+			}
+		} catch (Exception e) {
+			System.out.println("\n[알림] 일시적인 오류가 발생했습니다.\n");
+			System.out.println("\n[위치] 메세지 삭제 과정 \n");
+			e.printStackTrace();
+		}
+	}
 	
 	
 	

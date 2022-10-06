@@ -136,4 +136,28 @@
 		UPDATE MSG_RECD SET RDEL_FL = 'B' 
 		WHERE MSG_NO = ?
 	</entry>
+	
+	<!-- 보낸 메시지에서 휴지통에서 복원 -->
+	<entry key="binToSend">
+		UPDATE MSG_SEND SET SDEL_FL = 'F' 
+		WHERE MSG_NO = ?
+	</entry>
+	
+	<!-- 받은 메시지에서 휴지통에서 복원 -->
+	<entry key="binToRecd">
+		UPDATE MSG_RECD SET RDEL_FL = 'F' 
+		WHERE MSG_NO = ?
+	</entry>
+	
+	<!-- 보낸 메시지 완전 삭제 -->
+	<entry key="sendDel">
+		UPDATE MSG_SEND SET SDEL_FL = 'Y' 
+		WHERE MSG_NO = ?
+	</entry>
+	
+	<!-- 받은 메시지 완전 삭제 -->
+	<entry key="recdDel">
+		UPDATE MSG_RECD SET RDEL_FL = 'Y' 
+		WHERE MSG_NO = ?
+	</entry>
 </properties>
